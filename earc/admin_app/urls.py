@@ -8,6 +8,6 @@ app_name = 'admin_app'
 
 urlpatterns = [
     path('login/', views.admin_login, name='login'),
-    path('dashboard/', views.admin_dashboard, name='dashboard')
+    path('dashboard/', views.admin_dashboard, name='admin_dashboard')
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

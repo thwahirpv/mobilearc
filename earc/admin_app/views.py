@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 # Admin login 
 def admin_login(request):
     if request.user.is_authenticated:
-        return redirect(admin_dashboard)
+        return redirect('admin_app:admin_dashboard')
     
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -18,7 +18,7 @@ def admin_login(request):
         user = authenticate(email=email, password=password)
         if user is not None:
             login(request, user)
-            return redirect(admin_dashboard)
+            return redirect('admin_app:admin_dashboard')
 
     return render(request, 'admin_template/page-account-login.html')
 
@@ -27,4 +27,9 @@ def admin_login(request):
 # @login_required(login_url='login/')
 def admin_dashboard(request):
     return render(request, 'admin_template/index.html')
+
+
+def admin_logout(request):
+    if request.user.is_authenticated:
+        logout(request)
     
