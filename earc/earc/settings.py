@@ -137,3 +137,8 @@ AUTH_USER_MODEL = 'admin_app.userdetails'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+ACCOUNT_SID = 'AC61e70061b3137b30b9d0f841ffb09736'
+AUTH_TOKEN = 'c362086015e023e468c7122b014f87ad'
