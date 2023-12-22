@@ -1,31 +1,61 @@
-{% extends "user_base.html" %}
-{% load static %}
-
-
-{% block title %}
-VERIFICATION
-{% endblock %}
- 
-{% block content %}
-<div class="" style="width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;">
-    <div style="width: 40%;">
-        <form class="row" method="post">
-            {% csrf_token %}
-            <!-- ========== Start user or phone number messages ========== -->
-                {% if messages %}
-                    {% for message in messages %}
-                    <p class="text-danger fw-semibold fs-6">{{ message }}</p>
-                    {% endfor %}
-                {% endif %}
-            <!-- ========== End user or phone number messages ========== -->
-            <div class="col-12">
-                <label for="">Enter otp</label>
-                <input type="text" class="form-control" name="otp">
-            </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">Sign in</button>
-            </div>
-        </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERIFICATION</title>
+</head>
+<body>
+    <div class="" style="width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;">
+        <div style="width: 40%;">
+            <form class="row" method="post">
+                {% csrf_token %}
+                <!-- ========== Start user or phone number messages ========== -->
+                    {% if messages %}
+                        {% for message in messages %}
+                        <p class="text-danger fw-semibold fs-6">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                <!-- ========== End user or phone number messages ========== -->
+                <div class="col-12">
+                    <label for="">Enter otp</label>
+                    <input type="text" class="form-control" name="otp">
+                </div>
+                <div class="col-6">
+                    <button type="submit" class="btn btn-primary">Sign in</button>
+                </div>
+                <div class="col-6">
+                    <p id="countdown"></p>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-{% endblock content %}
+
+
+    <script>
+        // Set the expiration time in seconds
+        var expirationTime = {{ remaining_minutes }}  + {{ remaining_seconds }};
+
+        // Update the countdown every second
+        var countdown = setInterval(function () {
+            var minutes = Math.floor(expirationTime/62);
+            var seconds = expirationTime % 60;
+
+            // Display the countdown
+            document.getElementById("countdown").innerHTML = "OTP expires in " + minutes + " minutes and " + seconds + " seconds.";
+
+            // Decrease the remaining time
+            expirationTime--;
+
+            // If the countdown reaches zero, clear the interval
+            if (expirationTime < 0) {
+                clearInterval(countdown);
+            }
+        }, 1000);
+    </script>
+    
+</body>
+</html>
+
+
+

@@ -1,53 +1,44 @@
-from twilio.rest import Client
-from django.db.models.signals import pre_save
 from django.dispatch import receiver
-from admin_app.models import userdetails 
 from django.core.mail import send_mail
 from django.conf import settings
 import random
+from django.dispatch import Signal
+from twilio.rest import Client
+
+# Custom Signals
+pre_create = Signal()
 
 
 # This class sent otp for user through twilio 
 class otp_message_handler:
     mobile_number = None
-    otp = None
 
-    def __init__(self, mobile_number, otp):
-        self.mobile_number = mobile_number
-        self.otp = otp
-        print('3: otp and mobile number save successfully......')
+    def __init__(self, phone_number):
+        self.phone_number = phone_number
 
     def sent_otp(self):
+        verify_sid = "VA39917fe21ae0ea9b18dbc89454242a9a"
         client = Client(settings.ACCOUNT_SID, settings.AUTH_TOKEN)
-        message = client.messages.create(
-                            body=f'To verify your email address, please use the following One Time Password (OTP): {self.otp} Do not share this OTP with anyone. 
-                                    mobilearc takes your account security very seriously. 
-                                    mobilearc Customer Service will never ask you to disclose or verify your Amazon password, OTP, credit card, 
-                                    or banking account number. If you receive a suspicious email with a link to update your account information,
-                                    do not click on the link—instead, report the email to mobilearc for investigation.',
-                            from_='+15017122661',
-                            to='+91'+self.mobile_number
-                        )
-        print(message.sid)
-        print('1: otp sending proccess successfully complete......')
+        verification = client.verify.v2.services(verify_sid) \
+        .verifications \
+        .create(to='+91'+self.phone_number, channel="sms")
+
+    def check_otp(self, otp_code):
+        client = Client(settings.ACCOUNT_SID, settings.AUTH_TOKEN)
+        verify_sid = "VA39917fe21ae0ea9b18dbc89454242a9a"
+        verification_check = client.verify.v2.services(verify_sid) \
+        .verification_checks \
+        .create(to='+91'+self.phone_number, code=otp_code)
+        print("-------------------")
+        return verification_check.valid
+
         
 
 
-def generate_otp():
-    print("2: otp generated.....")
-    return random.randint(100000, 999999)
 
-# otp pre_save signal its execute before sender model is occer create event
-@receiver(pre_save, sender=userdetails)
-def sent_otp_to(sender, instance, *args, **kwargs):
-    print("the function is woring......")
-    # check user_id is not created just for comformation. 
-    # once created its means user is alredy created 
+@receiver(pre_create)
+def pre_create_handler(sender, instance, **kwargs):
     if not instance.user_id:
-        print('1: otp sending proccess successfully start......')
-        otp = generate_otp()
-        instance.otp = otp
-        instance.otp.save()
-        otp_obj = otp_message_handler(instance.phone_number, otp)
-        otp_obj.sent_otp()
+        message_obj = otp_message_handler(instance.phone_number)
+        message_obj.sent_otp()
 
