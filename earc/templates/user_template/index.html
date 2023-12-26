@@ -1,6 +1,11 @@
-﻿{% load static %}
+﻿{% extends "user_base.html" %}
+{% load static %}
+{% block title %}
+Home
+{% endblock %}
+{% block content %}
     <!-- Modal -->
-    <div class="modal fade custom-modal" id="onloadModal" tabindex="-1" aria-labelledby="onloadModalLabel" aria-hidden="true">
+    <!-- <div class="modal fade custom-modal" id="onloadModal" tabindex="-1" aria-labelledby="onloadModalLabel" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">              
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>       
@@ -23,7 +28,7 @@
                 </div>        
         </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Quick view -->
     <div class="modal fade custom-modal" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
@@ -162,16 +167,16 @@
     <header class="header-area header-style-1 header-height-2">
         <div class="header-top header-top-ptb-1 d-none d-lg-block">
             <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-xl-3 col-lg-4">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-xl-3 col-lg-6">
                         <div class="header-info">
                             <ul>
-                                <li><i class="fi-rs-smartphone"></i> <a href="#">(+01) - 2345 - 6789</a></li>
+                                <li><i class="fi-rs-smartphone"></i> <a href="#">+91 9895779351</a></li>
                                 <li><i class="fi-rs-marker"></i><a  href="page-contact.html">Our location</a></li>
                             </ul>
                         </div>
                     </div>
-                    <div class="col-xl-6 col-lg-4">
+                    <!-- <div class="col-xl-6 col-lg-4">
                         <div class="text-center">
                             <div id="news-flash" class="d-inline-block">
                                 <ul>
@@ -181,19 +186,23 @@
                                 </ul>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4">
+                    </div> -->
+                    <div class="col-xl-3 col-lg-6">
                         <div class="header-info header-info-right">
                             <ul>
                                 <li>
                                     <a class="language-dropdown-active" href="#"> <i class="fi-rs-world"></i> English <i class="fi-rs-angle-small-down"></i></a>
                                     <ul class="language-dropdown">
-                                        <li><a href="#"><img src="assets/imgs/theme/flag-fr.png" alt="">Français</a></li>
-                                        <li><a href="#"><img src="assets/imgs/theme/flag-dt.png" alt="">Deutsch</a></li>
-                                        <li><a href="#"><img src="assets/imgs/theme/flag-ru.png" alt="">Pусский</a></li>
+                                        <li><a href="#"><img src="{% static 'assets/imgs/theme/flag-fr.png' %}" alt="">Français</a></li>
+                                        <li><a href="#"><img src="{% static 'assets/imgs/theme/flag-dt.png' %}" alt="">Deutsch</a></li>
+                                        <li><a href="#"><img src="{% static 'assets/imgs/theme/flag-ru.png' %}" alt="">Pусский</a></li>
                                     </ul>
                                 </li>
-                                <li><i class="fi-rs-user"></i><a href="page-login-register.html">Log In / Sign Up</a></li>
+                                {% if user.is_authenticated %}
+                                <li><i class="fi-rs-user"></i><a href="page-login-register.html">{{user.username}}</a></li>
+                                {% else %}
+                                <li><i class="fi-rs-user"></i><a href="{% url 'user_app:user_login' %}">Login</a></li>
+                                {% endif %}
                             </ul>
                         </div>
                     </div>
@@ -204,7 +213,7 @@
             <div class="container">
                 <div class="header-wrap">
                     <div class="logo logo-width-1">
-                        <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo"></a>
+                        <a href="index.html"><img src="{% static 'assets/imgs/theme/logo.svg' %}" alt="logo"></a>
                     </div>
                     <div class="header-right">
                         <div class="search-style-2">
@@ -242,7 +251,7 @@
                                         <ul>
                                             <li>
                                                 <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara" src="assets/imgs/shop/thumbnail-3.jpg"></a>
+                                                    <a href="shop-product-right.html"><img alt="Evara" src="{% static 'assets/imgs/shop/thumbnail-3.jpg' %}"></a>
                                                 </div>
                                                 <div class="shopping-cart-title">
                                                     <h4><a href="shop-product-right.html">Daisy Casual Bag</a></h4>
@@ -254,7 +263,7 @@
                                             </li>
                                             <li>
                                                 <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara" src="assets/imgs/shop/thumbnail-2.jpg"></a>
+                                                    <a href="shop-product-right.html"><img alt="Evara" src="{% static 'assets/imgs/shop/thumbnail-2.jpg' %}"></a>
                                                 </div>
                                                 <div class="shopping-cart-title">
                                                     <h4><a href="shop-product-right.html">Corduroy Shirts</a></h4>
@@ -286,7 +295,7 @@
             <div class="container">
                 <div class="header-wrap header-space-between position-relative">
                     <div class="logo logo-width-1 d-block d-lg-none">
-                        <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo"></a>
+                        <a href="index.html"><img src="{% static 'assets/imgs/theme/logo.svg' %}" alt="logo"></a>
                     </div>
                     <div class="header-nav d-none d-lg-flex">
                         <div class="main-categori-wrap d-none d-lg-block">
@@ -331,7 +340,7 @@
                                                 </li>
                                                 <li class="mega-menu-col col-lg-5">
                                                     <div class="header-banner2">
-                                                        <img src="assets/imgs/banner/menu-banner-2.jpg" alt="menu_banner1">
+                                                        <img src="{% static 'assets/imgs/banner/menu-banner-2.jpg' %}" alt="menu_banner1">
                                                         <div class="banne_info">
                                                             <h6>10% Off</h6>
                                                             <h4>New Arrival</h4>
@@ -339,7 +348,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="header-banner2">
-                                                        <img src="assets/imgs/banner/menu-banner-3.jpg" alt="menu_banner2">
+                                                        <img src="{% static 'assets/imgs/banner/menu-banner-3.jpg' %}" alt="menu_banner2">
                                                         <div class="banne_info">
                                                             <h6>15% Off</h6>
                                                             <h4>Hot Deals</h4>
@@ -385,7 +394,7 @@
                                                 </li>
                                                 <li class="mega-menu-col col-lg-5">
                                                     <div class="header-banner2">
-                                                        <img src="assets/imgs/banner/menu-banner-4.jpg" alt="menu_banner1">
+                                                        <img src="{% static 'assets/imgs/banner/menu-banner-4.jpg' %}" alt="menu_banner1">
                                                         <div class="banne_info">
                                                             <h6>10% Off</h6>
                                                             <h4>New Arrival</h4>
@@ -432,7 +441,7 @@
                                                 </li>
                                                 <li class="mega-menu-col col-lg-5">
                                                     <div class="header-banner2">
-                                                        <img src="assets/imgs/banner/menu-banner-5.jpg" alt="menu_banner1">
+                                                        <img src="{% static 'assets/imgs/banner/menu-banner-5.jpg' %}" alt="menu_banner1">
                                                         <div class="banne_info">
                                                             <h6>10% Off</h6>
                                                             <h4>New Arrival</h4>
@@ -440,7 +449,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="header-banner2">
-                                                        <img src="assets/imgs/banner/menu-banner-6.jpg" alt="menu_banner2">
+                                                        <img src="{% static 'assets/imgs/banner/menu-banner-6.jpg' %}" alt="menu_banner2">
                                                         <div class="banne_info">
                                                             <h6>15% Off</h6>
                                                             <h4>Hot Deals</h4>
@@ -541,7 +550,7 @@
                                             </li>
                                             <li class="sub-mega-menu sub-mega-menu-width-34">
                                                 <div class="menu-banner-wrap">
-                                                    <a href="shop-product-right.html"><img src="assets/imgs/banner/menu-banner.jpg" alt="Evara"></a>
+                                                    <a href="shop-product-right.html"><img src="{% static 'assets/imgs/banner/menu-banner.jpg' %}" alt="Evara"></a>
                                                     <div class="menu-banner-content">
                                                         <h4>Hot deals</h4>
                                                         <h3>Don't miss<br> Trending</h3>
@@ -604,20 +613,20 @@
                         <div class="header-action-2">
                             <div class="header-action-icon-2">
                                 <a href="shop-wishlist.html">
-                                    <img alt="Evara" src="assets/imgs/theme/icons/icon-heart.svg">
+                                    <img alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-heart.svg' %}">
                                     <span class="pro-count white">4</span>
                                 </a>
                             </div>
                             <div class="header-action-icon-2">
                                 <a class="mini-cart-icon" href="shop-cart.html">
-                                    <img alt="Evara" src="assets/imgs/theme/icons/icon-cart.svg">
+                                    <img alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-cart.svg' %}">
                                     <span class="pro-count white">2</span>
                                 </a>
                                 <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                     <ul>
                                         <li>
                                             <div class="shopping-cart-img">
-                                                <a href="shop-product-right.html"><img alt="Evara" src="assets/imgs/shop/thumbnail-3.jpg"></a>
+                                                <a href="shop-product-right.html"><img alt="Evara" src="{% static 'assets/imgs/shop/thumbnail-3.jpg' %}"></a>
                                             </div>
                                             <div class="shopping-cart-title">
                                                 <h4><a href="shop-product-right.html">Plain Striola Shirts</a></h4>
@@ -629,7 +638,7 @@
                                         </li>
                                         <li>
                                             <div class="shopping-cart-img">
-                                                <a href="shop-product-right.html"><img alt="Evara" src="assets/imgs/shop/thumbnail-4.jpg"></a>
+                                                <a href="shop-product-right.html"><img alt="Evara" src="{% static 'assets/imgs/shop/thumbnail-4.jpg' %}"></a>
                                             </div>
                                             <div class="shopping-cart-title">
                                                 <h4><a href="shop-product-right.html">Macbook Pro 2022</a></h4>
@@ -668,7 +677,7 @@
         <div class="mobile-header-wrapper-inner">
             <div class="mobile-header-top">
                 <div class="mobile-header-logo">
-                    <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo"></a>
+                    <a href="index.html"><img src="{% static 'assets/imgs/theme/logo.svg' %}" alt="logo"></a>
                 </div>
                 <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
                     <button class="close-style search-close">
@@ -815,11 +824,11 @@
                 </div>
                 <div class="mobile-social-icon">
                     <h5 class="mb-15 text-grey-4">Follow Us</h5>
-                    <a href="#"><img src="assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                    <a href="#"><img src="assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                    <a href="#"><img src="assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                    <a href="#"><img src="assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                    <a href="#"><img src="assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
+                    <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-facebook.svg' %}" alt=""></a>
+                    <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-twitter.svg' %}" alt=""></a>
+                    <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-instagram.svg' %}" alt=""></a>
+                    <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-pinterest.svg' %}" alt=""></a>
+                    <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-youtube.svg' %}" alt=""></a>
                 </div>
             </div>
         </div>
@@ -841,7 +850,7 @@
                             </div>
                             <div class="col-lg-7 col-md-6">
                                 <div class="single-slider-img single-slider-img-1">
-                                    <img class="animated slider-1-1" src="assets/imgs/slider/slider-1.png" alt="">
+                                    <img class="animated slider-1-1" src="{% static 'assets/imgs/slider/slider-1.png' %}" alt="">
                                 </div>
                             </div>
                         </div>
@@ -861,7 +870,7 @@
                             </div>
                             <div class="col-lg-7 col-md-6">
                                 <div class="single-slider-img single-slider-img-1">
-                                    <img class="animated slider-1-2" src="assets/imgs/slider/slider-2.png" alt="">
+                                    <img class="animated slider-1-2" src="{% static 'assets/imgs/slider/slider-2.png' %}" alt="">
                                 </div>
                             </div>
                         </div>
@@ -881,7 +890,7 @@
                             </div>
                             <div class="col-lg-7 col-md-6">
                                 <div class="single-slider-img single-slider-img-1">
-                                    <img class="animated slider-1-3" src="assets/imgs/slider/slider-3.png" alt="">
+                                    <img class="animated slider-1-3" src="{% static 'assets/imgs/slider/slider-3.png' %}" alt="">
                                 </div>
                             </div>
                         </div>
@@ -895,37 +904,37 @@
                 <div class="row">
                     <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
                         <div class="banner-features wow fadeIn animated hover-up">
-                            <img src="assets/imgs/theme/icons/feature-1.png" alt="">
+                            <img src="{% static 'assets/imgs/theme/icons/feature-1.png' %}" alt="">
                             <h4 class="bg-1">Free Shipping</h4>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
                         <div class="banner-features wow fadeIn animated hover-up">
-                            <img src="assets/imgs/theme/icons/feature-2.png" alt="">
+                            <img src="{% static 'assets/imgs/theme/icons/feature-2.png' %}" alt="">
                             <h4 class="bg-3">Online Order</h4>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
                         <div class="banner-features wow fadeIn animated hover-up">
-                            <img src="assets/imgs/theme/icons/feature-3.png" alt="">
+                            <img src="{% static 'assets/imgs/theme/icons/feature-3.png' %}" alt="">
                             <h4 class="bg-2">Save Money</h4>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
                         <div class="banner-features wow fadeIn animated hover-up">
-                            <img src="assets/imgs/theme/icons/feature-4.png" alt="">
+                            <img src="{% static 'assets/imgs/theme/icons/feature-4.png' %}" alt="">
                             <h4 class="bg-4">Promotions</h4>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
                         <div class="banner-features wow fadeIn animated hover-up">
-                            <img src="assets/imgs/theme/icons/feature-5.png" alt="">
+                            <img src="{% static 'assets/imgs/theme/icons/feature-5.png' %}" alt="">
                             <h4 class="bg-5">Happy Sell</h4>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
                         <div class="banner-features wow fadeIn animated hover-up">
-                            <img src="assets/imgs/theme/icons/feature-6.png" alt="">
+                            <img src="{% static 'assets/imgs/theme/icons/feature-6.png' %}" alt="">
                             <h4 class="bg-6">24/7 Support</h4>
                         </div>
                     </div>
@@ -958,8 +967,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-1-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-1-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-1-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-1-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -996,8 +1005,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-2-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-2-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-2-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-2-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1034,8 +1043,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-3-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-3-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-3-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-3-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1072,8 +1081,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-4-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-4-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-4-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-4-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1110,8 +1119,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-5-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-5-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-5-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-5-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1148,8 +1157,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-6-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-6-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-6-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-6-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1186,8 +1195,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-7-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-7-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-7-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-7-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1223,8 +1232,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-8-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-8-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-8-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-8-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1264,8 +1273,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-9-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-9-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-9-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-9-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1302,8 +1311,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-10-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-10-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-10-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-10-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1340,8 +1349,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-11-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-11-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-11-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-11-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1378,8 +1387,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-12-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-12-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-12-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-12-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1416,8 +1425,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-13-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-13-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-13-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-13-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1454,8 +1463,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-14-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-14-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-14-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-14-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1492,8 +1501,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-15-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-15-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-15-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-15-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1529,8 +1538,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-1-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-1-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-1-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-1-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1570,8 +1579,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="assets/imgs/shop/product-2-1.jpg" alt="">
-                                                <img class="hover-img" src="assets/imgs/shop/product-2-2.jpg" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-2-1.jpg' %}" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-2-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1608,8 +1617,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="hover-img" src="assets/imgs/shop/product-3-1.jpg" alt="">
-                                                <img class="default-img" src="assets/imgs/shop/product-3-2.jpg" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-3-1.jpg' %}" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-3-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1646,8 +1655,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="hover-img" src="assets/imgs/shop/product-4-1.jpg" alt="">
-                                                <img class="default-img" src="assets/imgs/shop/product-4-2.jpg" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-4-1.jpg' %}" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-4-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1684,8 +1693,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="hover-img" src="assets/imgs/shop/product-5-1.jpg" alt="">
-                                                <img class="default-img" src="assets/imgs/shop/product-5-2.jpg" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-5-1.jpg' %}" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-5-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1722,8 +1731,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="hover-img" src="assets/imgs/shop/product-6-1.jpg" alt="">
-                                                <img class="default-img" src="assets/imgs/shop/product-6-2.jpg" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-6-1.jpg' %}" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-6-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1760,8 +1769,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="hover-img" src="assets/imgs/shop/product-7-1.jpg" alt="">
-                                                <img class="default-img" src="assets/imgs/shop/product-7-2.jpg" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-7-1.jpg' %}" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-7-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1798,8 +1807,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="hover-img" src="assets/imgs/shop/product-8-1.jpg" alt="">
-                                                <img class="default-img" src="assets/imgs/shop/product-8-2.jpg" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-8-1.jpg' %}" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-8-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1835,8 +1844,8 @@
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="hover-img" src="assets/imgs/shop/product-9-1.jpg" alt="">
-                                                <img class="default-img" src="assets/imgs/shop/product-9-2.jpg" alt="">
+                                                <img class="hover-img" src="{% static 'assets/imgs/shop/product-9-1.jpg' %}" alt="">
+                                                <img class="default-img" src="{% static 'assets/imgs/shop/product-9-2.jpg' %}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -1876,7 +1885,7 @@
         <section class="banner-2 section-padding pb-0">
             <div class="container">
                 <div class="banner-img banner-big wow fadeIn animated f-none">
-                    <img src="assets/imgs/banner/banner-4.png" alt="">
+                    <img src="{% static 'assets/imgs/banner/banner-4.png' %}" alt="">
                     <div class="banner-text d-md-block d-none">
                         <h4 class="mb-15 mt-40 text-brand">Repair Services</h4>
                         <h1 class="fw-600 mb-20">We're an Apple <br>Authorised Service Provider</h1>
@@ -1893,49 +1902,49 @@
                     <div class="carausel-6-columns" id="carausel-6-columns">
                         <div class="card-1">
                             <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="assets/imgs/shop/category-thumb-1.jpg" alt=""></a>
+                                <a href="shop-grid-right.html"><img src="{% static 'assets/imgs/shop/category-thumb-1.jpg' %}" alt=""></a>
                             </figure>
                             <h5><a href="shop-grid-right.html">T-Shirt</a></h5>
                         </div>
                         <div class="card-1">
                             <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"> <img src="assets/imgs/shop/category-thumb-2.jpg" alt=""></a>
+                                <a href="shop-grid-right.html"> <img src="{% static 'assets/imgs/shop/category-thumb-2.jpg' %}" alt=""></a>
                             </figure>
                             <h5><a href="shop-grid-right.html">Bags</a></h5>
                         </div>
                         <div class="card-1">
                             <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="assets/imgs/shop/category-thumb-3.jpg" alt=""></a>
+                                <a href="shop-grid-right.html"><img src="{% static 'assets/imgs/shop/category-thumb-3.jpg' %}" alt=""></a>
                             </figure>
                             <h5><a href="shop-grid-right.html">Sandan</a></h5>
                         </div>
                         <div class="card-1">
                             <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="assets/imgs/shop/category-thumb-4.jpg" alt=""></a>
+                                <a href="shop-grid-right.html"><img src="{% static 'assets/imgs/shop/category-thumb-4.jpg' %}" alt=""></a>
                             </figure>
                             <h5><a href="shop-grid-right.html">Scarf Cap</a></h5>
                         </div>
                         <div class="card-1">
                             <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="assets/imgs/shop/category-thumb-5.jpg" alt=""></a>
+                                <a href="shop-grid-right.html"><img src="{% static 'assets/imgs/shop/category-thumb-5.jpg' %}" alt=""></a>
                             </figure>
                             <h5><a href="shop-grid-right.html">Shoes</a></h5>
                         </div>
                         <div class="card-1">
                             <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="assets/imgs/shop/category-thumb-6.jpg" alt=""></a>
+                                <a href="shop-grid-right.html"><img src="{% static 'assets/imgs/shop/category-thumb-6.jpg' %}" alt=""></a>
                             </figure>
                             <h5><a href="shop-grid-right.html">Pillowcase</a></h5>
                         </div>
                         <div class="card-1">
                             <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="assets/imgs/shop/category-thumb-7.jpg" alt=""></a>
+                                <a href="shop-grid-right.html"><img src="{% static 'assets/imgs/shop/category-thumb-7.jpg' %}" alt=""></a>
                             </figure>
                             <h5><a href="shop-grid-right.html">Jumpsuits</a></h5>
                         </div>
                         <div class="card-1">
                             <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="assets/imgs/shop/category-thumb-8.jpg" alt=""></a>
+                                <a href="shop-grid-right.html"><img src="{% static 'assets/imgs/shop/category-thumb-8.jpg' %}" alt=""></a>
                             </figure>
                             <h5><a href="shop-grid-right.html">Hats</a></h5>
                         </div>
@@ -1948,7 +1957,7 @@
                 <div class="row">
                     <div class="col-lg-4 col-md-6">
                         <div class="banner-img wow fadeIn animated">
-                            <img src="assets/imgs/banner/banner-1.png" alt="">
+                            <img src="{% static 'assets/imgs/banner/banner-1.png' %}" alt="">
                             <div class="banner-text">
                                 <span>Smart Offer</span>
                                 <h4>Save 20% on <br>Woman Bag</h4>
@@ -1958,7 +1967,7 @@
                     </div>
                     <div class="col-lg-4 col-md-6">
                         <div class="banner-img wow fadeIn animated">
-                            <img src="assets/imgs/banner/banner-2.png" alt="">
+                            <img src="{% static 'assets/imgs/banner/banner-2.png' %}" alt="">
                             <div class="banner-text">
                                 <span>Sale off</span>
                                 <h4>Great Summer <br>Collection</h4>
@@ -1968,7 +1977,7 @@
                     </div>
                     <div class="col-lg-4 d-md-none d-lg-flex">
                         <div class="banner-img wow fadeIn animated  mb-sm-0">
-                            <img src="assets/imgs/banner/banner-3.png" alt="">
+                            <img src="{% static 'assets/imgs/banner/banner-3.png' %}" alt="">
                             <div class="banner-text">
                                 <span>New Arrivals</span>
                                 <h4>Shop Today’s <br>Deals & Offers</h4>
@@ -1989,8 +1998,8 @@
                             <div class="product-img-action-wrap">
                                 <div class="product-img product-img-zoom">
                                     <a href="shop-product-right.html">
-                                        <img class="default-img" src="assets/imgs/shop/product-2-1.jpg" alt="">
-                                        <img class="hover-img" src="assets/imgs/shop/product-2-2.jpg" alt="">
+                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-2-1.jpg' %}" alt="">
+                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-2-2.jpg' %}" alt="">
                                     </a>
                                 </div>
                                 <div class="product-action-1">
@@ -2020,8 +2029,8 @@
                             <div class="product-img-action-wrap">
                                 <div class="product-img product-img-zoom">
                                     <a href="shop-product-right.html">
-                                        <img class="default-img" src="assets/imgs/shop/product-4-1.jpg" alt="">
-                                        <img class="hover-img" src="assets/imgs/shop/product-4-2.jpg" alt="">
+                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-4-1.jpg' %}" alt="">
+                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-4-2.jpg' %}" alt="">
                                     </a>
                                 </div>
                                 <div class="product-action-1">
@@ -2051,8 +2060,8 @@
                             <div class="product-img-action-wrap">
                                 <div class="product-img product-img-zoom">
                                     <a href="shop-product-right.html">
-                                        <img class="default-img" src="assets/imgs/shop/product-15-1.jpg" alt="">
-                                        <img class="hover-img" src="assets/imgs/shop/product-15-2.jpg" alt="">
+                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-15-1.jpg' %}" alt="">
+                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-15-2.jpg' %}" alt="">
                                     </a>
                                 </div>
                                 <div class="product-action-1">
@@ -2082,8 +2091,8 @@
                             <div class="product-img-action-wrap">
                                 <div class="product-img product-img-zoom">
                                     <a href="shop-product-right.html">
-                                        <img class="default-img" src="assets/imgs/shop/product-3-1.jpg" alt="">
-                                        <img class="hover-img" src="assets/imgs/shop/product-3-2.jpg" alt="">
+                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-3-1.jpg' %}" alt="">
+                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-3-2.jpg' %}" alt="">
                                     </a>
                                 </div>
                                 <div class="product-action-1">
@@ -2113,8 +2122,8 @@
                             <div class="product-img-action-wrap">
                                 <div class="product-img product-img-zoom">
                                     <a href="shop-product-right.html">
-                                        <img class="default-img" src="assets/imgs/shop/product-9-1.jpg" alt="">
-                                        <img class="hover-img" src="assets/imgs/shop/product-9-2.jpg" alt="">
+                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-9-1.jpg' %}" alt="">
+                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-9-2.jpg' %}" alt="">
                                     </a>
                                 </div>
                                 <div class="product-action-1">
@@ -2144,8 +2153,8 @@
                             <div class="product-img-action-wrap">
                                 <div class="product-img product-img-zoom">
                                     <a href="shop-product-right.html">
-                                        <img class="default-img" src="assets/imgs/shop/product-7-1.jpg" alt="">
-                                        <img class="hover-img" src="assets/imgs/shop/product-7-2.jpg" alt="">
+                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-7-1.jpg' %}" alt="">
+                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-7-2.jpg' %}" alt="">
                                     </a>
                                 </div>
                                 <div class="product-action-1">
@@ -2175,8 +2184,8 @@
                             <div class="product-img-action-wrap">
                                 <div class="product-img product-img-zoom">
                                     <a href="shop-product-right.html">
-                                        <img class="default-img" src="assets/imgs/shop/product-1-1.jpg" alt="">
-                                        <img class="hover-img" src="assets/imgs/shop/product-1-2.jpg" alt="">
+                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-1-1.jpg' %}" alt="">
+                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-1-2.jpg' %}" alt="">
                                     </a>
                                 </div>
                                 <div class="product-action-1">
@@ -2250,25 +2259,25 @@
                     <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-3-arrows"></div>
                     <div class="carausel-6-columns text-center" id="carausel-6-columns-3">
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="assets/imgs/banner/brand-1.png" alt="">
+                            <img class="img-grey-hover" src="{% static 'assets/imgs/banner/brand-1.png' %}" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="assets/imgs/banner/brand-2.png" alt="">
+                            <img class="img-grey-hover" src="{% static 'assets/imgs/banner/brand-2.png' %}" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="assets/imgs/banner/brand-3.png" alt="">
+                            <img class="img-grey-hover" src="{% static 'assets/imgs/banner/brand-3.png' %}" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="assets/imgs/banner/brand-4.png" alt="">
+                            <img class="img-grey-hover" src="{% static 'assets/imgs/banner/brand-4.png' %}" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="assets/imgs/banner/brand-5.png" alt="">
+                            <img class="img-grey-hover" src="{% static 'assets/imgs/banner/brand-5.png' %}" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="assets/imgs/banner/brand-6.png" alt="">
+                            <img class="img-grey-hover" src="{% static 'assets/imgs/banner/brand-6.png' %}" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="assets/imgs/banner/brand-3.png" alt="">
+                            <img class="img-grey-hover" src="{% static 'assets/imgs/banner/brand-3.png' %}" alt="">
                         </div>
                     </div>
                 </div>
@@ -2297,7 +2306,7 @@
                 <div class="row">
                     <div class="col-lg-3 d-none d-lg-flex">
                         <div class="banner-img style-2 wow fadeIn animated">
-                            <img src="assets/imgs/banner/banner-9.jpg" alt="">
+                            <img src="{% static 'assets/imgs/banner/banner-9.jpg' %}" alt="">
                             <div class="banner-text">
                                 <span>Woman Area</span>
                                 <h4 class="mt-5">Save 17% on <br>Clothing</h4>
@@ -2315,8 +2324,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-1-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-1-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-1-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-1-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2352,8 +2361,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-2-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-2-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-2-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-2-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2389,8 +2398,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-3-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-3-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-3-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-3-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2426,8 +2435,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-4-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-4-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-4-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-4-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2463,8 +2472,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-11-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-11-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-11-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-11-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2508,8 +2517,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-6-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-6-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-6-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-6-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2545,8 +2554,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-7-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-7-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-7-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-7-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2582,8 +2591,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-5-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-5-1.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-5-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-5-1.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2619,8 +2628,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-10-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-10-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-10-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-10-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2656,8 +2665,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-12-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-12-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-12-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-12-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2700,8 +2709,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-8-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-8-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-8-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-8-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2737,8 +2746,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-13-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-13-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-13-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-13-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2774,8 +2783,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-14-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-14-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-14-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-14-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2811,8 +2820,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-15-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-15-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-15-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-15-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2848,8 +2857,8 @@
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="shop-product-right.html">
-                                                        <img class="default-img" src="assets/imgs/shop/product-11-1.jpg" alt="">
-                                                        <img class="hover-img" src="assets/imgs/shop/product-11-2.jpg" alt="">
+                                                        <img class="default-img" src="{% static 'assets/imgs/shop/product-11-1.jpg' %}" alt="">
+                                                        <img class="hover-img" src="{% static 'assets/imgs/shop/product-11-2.jpg' %}" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
@@ -2901,7 +2910,7 @@
                                 <div class="d-md-flex d-block">
                                     <div class="post-thumb d-flex mr-15">
                                         <a class="color-white" href="blog-post-fullwidth.html">
-                                            <img src="assets/imgs/blog/blog-2.jpg" alt="">
+                                            <img src="{% static 'assets/imgs/blog/blog-2.jpg' %}" alt="">
                                         </a>
                                     </div>
                                     <div class="post-content">
@@ -2925,7 +2934,7 @@
                                 <div class="d-md-flex d-block">
                                     <div class="post-thumb d-flex mr-15">
                                         <a class="color-white" href="blog-post-fullwidth.html">
-                                            <img src="assets/imgs/blog/blog-1.jpg" alt="">
+                                            <img src="{% static 'assets/imgs/blog/blog-1.jpg' %}" alt="">
                                         </a>
                                     </div>
                                     <div class="post-content">
@@ -2951,7 +2960,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="banner-img banner-1 wow fadeIn animated">
-                                    <img src="assets/imgs/banner/banner-5.jpg" alt="">
+                                    <img src="{% static 'assets/imgs/banner/banner-5.jpg' %}" alt="">
                                     <div class="banner-text">
                                         <span>Accessories</span>
                                         <h4>Save 17% on <br>Autumn Hat</h4>
@@ -2961,7 +2970,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="banner-img mb-15 wow fadeIn animated">
-                                    <img src="assets/imgs/banner/banner-6.jpg" alt="">
+                                    <img src="{% static 'assets/imgs/banner/banner-6.jpg' %}" alt="">
                                     <div class="banner-text">
                                         <span>Big Offer</span>
                                         <h4>Save 20% on <br>Women's socks</h4>
@@ -2969,7 +2978,7 @@
                                     </div>
                                 </div>
                                 <div class="banner-img banner-2 wow fadeIn animated">
-                                    <img src="assets/imgs/banner/banner-7.jpg" alt="">
+                                    <img src="{% static 'assets/imgs/banner/banner-7.jpg' %}" alt="">
                                     <div class="banner-text">
                                         <span>Smart Offer</span>
                                         <h4>Save 20% on <br>Eardrop</h4>
@@ -3001,7 +3010,7 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-6 mb-sm-5 mb-md-0">
                         <div class="banner-img wow fadeIn animated mb-md-4 mb-lg-0">
-                            <img src="assets/imgs/banner/banner-10.jpg" alt="">
+                            <img src="{% static 'assets/imgs/banner/banner-10.jpg' %}" alt="">
                             <div class="banner-text">
                                 <span>Shoes Zone</span>
                                 <h4>Save 17% on <br>All Items</h4>
@@ -3014,7 +3023,7 @@
                         <div class="product-list-small wow fadeIn animated">
                             <article class="row align-items-center">
                                 <figure class="col-md-4 mb-0">
-                                    <a href="shop-product-right.html"><img src="assets/imgs/shop/thumbnail-3.jpg" alt=""></a>
+                                    <a href="shop-product-right.html"><img src="{% static 'assets/imgs/shop/thumbnail-3.jpg' %}" alt=""></a>
                                 </figure>
                                 <div class="col-md-8 mb-0">
                                     <h4 class="title-small">
@@ -3028,7 +3037,7 @@
                             </article>
                             <article class="row align-items-center">
                                 <figure class="col-md-4 mb-0">
-                                    <a href="shop-product-right.html"><img src="assets/imgs/shop/thumbnail-4.jpg" alt=""></a>
+                                    <a href="shop-product-right.html"><img src="{% static 'assets/imgs/shop/thumbnail-4.jpg' %}" alt=""></a>
                                 </figure>
                                 <div class="col-md-8 mb-0">
                                     <h4 class="title-small">
@@ -3042,7 +3051,7 @@
                             </article>
                             <article class="row align-items-center">
                                 <figure class="col-md-4 mb-0">
-                                    <a href="shop-product-right.html"><img src="assets/imgs/shop/thumbnail-5.jpg" alt=""></a>
+                                    <a href="shop-product-right.html"><img src="{% static 'assets/imgs/shop/thumbnail-5.jpg' %}" alt=""></a>
                                 </figure>
                                 <div class="col-md-8 mb-0">
                                     <h4 class="title-small">
@@ -3061,7 +3070,7 @@
                         <div class="product-list-small wow fadeIn animated">
                             <article class="row align-items-center">
                                 <figure class="col-md-4 mb-0">
-                                    <a href="shop-product-right.html"><img src="assets/imgs/shop/thumbnail-6.jpg" alt=""></a>
+                                    <a href="shop-product-right.html"><img src="{% static 'assets/imgs/shop/thumbnail-6.jpg' %}" alt=""></a>
                                 </figure>
                                 <div class="col-md-8 mb-0">
                                     <h4 class="title-small">
@@ -3075,7 +3084,7 @@
                             </article>
                             <article class="row align-items-center">
                                 <figure class="col-md-4 mb-0">
-                                    <a href="shop-product-right.html"><img src="assets/imgs/shop/thumbnail-7.jpg" alt=""></a>
+                                    <a href="shop-product-right.html"><img src="{% static 'assets/imgs/shop/thumbnail-7.jpg' %}" alt=""></a>
                                 </figure>
                                 <div class="col-md-8 mb-0">
                                     <h4 class="title-small">
@@ -3089,7 +3098,7 @@
                             </article>
                             <article class="row align-items-center">
                                 <figure class="col-md-4 mb-0">
-                                    <a href="shop-product-right.html"><img src="assets/imgs/shop/thumbnail-8.jpg" alt=""></a>
+                                    <a href="shop-product-right.html"><img src="{% static 'assets/imgs/shop/thumbnail-8.jpg' %}" alt=""></a>
                                 </figure>
                                 <div class="col-md-8 mb-0">
                                     <h4 class="title-small">
@@ -3108,7 +3117,7 @@
                         <div class="product-list-small wow fadeIn animated">
                             <article class="row align-items-center">
                                 <figure class="col-md-4 mb-0">
-                                    <a href="shop-product-right.html"><img src="assets/imgs/shop/thumbnail-9.jpg" alt=""></a>
+                                    <a href="shop-product-right.html"><img src="{% static 'assets/imgs/shop/thumbnail-9.jpg' %}" alt=""></a>
                                 </figure>
                                 <div class="col-md-8 mb-0">
                                     <h4 class="title-small">
@@ -3122,7 +3131,7 @@
                             </article>
                             <article class="row align-items-center">
                                 <figure class="col-md-4 mb-0">
-                                    <a href="shop-product-right.html"><img src="assets/imgs/shop/thumbnail-1.jpg" alt=""></a>
+                                    <a href="shop-product-right.html"><img src="{% static 'assets/imgs/shop/thumbnail-1.jpg' %}" alt=""></a>
                                 </figure>
                                 <div class="col-md-8 mb-0">
                                     <h4 class="title-small">
@@ -3136,7 +3145,7 @@
                             </article>
                             <article class="row align-items-center">
                                 <figure class="col-md-4 mb-0">
-                                    <a href="shop-product-right.html"><img src="assets/imgs/shop/thumbnail-2.jpg" alt=""></a>
+                                    <a href="shop-product-right.html"><img src="{% static 'assets/imgs/shop/thumbnail-2.jpg' %}" alt=""></a>
                                 </figure>
                                 <div class="col-md-8 mb-0">
                                     <h4 class="title-small">
@@ -3161,7 +3170,7 @@
                     <div class="col-lg-7 mb-md-3 mb-lg-0">
                         <div class="row align-items-center">
                             <div class="col flex-horizontal-center">
-                                <img class="icon-email" src="assets/imgs/theme/icons/icon-email.svg" alt="">
+                                <img class="icon-email" src="{% static 'assets/imgs/theme/icons/icon-email.svg' %}" alt="">
                                 <h4 class="font-size-20 mb-0 ml-3">Sign up to Newsletter</h4>
                             </div>
                             <div class="col my-4 my-md-0 des">
@@ -3186,7 +3195,7 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="widget-about font-md mb-md-5 mb-lg-0">
                             <div class="logo logo-width-1 wow fadeIn animated">
-                                <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo"></a>
+                                <a href="index.html"><img src="{% static 'assets/imgs/theme/logo.svg' %}" alt="logo"></a>
                             </div>
                             <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
                             <p class="wow fadeIn animated">
@@ -3200,11 +3209,11 @@
                             </p>
                             <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
                             <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
-                                <a href="#"><img src="assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                                <a href="#"><img src="assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                                <a href="#"><img src="assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                                <a href="#"><img src="assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                                <a href="#"><img src="assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
+                                <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-facebook.svg' %}" alt=""></a>
+                                <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-twitter.svg' %}" alt=""></a>
+                                <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-instagram.svg' %}" alt=""></a>
+                                <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-pinterest.svg' %}" alt=""></a>
+                                <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-youtube.svg' %}" alt=""></a>
                             </div>
                         </div>
                     </div>
@@ -3236,13 +3245,13 @@
                             <div class="col-md-8 col-lg-12">
                                 <p class="wow fadeIn animated">From App Store or Google Play</p>
                                 <div class="download-app wow fadeIn animated">
-                                    <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active" src="assets/imgs/theme/app-store.jpg" alt=""></a>
-                                    <a href="#" class="hover-up"><img src="assets/imgs/theme/google-play.jpg" alt=""></a>
+                                    <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active" src="{% static 'assets/imgs/theme/app-store.jpg' %}" alt=""></a>
+                                    <a href="#" class="hover-up"><img src="{% static 'assets/imgs/theme/google-play.jpg' %}" alt=""></a>
                                 </div>
                             </div>
                             <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
                                 <p class="mb-20 wow fadeIn animated">Secured Payment Gateways</p>
-                                <img class="wow fadeIn animated" src="assets/imgs/theme/payment-method.png" alt="">
+                                <img class="wow fadeIn animated" src="{% static 'assets/imgs/theme/payment-method.png' %}" alt="">
                             </div>
                         </div>
                     </div>
@@ -3280,6 +3289,7 @@
             </div>
         </div>
     </div>
+{% endblock content %}
    
 
 

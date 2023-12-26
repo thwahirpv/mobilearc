@@ -8,7 +8,7 @@ app_name = 'user_app'
 
 urlpatterns = [
     path('register/', user_registraion, name='user_registraion'),
-    path('otp/', user_otp, name='user_otp'),
+    path('otp/', otp_checking, name='otp_checking'),
     path('login/', user_login, name='user_login'),
     path('home/', user_home, name='user_home'),
 ]

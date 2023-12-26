@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "codewithtomi.auto-django"
+        "codewithtomi.auto-django",
+        "ms-vscode.live-server"
     ]
 }

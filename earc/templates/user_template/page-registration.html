@@ -3,14 +3,14 @@
 
 
 {% block title %}
-
+REGISTRATION
 {% endblock %}
  
 {% block content %}
 <div class="" style="width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;">
 
   <div style="width: 30%;">
-    <form class="row g-3" method="post">
+    <form class="row g-3" method="post" id="form">
       {% csrf_token %}
       <!-- ========== Start user or phone number messages ========== -->
           {% if messages %}
@@ -22,32 +22,28 @@
 
       <div class="col-12">
         <label for="inputEmail4" class="form-label">Username</label>
-        <input type="text" class="form-control" id="inputEmail4" name="username">
+        <input type="text" class="form-control" id="username" name="username">
+        <p class="err-coment"></p>
       </div>
       <div class="col-12">
         <label for="inputEmail4" class="form-label">Email</label>
-        <input type="email" class="form-control" id="inputEmail4" name="email">
+        <input type="email" class="form-control" id="email" name="email">
+        <p class="err-coment"></p>
       </div>
       <div class="col-12">
         <label for="inputPassword4" class="form-label">Phone</label>
-        <input type="text" class="form-control" id="inputPassword4" name="phone">
+        <input type="text" class="form-control" id="phone" name="phone">
+        <p class="err-coment"></p>
       </div>
-      <!-- ========== Start user or phone number messages ========== -->
-      <!-- {% if messages %}
-      {% for message in messages %}
-        {% if message.idendity == 'password' %}
-          <p class="text-danger fw-semibold fs-6">{{ message }}</p>
-        {% endif %}
-      {% endfor %}
-    {% endif %} -->
-    <!-- ========== End user or phone number messages ========== -->
       <div class="col-12">
         <label for="inputAddress" class="form-label">Password</label>
-        <input type="text" class="form-control" id="inputAddress" name="password">
+        <input type="text" class="form-control" id="password" name="password">
+        <p class="err-coment"></p>
       </div>
       <div class="col-12">
         <label for="inputAddress2" class="form-label">Conform passwaord</label>
-        <input type="text" class="form-control" id="inputAddress2" name="conform_password">
+        <input type="text" class="form-control" id="conform_password" name="conform_password">
+        <p class="err-coment"></p>
       </div>
       
       <div class="col-12">
@@ -57,4 +53,102 @@
   </div>
 
 </div>
+
+
+<script>
+const form = document.getElementById("form");
+const userName = document.getElementById("username");
+const userEmail = document.getElementById("email")
+const userPhone = document.getElementById("phone");
+const password = document.getElementById("password")
+const conformPassword = document.getElementById("conform_password")
+
+form.addEventListener('input', e=> {
+   e.preventDefault();
+   inputValidation(e);
+});
+
+const setErr = (element, message) => {
+   const inputControl = element.parentElement;
+   const errDisplay = inputControl.querySelector(".err-coment");
+
+   errDisplay.innerText = message;
+   errDisplay.style.color = '#ff3860'
+   element.classList.add('error')
+   element.classList.remove('success')
+}
+
+const setSuc = (element, message) => {
+   const inputControl =  element.parentElement;
+   const errDisplay = inputControl.querySelector('.err-coment')
+
+   errDisplay.innerText = message;
+   errDisplay.style.color = '#09c372'
+   element.classList.add('success');
+   element.classList.remove('error');
+}
+
+const inputValidation = (e) =>{ 
+   const nameValue = userName.value.trim();
+   const emailValue = userEmail.value.trim();
+   const phoneValue = userPhone.value.trim();
+   const passwordValue = password.value.trim();
+   const conformPasswordValue = conformPassword.value.trim();
+   
+   // /name 
+   if(e.target.name === "username"){
+	   const nameFormate = /^[a-zA-Z]+$/;
+	   if(nameValue === ''){
+		   setErr(userName, 'Name is required');
+	   }else if(!nameValue.match(nameFormate)){
+		   setErr(userName, 'Please enter your full name')
+	   }
+	   else{
+		   setSuc(userName, 'Valid');
+	   }
+   }
+
+   // email
+   else if(e.target.name === "email"){
+	   const emailFormate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	   if(emailValue === '') {
+		   setErr(userEmail, 'E-mail is required');
+	   }else if(!emailValue.match(emailFormate)) {
+		   setErr(userEmail, 'Entered E-mail is not valid');
+	   }else{
+		   setSuc(userEmail, 'Valid');
+	   }
+   }
+
+   // Phone 
+   else if(e.target.name === "phone"){
+	   const phone = /^\d{10}$/;
+	   if(phoneValue === '') {
+		   setErr(userPhone, 'Phone number is required');
+	   }else if(!phoneValue.match(phone)){
+		   setErr(userPhone, 'Enter valid phone number');
+	   }else{
+		   setSuc(userPhone, 'Valid');
+		   }
+   }
+
+  //  password
+  else if(e.target.name == 'password'){
+    if (passwordValue == ''){
+      setErr(password, 'password is required');
+    }else if(passwordValue.lenght < 8 || !/[!@#$%^&*(),.?":{}|<>]/.test(passwordValue) || !/\d/.test(passwordValue) || !/[a-zA-Z]/.test(passwordValue)){
+      setErr(password, 'weak password!\n atleast 8 characters and one letter, symbol, number is required.')
+    }else{
+      setSuc(password, 'Strong')
+    }
+  }
+
+  // conform password
+  else if(conformPasswordValue != passwordValue){
+    setErr(conformPassword, 'password is not match!');
+  }else{
+    setSuc(conformPassword, 'matched')
+  }
+}
+</script>
 {% endblock content %}

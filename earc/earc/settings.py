@@ -46,7 +46,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'earc.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'earc',
+        'NAME': 'mobilearc',
         'USER': 'thwahir',
         'PASSWORD': '989577',
         'HOST' : 'localhost',
@@ -132,7 +132,7 @@ STATICFILES_DIRS =[
 ]
 
 
-AUTH_USER_MODEL = 'admin_app.userdetails'
+AUTH_USER_MODEL = 'admin_app.UserDetails'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -142,3 +142,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ACCOUNT_SID = 'AC61e70061b3137b30b9d0f841ffb09736'
 AUTH_TOKEN = 'c362086015e023e468c7122b014f87ad'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'thwahirpvmohd@gmail.com'
+EMAIL_HOST_PASSWORD = 'aimf orqn shyd ubap'

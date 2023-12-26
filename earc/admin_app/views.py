@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from .models import userdetails
+from .models import UserDetails
 
 # Create your views here.
 
