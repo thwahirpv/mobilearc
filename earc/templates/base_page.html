@@ -17,16 +17,33 @@
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets2/imgs/theme/favicon.svg' %}">
     <!-- Template CSS -->
     <link href="{% static 'assets2/css/main.css' %}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+    <!-- Nucleo Icons -->
+    
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- CSS Files -->
+    <link id="pagestyle" href="{% static 'assets/css/material-dashboard.css?v=3.1.0' %}" rel="stylesheet" />
+    <link href="{% static 'assets2/css/nucleo-icons.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets2/css/nucleo-svg.css' %}" rel="stylesheet" />
+    {% block CDN %}
+    {% endblock CDN %}
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+    
     <!-- title -->
     <title>{% block title %} {% endblock %}</title>
 </head>
-<body>
+
+<body>  
 
     <!-- code here -->
-   {% block content %}
+    {% block content %}
 
-   {% endblock content %}
-
+    {% endblock content %}
     <!-- Scripts  -->
     <script src="{% static 'assets2/js/vendors/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'assets2/js/vendors/bootstrap.bundle.min.js' %}"></script>
@@ -34,6 +51,11 @@
     <script src="{% static 'assets2/js/vendors/perfect-scrollbar.js' }%"></script>
     <script src="{% static 'assets2/js/vendors/jquery.fullscreen.min.js' %}"></script>
     <script src="{% static 'assets2/js/vendors/chart.js' %}"></script>
+    <script src="{% static 'assets2/js/core/popper.min.js' %}"></script>
+    <script src="{% static 'assets2/js/core/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets2/js/plugins/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'assets2/js/plugins/smooth-scrollbar.min.js' %}"></script>
+    <script src="{% static 'assets2/js/material-dashboard.min.js' %}"></script>
     <!-- Main Script -->
     <script src="{% static 'assets2/js/main.js' %}" type="text/javascript"></script>
     <script src="{% static 'assets2/js/custom-chart.js' %}" type="text/javascript"></script>

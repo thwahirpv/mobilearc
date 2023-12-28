@@ -80,8 +80,9 @@ Homeettwe
                         <span class="text">Account</span>
                     </a>
                     <div class="submenu">
-                        <a href="page-account-login.html">User login</a>
-                        <a href="page-account-register.html">User registration</a>
+                        <a href="{% url 'admin_app:load_table' %}">Users</a>
+                        <a href="{% url 'user_app:user_login' %}">User login</a>
+                        <a href="{% url 'user_app:user_registraion' %}">User registration</a>
                         <a href="page-error-404.html">Error 404</a>
                     </div>
                 </li>
@@ -123,7 +124,7 @@ Homeettwe
     </aside>
 
     
-    <main class="main-wrap verthe">
+    <main class="main-wrap">
         <header class="main-header navbar">
             <div class="col-search">
                 <form class="searchform">
@@ -181,7 +182,7 @@ Homeettwe
         <section class="content-main">
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Dashboard </h2>
+                    <h2 class="content-title card-title">Dashboard</h2>
                     <p>Whole data about your business here</p>
                 </div>
                 <div>

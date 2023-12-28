@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "codewithtomi.auto-django",
-        "ms-vscode.live-server"
+        "ms-vscode.live-server",
+        "ms-python.vscode-pylance"
     ]
 }
