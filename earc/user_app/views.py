@@ -54,6 +54,7 @@ def user_registraion(request):
                 return redirect('user_app:user_registraion')
     return render(request, 'user_template/page-registration.html')
 
+
 # otp verification
 @never_cache
 def otp_checking(request):
