@@ -41,6 +41,7 @@ class custom_manager(BaseUserManager):
 
 class UserDetails(AbstractUser):
     user_id = models.BigAutoField(primary_key=True, unique=True, blank=False)
+    profile = models.ImageField(upload_to='users_profile/', null=True, blank=True, default='default.png')
     username = models.CharField(max_length=30, blank=False)
     email = models.EmailField(_("Email Address"), unique=True, blank=False)
     phone_number = models.CharField(max_length=10, unique=True, blank=False)
