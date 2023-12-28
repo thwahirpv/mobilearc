@@ -7,9 +7,10 @@ from .views import *
 app_name = 'user_app'
 
 urlpatterns = [
+    path('', user_home, name='user_home'),
     path('register/', user_registraion, name='user_registraion'),
     path('otp/', otp_checking, name='otp_checking'),
     path('login/', user_login, name='user_login'),
-    path('home/', user_home, name='user_home'),
+    path('logout/', user_logout, name='user_logout'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

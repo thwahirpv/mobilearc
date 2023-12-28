@@ -198,11 +198,41 @@ Home
                                         <li><a href="#"><img src="{% static 'assets/imgs/theme/flag-ru.png' %}" alt="">Pусский</a></li>
                                     </ul>
                                 </li>
-                                {% if user.is_authenticated %}
-                                <li><i class="fi-rs-user"></i><a href="page-login-register.html">{{user.username}}</a></li>
+                                <li class="dropdown nav-item">
+                                    <a class="" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false">
+                                        {% if user.is_authenticated %} 
+                                            {% if user.profile %}
+                                                <img class="img-xs rounded-circle" src="{{ user.profile.url }}" 
+                                                style="width: 43px; height: 43px;" alt="">
+                                            {% else %}
+                                                <img class="img-xs rounded-circle" src="{% static 'assets2/imgs/default.jpg' %}" 
+                                                style="width: 43px; height: 43px;" alt="">
+                                            {% endif %}
+                                        {% else %}
+                                            <a href="{% url 'user_app:user_login' %}">Login</a>
+                                        {% endif %}
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                                        <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
+                                        <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
+                                        <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                                        <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                                        <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="{% url 'user_app:user_logout' %}"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                                    </div>
+                                </li>
+                                <!-- {% if user.is_authenticated %}
+                                <li>
+                                    <i class="fi-rs-user"></i>
+                                    <a href="{% url 'user_app:user_logout' %}" class="text-dark">Logout</a>
+                                </li>
                                 {% else %}
-                                <li><i class="fi-rs-user"></i><a href="{% url 'user_app:user_login' %}">Login</a></li>
-                                {% endif %}
+                                <li>
+                                    <i class="fi-rs-user"></i>
+                                    <a class="text-dark" href="{% url 'user_app:user_login' %}">no</a>   
+                                </li>
+                                {% endif %} -->
                             </ul>
                         </div>
                     </div>

@@ -179,12 +179,19 @@ Homeettwe
             </div>
         </header>
 
-        <div class="container mt-5 mb-5 d-flex justify-content-center align-items-center" style="height: 100vh;">
-            <div class="card px-1 py-5 w-50 h-50">
-                <form class="card-body">
+        <div class="container mt-5 d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <div class="card px-1 w-50" style="height: 55%;">
+                <form class="card-body" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <h6 class="card-title mb-3">Update</h6>
                     <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">    
+                                <input class="form-control" type="file" placeholder="Profile photo" name="profile"> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
                         <div class="col-sm-12">
                             <div class="form-group">
                                 <input class="form-control" type="text" placeholder="username" name="username" value="{{user.username}}"> 

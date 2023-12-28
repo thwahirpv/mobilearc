@@ -73,6 +73,7 @@ class user_crud_view(View):
     def update_user(request, id):
         user = get_object_or_404(UserDetails, user_id=id)    
         if request.method == 'POST':
+            user.profile = request.FILES.get('profile')
             user.username = request.POST.get('username')
             user.email = request.POST.get('email')
             user.phone_number = request.POST.get('phone_number')
@@ -98,13 +99,7 @@ class user_crud_view(View):
         return redirect('admin_app:load_table')
         
 
-         
-
-
-
-
-
-
+        
 # Admin logout
 @never_cache
 def admin_logout(request):

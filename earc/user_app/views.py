@@ -21,6 +21,7 @@ def user_registraion(request):
     if request.user.is_authenticated and request.user.is_active: 
         return redirect('user_app:user_home')
     if request.method == 'POST':
+        profile = request.FILES.get('profile')
         username = request.POST.get('username')
         email = request.POST.get('email')
         phone_number = request.POST.get('phone')
@@ -35,7 +36,7 @@ def user_registraion(request):
             if user.verification_status is False:
                 if password == conform_pass:
                     user.delete()
-                    user = UserDetails.objects.create_user(email=email, phone_number=phone_number, password=password, username=username)
+                    user = UserDetails.objects.create_user(profile=profile, email=email, phone_number=phone_number, password=password, username=username)
                     request.session['user_email'] = user.email # insert the user to session  
                     request.session['otp_timestamp'] = str(timezone.now().timestamp()) # save the timestamp to the session
                     return redirect('user_app:otp_checking')
@@ -44,7 +45,7 @@ def user_registraion(request):
                 return redirect('user_app:user_registraion')
         else:
             if password == conform_pass:
-                user = UserDetails.objects.create_user(email=email, phone_number=phone_number, password=password, username=username)
+                user = UserDetails.objects.create_user(profile=profile, email=email, phone_number=phone_number, password=password, username=username)
                 user.save()
                 request.session['user_email'] = user.email # insert the user to session  
                 request.session['otp_timestamp'] = str(timezone.now().timestamp()) # save the timestamp to the session
@@ -103,9 +104,16 @@ def user_login(request):
             return redirect('user_app:user_home')         
     return render(request, 'user_template/page-login.html')
 
+def user_logout(request):
+    logout(request)
+    request.session.flush()         
+    return redirect('user_app:user_home')
 # Home page
-@login_required(login_url='user_app:user_login')
+
 def user_home(request):
-    
-    return render(request, 'user_template/index.html')
+    user = request.user
+    if request.user.is_authenticated and request.user.is_active:
+        return render(request, 'user_template/index.html', {'user':user})
+    else:
+        return render(request, 'user_template/index.html', {'user':user})
     
