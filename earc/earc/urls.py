@@ -21,8 +21,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    # ============Direction django default admin panel=======
     path('django_admin/', admin.site.urls),
+
+    # ========Direction to admin_app====================
     path('admin/', include('admin_app.urls', namespace='admin_app')),
+
+    # ========direction to admin_products_app==========
+    path('admin/products/', include('admin_product_app.urls', namespace='admin_product_app')),
+
+    #===========Direction to user_app=================
     path('', include('user_app.urls', namespace='user_app'))
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
