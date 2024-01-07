@@ -34,12 +34,14 @@
 
     <script>
         // Set the expiration time in seconds
-        var expirationTime = 120
+        var minute = {{remaining_minutes}};
+        var secound = {{remaining_seconds}};
+        console.log(minute)
 
         // Update the countdown every second
         var countdown = setInterval(function () {
-            var minutes = Math.floor(expirationTime/60);
-            var seconds = expirationTime % 60;
+            var minutes = Math.floor(minute);
+            var seconds = secound;
 
             // Display the countdown
             document.getElementById("countdown").innerHTML = "OTP expires in " + minutes + " minutes and " + seconds + " seconds.";

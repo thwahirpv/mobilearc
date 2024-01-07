@@ -1,57 +1,13 @@
 {% extends "user_base.html" %}
 {% load static %}
 
-
 {% block title %}
 REGISTRATION
 {% endblock %}
  
 {% block content %}
 <main>
-  <!-- <header class="main-header style-2 navbar">
-      <div class="col-brand">
-          <a href="index.html" class="brand-wrap">
-              <img src="assets/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
-          </a>
-      </div>
-      <div class="col-nav">
-          <ul class="nav">
-              <li class="nav-item">
-                  <a class="nav-link btn-icon" href="#">
-                      <i class="material-icons md-notifications animation-shake"></i>
-                      <span class="badge rounded-pill">3</span>
-                  </a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-              </li>
-              <li class="nav-item">
-                  <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-              </li>
-              <li class="dropdown nav-item">
-                  <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
-                  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                      <a class="dropdown-item text-brand" href="#"><img src="assets/imgs/theme/flag-us.png" alt="English">English</a>
-                      <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-fr.png" alt="Français">Français</a>
-                      <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
-                      <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
-                  </div>
-              </li>
-              <li class="dropdown nav-item">
-                  <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="assets/imgs/people/avatar2.jpg" alt="User"></a>
-                  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                      <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                      <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                      <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                      <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                      <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
-                  </div>
-              </li>
-          </ul>
-      </div>
-  </header> -->
+
   <section class="content-main mt-80 mb-80 d-flex justify-content-center align-items-center" style="height: 100vh; width: 100%;">
       <div class="card mx-auto card-login" style="width: 35%;">
           <div class="card-body">
@@ -77,12 +33,20 @@ REGISTRATION
                 </div>
                 <div class="col-12">
                   <!-- <label for="inputEmail4" class="form-label">Email</label> -->
-                  <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                  <input type="text " class="form-control" id="email" name="email" placeholder="Email">
                   <p class="err-coment"></p>
                 </div>
+                  <label for="preferred_country">Preferred Country:</label>
+                  <select name="preferred_country">
+                      <!-- Populate the dropdown with country options dynamically -->
+                      <option value="">Select</option>
+                      {% for country_code, country_name in COUNTRY_CHOICES %}
+                          <option value="{{ country_code }}">{{ country_name }}</option>
+                      {% endfor %}
+                  </select>
                 <div class="col-12">
                   <!-- <label for="inputPassword4" class="form-label">Phone</label> -->
-                  <input type="text" class="form-control" id="phone" name="phone" placeholder="Mobile">
+                  <input type="text" class="form-control" id="id_phone_number" name="phone" placeholder="Mobile">
                   <p class="err-coment"></p>
                 </div>
                 <div class="col-12">
@@ -129,6 +93,14 @@ const userEmail = document.getElementById("email")
 const userPhone = document.getElementById("phone");
 const password = document.getElementById("password")
 const conformPassword = document.getElementById("conform_password")
+
+$(document).ready(function() {
+          $("#id_phone_number").intlTelInput({
+            initialCountry: "auto",
+            separateDialCode: true,
+          });
+        });
+
 
 form.addEventListener('input', e=> {
    e.preventDefault();
@@ -216,6 +188,6 @@ const inputValidation = (e) =>{
   }else{
     setSuc(conformPassword, 'matched')
   }
-}
+}  
 </script>
 {% endblock content %}

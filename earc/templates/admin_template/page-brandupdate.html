@@ -1,0 +1,55 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+Homeettwe
+{% endblock %}
+
+
+{% block content %}
+{% include "admin_sidenav.html"%}
+    
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+
+        <div class="container mt-5 mb-5 d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <div class="card px-1 py-5 w-50 h-50 row justify-content-center align-items-start">
+                <form class="card-body" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h6 class="card-title mb-2">Edit Brand</h6>
+                    {% if messages %}
+                    {% for message in messages %}
+                    <p class="text-danger fw-semibold fs-6">{{ message }}</p>
+                    {% endfor %}
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <input class="form-control" type="file" placeholder="Image" name="brand_image"  value="{{ brand.brand_image.url }}"> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <input class="form-control" type="text" placeholder="Name" name="name" value="{{ brand.brand_name }}"> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row col-6 mt-2">
+                        <div class="custom_select">
+                            <select name="category" class="form-select select-nice">
+                                <option value="{{ brand.brand_category.category_name }}" selected>{{ brand.brand_category.category_name }}</option>
+                                {% for item in categories %}
+                                    <option>{{ item.category_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-block confirm-button mt-3">
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock content %}

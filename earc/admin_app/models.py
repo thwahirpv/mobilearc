@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from user_app import signals
+from phonenumber_field.modelfields import PhoneNumberField
+
 
 
 class custom_manager(BaseUserManager):
@@ -44,7 +46,7 @@ class UserDetails(AbstractUser):
     profile = models.ImageField(upload_to='users_profile/', null=True, blank=True, default='default.png')
     username = models.CharField(max_length=30, blank=False)
     email = models.EmailField(_("Email Address"), unique=True, blank=False)
-    phone_number = models.CharField(max_length=10, unique=True, blank=False)
+    phone_number = PhoneNumberField(blank=False, null=False)
     verification_status = models.BooleanField(default=False)
     otp = models.CharField(max_length=6, null=True)
 

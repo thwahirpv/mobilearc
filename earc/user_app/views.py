@@ -10,29 +10,87 @@ from admin_app.models import UserDetails
 from django.contrib import messages
 from .signals import otp_message_handler
 from django.contrib.auth.decorators import login_required                                                                                                       
-from django.views.decorators.cache import never_cache                                                                                                      
-
-
+from django.views.decorators.cache import never_cache     
+from phonenumber_field.phonenumber import PhoneNumber
+from django.core.validators import validate_email
+from django.contrib.auth.password_validation import validate_password 
+from PIL import Image
+from io import BytesIO   
+import pycountry
+                                                                                       
+@never_cache
+def fournoterror(request):
+    return render(request, 'user_template/page-404.html')
 
 # User registration
 @never_cache
-def user_registraion(request): 
+def user_registration(request):
     # already authendicated user redirect home.
     if request.user.is_authenticated and request.user.is_active: 
         return redirect('user_app:user_home')
+    
+
     if request.method == 'POST':
         profile = request.FILES.get('profile')
         username = request.POST.get('username')
         email = request.POST.get('email')
-        phone_number = request.POST.get('phone')
+        country_code = request.POST.get('preferred_country')
+        number = request.POST.get('phone')
         password = request.POST.get('password')
         conform_pass = request.POST.get('conform_password')
 
-        if any(field == '' for field in [username, email, phone_number, password, conform_pass]):
-            messages.error(request, 'All fields are require. fill all fields!')
-            return redirect('user_app:user_registraion')
-        if UserDetails.objects.filter(Q(email=email)|Q(phone_number=phone_number)).exists():
-            user = UserDetails.objects.get(Q(email=email)|Q(phone_number=phone_number))
+        # Checking proile photo valid 
+        if profile:
+            file_content = profile.read()
+            try:
+                image = Image.open(BytesIO(file_content))
+                if not image.format.lower() in ['jpeg', 'jpg', 'png']:
+                    messages.error(request, 'invalid image formate!. upload jpeg or png')
+                    return redirect('user_app:user_registration')
+            except:
+                messages.error(request, 'Invalid file!')
+                return redirect('user_app:user_registration')
+        else:
+            messages.error(request, 'upload profile!')
+            return redirect('user_app:user_registration')
+        
+        # Checking username valid
+        if len(username) < 3:
+            messages.error(request, 'username minimum 3 characters!')
+            return redirect('user_app:user_registration')
+        if not any(letter.isalpha() for letter in username):
+            messages.error(request, 'username should be include character')
+            return redirect('user_app:user_registration')
+
+        # Checking email vaild
+        try:
+            validate_email(email)
+        except:
+            messages.error(request, 'invalid Email!')
+            return redirect('user_app:user_registration')
+                    
+        # Checking phone number valid
+        try:
+            phone_number = PhoneNumber.from_string(number, region=country_code)
+            print(phone_number.as_international)
+            if not phone_number.is_valid():
+                messages.error(request, 'Invalid mobile number')
+                return redirect('user_app:user_registration')
+        except:
+            messages.error(request, 'Did not seem to be a phone number!.')
+            return redirect('user_app:user_registration')
+        
+        # Checking password valid
+        try:
+            validate_password(password)
+        except:
+            messages.error(request, 'password length should have 8 \n and atleast one character and number')
+            return redirect('user_app:user_registration')
+        
+
+
+        if UserDetails.objects.filter(Q(email=email) or Q(phone_number=phone_number)).exists():
+            user = UserDetails.objects.get(Q(email=email) or  Q(phone_number=phone_number))
             if user.verification_status is False:
                 if password == conform_pass:
                     user.delete()
@@ -42,7 +100,7 @@ def user_registraion(request):
                     return redirect('user_app:otp_checking')
             else:
                 messages.error(request, 'email or phone nummber is already exits!')
-                return redirect('user_app:user_registraion')
+                return redirect('user_app:user_registration')
         else:
             if password == conform_pass:
                 user = UserDetails.objects.create_user(profile=profile, email=email, phone_number=phone_number, password=password, username=username)
@@ -52,8 +110,9 @@ def user_registraion(request):
                 return redirect('user_app:otp_checking')
             else:
                 messages.error(request, 'password is not match!')
-                return redirect('user_app:user_registraion')
-    return render(request, 'user_template/page-registration.html')
+                return redirect('user_app:user_registration')
+    COUNTRY_CHOICES = [(country.alpha_2, country.name) for country in pycountry.countries]
+    return render(request, 'user_template/page-registration.html', {'COUNTRY_CHOICES':COUNTRY_CHOICES})
 
 
 # otp verification
