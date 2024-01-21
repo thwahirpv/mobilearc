@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'fontawesomefree',
     'admin_app',
-    'admin_product_app'
+    'admin_product_app',
+    'user_app',
+    'user_product_app',
 ]
 
 MIDDLEWARE = [

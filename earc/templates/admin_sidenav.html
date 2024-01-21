@@ -1,7 +1,6 @@
 
 {% load static %}
 
-{% block content %}
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
@@ -19,13 +18,27 @@
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item has-submenu {% if 'category' in request.path or 'list' in request.path %} active {% endif %}">
+                <li class="menu-item {% if request.path == '/admin/products/category/' %} active {% endif %}">
+                    <a class="menu-link" href="{% url 'admin_product_app:admin_category' %}"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Category</span>
+                    </a>
+                </li>
+                <li class="menu-item has-submenu {% if 'brand' in request.path %} active {% endif %}">
+                    <a class="menu-link" > <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Brand</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="{% url 'admin_product_app:list_brands' %}" class="{% if request.path == '/admin/products/brands/' %} active fw-bold {% endif %}">Brand List</a>
+                        <a href="{% url 'admin_product_app:add_brand' %}" class="{% if request.path == '/admin/products/brands/add/' %} active fw-bold {% endif %}">Add brand</a>
+                    </div>
+                </li>
+                <li class="menu-item has-submenu {% if 'list' in request.path or '/products/add/' in request.path %} active {% endif %}">
                     <a class="menu-link" > <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
                     <div class="submenu">
-                        <a href="{% url 'admin_product_app:list_products' %}" class="{% if request.path == '/admin/products/list/' %} active {% endif %}">Product List</a>
-                        <a href="{% url 'admin_product_app:admin_category' %}" class="{% if request.path == '/admin/products/category/' %} active {% endif %}">Categories</a>
+                        <a href="{% url 'admin_product_app:list_products' %}" class="{% if request.path == '/admin/products/list/' %} active fw-bold {% endif %}">Product List</a>
+                        <a href="{% url 'admin_product_app:add_product' %}" class="{% if request.path == '/admin/products/add/' %} active fw-bold {% endif %}">Add product</a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
@@ -46,14 +59,6 @@
                         <a href="page-sellers-cards.html">Sellers cards</a>
                         <a href="page-sellers-list.html">Sellers list</a>
                         <a href="page-seller-detail.html">Seller profile</a>
-                    </div>
-                </li>
-                <li class="menu-item has-submenu{% if 'add' in request.path %} active {% endif %}">
-                    <a class="menu-link"> <i class="icon material-icons md-add_box"></i>
-                        <span class="text">Add product</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="{% url 'admin_product_app:add_product' %}" class="{% if request.path == '/admin/products/add/' %} active {% endif %}">Add product</a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
@@ -80,10 +85,6 @@
                     <a class="menu-link"> <i class="icon material-icons md-comment"></i>
                         <span class="text">Reviews</span>
                     </a>
-                </li>
-                <li class="menu-item {% if 'brand' in request.path %} active {% endif %}">
-                    <a class="menu-link" href="{% url 'admin_product_app:list_brands' %}"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
                 </li>
                 <li class="menu-item">
                     <a class="menu-link" disabled> <i class="icon material-icons md-pie_chart"></i>
@@ -112,4 +113,4 @@
             <br>
         </nav>
     </aside>
-{% endblock content %}
+

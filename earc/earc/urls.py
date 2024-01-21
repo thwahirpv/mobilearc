@@ -31,6 +31,9 @@ urlpatterns = [
     path('admin/products/', include('admin_product_app.urls', namespace='admin_product_app')),
 
     #===========Direction to user_app=================
-    path('', include('user_app.urls', namespace='user_app'))
+    path('', include('user_app.urls', namespace='user_app')),
+
+    #===========Direction to user_product_app=========
+    path('products/', include('user_product_app.urls', namespace='user_product_app'))
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

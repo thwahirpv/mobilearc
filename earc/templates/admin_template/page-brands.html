@@ -30,23 +30,31 @@ Brands
                         </div>
                         <div class="col-lg-2 col-6">
                             <div class="custom_select">
-                                <select class="form-select select-nice">
-                                    <option selected>Categories</option>
+                                <label for="">Category</label>
+                                <select class="form-select select-nice" onchange="window.location.href=this.value;" name="name" id="category_name">
+                                    <option value="{% url 'admin_product_app:list_brands' %}?category='all' ">All</option>
                                     {% for item in categories %}
-                                        <option>{{ item.category_name }}</option>
+                                        <option {% if category_name == item.category_name %} selected {% endif %} value="{% url 'admin_product_app:list_brands' %}?category={{item.category_name}}">{{ item.category_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                         <div class="col-lg-2 col-6">
-                            <input type="date" class="form-control" name="">
+                            <div class="custom_select">
+                                <label for="">Status</label>
+                                <select class="form-select select-nice" onchange="window.location.href=this.value;">
+                                    <option {% if status_data == 'All' %} selected {% endif %} value="{% url 'admin_product_app:list_brands' %}?status='All' ">Show All</option>
+                                    <option {% if status_data ==  'Active' %} selected {% endif %} value="{% url 'admin_product_app:list_brands' %}?status='Active' ">Active</option>
+                                    <option {% if status_data == 'Blocked' %} selected {% endif %} value="{% url 'admin_product_app:list_brands' %}?status='Blocked' ">Blocked</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </header> <!-- card-header end// -->
                 
                 <div class="card-body">
                     <div class="row gx-3">
-                        {% for brand in brand %}
+                        {% for brand in brands_data %}
                         <div  class="col-xl-2 col-lg-3 col-md-4">
                             <figure class="card border-1 position-relative">
                                 {% if brand.brand_active %}
@@ -57,24 +65,23 @@ Brands
                                   </span>
                                 <div class="card-header bg-white text-center">
                                     {% if brand.brand_image %}
-                                        <img src="{{ brand.brand_image.url }}" style="width: 100px; height: 100px;" class="rounded-circle shadow-4 avatar avatar-sm me-3 border-radius-lg" alt="Logo">
+                                        <img src="{{ brand.brand_image.url }}" id="image" style="width: 100px; height: 100px;" class="rounded-circle shadow-4 avatar avatar-sm me-3 border-radius-lg" alt="Logo">
                                     {% else %}
                                         <img src="" style="width: 100px; height: 100px;" class="rounded-circle shadow-4 avatar avatar-sm me-3 border-radius-lg" alt="logo">
                                     {% endif %}
 
                                 </div>
                                 <figcaption class="card-body text-center">
-                                    <h6 class="card-title m-0">{{ brand.brand_name }}</h6>
-                                    <a href="#"> {{brand.brand_category.category_name}} </a>
-                                    <p>{{brand.brand_id }}</p>
+                                    <h6 class="card-title m-0" id="brand_name">{{ brand.brand_name }}</h6>
+                                    <a href="#" id="category_name"> {{brand.brand_category.category_name}} </a>
+                                    <!-- <p>{{brand.brand_id }}</p> -->
                                 </figcaption>
                                 <div class="d-flex justify-content-around align-items-center pb-1">
                                     {% if brand.brand_active %}
                                         <a href="{% url 'admin_product_app:brand_block_and_unblock' action='block' id=brand.brand_id %}" class="fs-6 text-success"><i class="fa-solid fa-power-off"></i></a>    
                                     {% else %}
                                         <a href="{% url 'admin_product_app:brand_block_and_unblock' action='unblock' id=brand.brand_id %}" class="fs-6 text-danger"><i class="fa-solid fa-power-off"></i></a>
-                                    {% endif %}
-                                    
+                                    {% endif %}   
                                     <a href="{% url 'admin_product_app:update_brand' id=brand.brand_id %}" class="fs-6"><i class="fa-solid fa-pen-to-square"></i></a>   
                                 </div>
                             </figure>

@@ -10,8 +10,10 @@ urlpatterns = [
     # ===============Products========================
     path('list/', product_management.list_products, name='list_products'),
     path('add/', product_management.add_product, name='add_product'),
-    path('add/getbrands/<str:category_name>/', product_management.get_brands, name='get_brands'),   
-    path('edit/<int:id>', product_management.update_product, name='update_product'),
+    path('add/getbrands/<str:brand_name>/', get_category, name='get_category_product_adding'),   
+    path('edit/<int:id>/', product_management.update_product, name='update_product'),
+    path('edit/<int:id>/get_category/<str:brand_name>/', get_category, name='get_category'),
+    path('block/<str:action>/<int:id>/', product_management.block_and_unblock, name='product_block_and_unblock'),   
 
     # ==============Brands=======================
     path('brands/', brand_management.brands, name='list_brands'),
@@ -25,5 +27,12 @@ urlpatterns = [
     path('<int:id>/', category_management.delete_category, name='delete_category'),
     path('category/<int:id>/', category_management.update_category, name='update_category'),
     path('category/<str:action>/<int:id>/', category_management.block_and_unblock, name='category_block_and_unblock'),
+
+    # ==========variants=========================
+    path('variants/', variant_management.list_variants,  name='list_variants'),
+    path('variant/add/', variant_management.add_variant, name='add_variant'),
+    path('variant/add/getcandb/<str:product_name>/', get_brand_and_category, name='get_brand_and_category_variant_adding'),
+    path('variant/edit/<int:id>/', variant_management.update_variant, name='update_variant'),
+    path('variant/edit/<int:id>/getband&category/<str:product_name>/', get_brand_and_category, name='get_brand_and_category_variant_updating'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

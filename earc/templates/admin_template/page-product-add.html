@@ -44,83 +44,68 @@ ADD PRODUCT
                                     <label class="form-label">Full description</label>
                                     <textarea placeholder="Type here" name="product_dic" class="form-control" rows="4"></textarea>
                                 </div>
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Product color</label>
-                                    <input type="text" placeholder="Type here" name="color" class="form-control" id="product_name">
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="mb-4">
-                                            <label class="form-label">Regular price</label>
-                                            <div class="row gx-2">
-                                                <input placeholder="$" type="number" name="product_price" class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-                    </div> <!-- card end// -->
+                        </div> <!-- card end// -->
                     <!-- card end// -->
                 </div>
-                <div class="col-lg-3">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h4>Media</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="input-upload">
-                                <img src="{% static 'assets2/imgs/theme/upload.svg' %}" alt="">
-                                <input class="form-control" type="file" name="product_image">
-                            </div>
-                        </div>
-                    </div> <!-- card end// -->
+                </div>
+                <div class="col-lg-4">
                     <div class="card mb-4">
                         <div class="card-header">
                             <h4>Organization</h4>
                         </div>
                         <div class="card-body">
-                            <div class="row gx-2">
+                            <div class="row gx-2 col-12">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Media</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="input-upload">
+                                            <img src="{% static 'assets2/imgs/theme/upload.svg' %}" alt="">
+                                            <input class="form-control" type="file" name="product_image">
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-sm-6 mb-3">
-                                    <label class="form-label">Category</label>
-                                    <select name="product_category" id="category_area" onchange="get_brand()" class="form-select">
-                                        <option selected >Category</option>
-                                        {% for item in categories %}
-                                        <option>{{item.category_name}}</option>
+                                    <label class="form-label">Brand</label>
+                                    <select name="product_brand" id="brand_name" class="form-select" onchange="get_category()">
+                                        <option selected>Brand</option>
+                                        {% for item in brand %}
+                                            <option value="{{item.brand_name}}">{{item.brand_name}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="col-sm-6 mb-3">
-                                    <label class="form-label">Brand</label>
-                                    <select name="product_brand" id="brand_area" class="form-select">
-                                        <option selected>Brand</option>
+                                    <label class="form-label">Category</label>
+                                    <select name="product_category" id="category_area" class="form-select">
+                                        <option selected >Category</option> 
                                     </select>
                                 </div>
                             </div> <!-- row.// -->
                         </div>
                     </div> <!-- card end// -->
-                </div>
             </div>
+        </div>
         </form>
         </section> <!-- content-main end// -->
     </main>
 
 
     <script>
-        function get_brand(){
-            const category_name = document.getElementById('category_area').value;
-            const brand_area = document.getElementById('brand_area')
-            const url = 'getbrands/' + category_name + '/';
+        function get_category(){
+            const brand_name = document.getElementById('brand_name').value;
+            const category_area = document.getElementById('category_area');
+            const url = 'getbrands/' + brand_name + '/';
             fetch(url)
             .then(response => response.json())
             .then(data => {
-                brand_area.innerHTML = '';
-                data.brand_list.forEach(function(data){
-                    var option = document.createElement('option')
-                    option.value = data.brand_name
-                    option.text = data.brand_name
-                    brand_area.appendChild(option);
-                })
-            }).catch(error => console.log(error))
+                category_area.innerHTML = '';
+                var option = document.createElement('option');
+                option.value = data.category_name;
+                option.text = data.category_name;
+                category_area.appendChild(option);
+            
+            }).catch(error => console.log(error));
         }
         
     </script>

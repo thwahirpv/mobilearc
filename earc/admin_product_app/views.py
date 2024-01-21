@@ -1,15 +1,20 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
+from django.views import View
 from django.views.decorators.cache import never_cache
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
-from .models import category, brands, products, variants
+from .models import category, brands, products
 from PIL import Image
 from io import BytesIO
 from django.http import JsonResponse
+from django.urls import reverse
+from django.views.decorators.cache import cache_control
+from django.utils.decorators import method_decorator
+# ==================================================================================================================
 
 
-# Category management
+#=========================================== start Category management ====================================================
 class category_management:
     # category lising and add new category
     def category(request):
@@ -47,6 +52,7 @@ class category_management:
     # category update
     def update_category(request, id):
         category_obj = get_object_or_404(category, category_id=id)
+        reverse_url = reverse('admin_product_app:update_category', kwargs={'id':id})
 
         if request.method == 'POST':
             name = request.POST.get('name')
@@ -54,17 +60,25 @@ class category_management:
 
             if name == '' or discription == '':
                 messages.error(request, 'Fill those fields!')
+                return redirect(reverse_url)
             elif not type(name) == str or not type(discription) == str:
                 messages.error(request, 'Enter meaningfull details!')
+                return redirect(reverse_url)
             elif name.isspace() or discription.isspace():
                 messages.error(request, 'Enter valid details!')
+                return redirect(reverse_url)
             elif len(name) < 3 or len(discription) < 5:
                 messages.error(request, 'Enter valid details!')
-            else:
-                category_obj.category_name = name
-                category_obj.category_disc = discription
-                category_obj.save()
-                return redirect('admin_product_app:admin_category')
+                return redirect(reverse_url)
+            elif not name == category_obj.category_name:
+                if category.objects.filter(category_name=name).exists():
+                    messages.error(request, f'{name} is already exists!')
+                    return redirect(reverse_url)
+            
+            category_obj.category_name = name
+            category_obj.category_disc = discription
+            category_obj.save()               
+            return redirect('admin_product_app:admin_category')
         return render(request, 'admin_template/page-update-category.html', {'category_obj':category_obj})
     
     # category block and unblock
@@ -80,19 +94,43 @@ class category_management:
             brands.objects.filter(brand_category=category_obj).update(brand_active=True)
             products.objects.filter(pro_category=category_obj).update(product_active=True)
             return redirect('admin_product_app:admin_category')
+#=========================================== end Category management ====================================================
 
+
+
+#=========================================== start brand management ====================================================    
 # brand management
 class brand_management:
     # list all brands
     def brands(request):
+        name = request.GET.get('category', None)
+        status = request.GET.get('status', None)
+        brands_data = brands.objects.all() 
+        status_data = 'All'
+        category_name = 'category'
+        if status is not None:
+            if 'All' in status:
+                brands_data = brands.objects.all() 
+            elif 'Active' in status:
+                brands_data = brands.objects.filter(brand_active=True)
+                status_data = 'Active'
+            elif 'Blocked' in status:
+                brands_data = brands.objects.filter(brand_active=False)
+                status_data = 'Blocked'
+        else:  
+            if name is None: 
+                pass
+            elif 'all' in name:
+                category_name = name
+            elif category_name is not None:
+                brands_data = brands.objects.filter(brand_category__category_name=name)
+                category_name = name
         categories = category.objects.all()
-        brand = brands.objects.all()
-        context = {'categories':categories, 'brand':brand }
+        context = {'categories':categories, 'brands_data':brands_data, 'category_name': category_name, 'status_data':status_data}
         return render(request, 'admin_template/page-brands.html', context)
     
     # add new brand
     def add_brand(request):
-        
         if request.method == 'POST':   
             name = request.POST.get('name')
             brand_image = request.FILES.get('brand_image')
@@ -141,9 +179,11 @@ class brand_management:
             # Create brand
             else:
                 category_obj = get_object_or_404(category, category_name=category_name)
-                brands.objects.create(brand_name=name, brand_image=brand_image, brand_category=category_obj)
+                brand_obj = brands.objects.create(brand_name=name, brand_image=brand_image, brand_category=category_obj)
+                if category_obj.category_active is False:
+                    brand_obj.brand_active = False
+                    brand_obj.save()
                 return redirect('admin_product_app:list_brands')
-            
         categories = category.objects.all()
         return render(request, 'admin_template/page-addbrand.html', {'categories':categories})
     
@@ -157,22 +197,24 @@ class brand_management:
             category_name = request.POST.get('category')
             category_obj = get_object_or_404(category, category_name=category_name)
 
+            # Check image
+            if image:
+                try:
+                    file_content = image.read()
+                    brand_img = Image.open(BytesIO(file_content))
+                    if not brand_img.format.lower() in ['jpeg', 'jpg', 'png']:
+                        messages.error(request, 'invalid image formate!. upload jpeg or png')
+                        return redirect('admin_products_app:update_brand')
+                except:
+                    messages.error(request, 'Invalid file!')
+                    return redirect('admin_product_app:update_brand')
+            else:
+                messages.error(request, 'upload image file!')
+                return redirect('admin_product_app:update_brand')
+
             if name == '' or category_name == '':
                 messages.error(request, 'Fill those fields!')
-            # Check image
-            # if image:
-            #     try:
-            #         file_content = image.read()
-            #         brand_img = Image.open(BytesIO(file_content))
-            #         if not brand_img.format.lower() in ['jpeg', 'jpg', 'png']:
-            #             messages.error(request, 'invalid image formate!. upload jpeg or png')
-            #             return redirect('admin_products_app:update_brand')
-            #     except:
-            #         messages.error(request, 'Invalid file!')
-            #         return redirect('admin_product_app:update_brand')
-            # else:
-            #     messages.error(request, 'upload image file!')
-            #     return redirect('admin_product_app:update_brand')
+
             if not type(name) == str:
                 messages.error(request, 'Enter meaningfull details!')
                 return redirect('admin_product_app:update_brand')
@@ -192,7 +234,8 @@ class brand_management:
                 return redirect('admin_product_app:list_brands')
         context = {'categories':categories, 'brand':brand }
         return render(request, 'admin_template/page-brandupdate.html', context)
-    
+
+    # Brand block and unblock
     def block_and_unblock(requset, action, id):
         brand_obj = get_object_or_404(brands, brand_id=id)
         if action == 'block':
@@ -203,35 +246,73 @@ class brand_management:
             brands.objects.filter(brand_id=id).update(brand_active=True)
             products.objects.filter(pro_brand=brand_obj).update(product_active=True)
             return redirect('admin_product_app:list_brands')
-    
+
+    # delete brand
     def delete_brand(requset, id):
         brand_obj = get_object_or_404(brands, brand_id=id)
         brand_obj.delete()
         return redirect('admin_product_app:list_brands')
+#=========================================== end brand management ====================================================
 
 
+
+#=========================================== start product management ================================================  
 # product management 
 class product_management:
-
+    # show all prosucts 
     def list_products(request):
-        product = variants.objects.all()
-        categories = category.objects.all()
-        context = {'product':product, 'categories':categories}
+        name = request.GET.get('brand', None)
+        status = request.GET.get('status', None)
+        product_data = products.objects.all()
+        status_data = 'All'
+        brand_name = 'All Brands'
+
+        # Filter Active and Blocked products
+        if status is not None:
+            if 'All' in status:
+                pass
+            elif 'Active' in status:
+                product_data = products.objects.filter(product_active=True)
+                status_data = 'Active'
+            elif 'Blocked' in status:
+                product_data = products.objects.filter(product_active=False)
+                status_data = 'Blocked'
+        # Filter brand base products
+        else:
+            if name is None:
+                pass
+            elif 'all' in name:
+                brand_name = 'All Brands'
+            elif name is not None:
+                product_data = products.objects.filter(pro_brand__brand_name=name)
+                brand_name = name
+        brands_data = brands.objects.all()
+        context = {'product_data':product_data, 'brands_data':brands_data, 'brand_name':brand_name, 'status_data':status_data}
         return render(request, 'admin_template/page-products-list.html', context)
 
-    # add creating 
+    # add new product  
     def add_product(request):
         if request.method == 'POST':
             product_name = request.POST.get('product_name')
             product_disc = request.POST.get('product_dic')
-            product_price = request.POST.get('product_price')
-            product_image = request.FILES.get('product_image')
-            product_color = request.POST.get('color')
             product_category = request.POST.get('product_category')
             product_brand = request.POST.get('product_brand')
-            print(product_brand)
+            product_image = request.FILES.get('product_image')
 
-               
+            if product_image:
+                try:
+                    file_content = product_image.read()
+                    image = Image.open(BytesIO(file_content))
+                    print(image.format.lower)
+                    if not image.format.lower() in ['jpeg', 'jpg', 'png']:
+                        messages.error(request, 'invalid image formate!. upload jpeg or png')
+                        return redirect('admin_product_app:add_product')
+                except:
+                    messages.error(request, 'Invalid file!')
+                    return redirect('admin_product_app:add_product')
+            else:
+                messages.error(request, 'upload image!')
+                return redirect('admin_product_app:add_product')
             # product name validatoin
             if product_name == '' or product_name.isspace() or not type(product_name) == str:
                 messages.error(request, 'Enter valid name!')
@@ -240,16 +321,6 @@ class product_management:
             # product discription validation
             elif product_disc == '' or product_disc.isspace() or not type(product_disc) == str:
                 messages.error(request, 'Enter valid Discription!')
-                return redirect('admin_product_app:add_product')
-
-            # product price validation 
-            elif product_price == '' or product_price.isspace() or int(product_price) < 1:
-                messages.error(request, 'Enter valid price!')
-                return redirect('admin_product_app:add_product')
-
-            # product color validation
-            elif product_color == '' or product_color.isspace() or not type(product_color) == str:
-                messages.error(request, 'Enter valid colour!')
                 return redirect('admin_product_app:add_product')
             
             # product category validation
@@ -262,65 +333,115 @@ class product_management:
                 messages.error(request, 'select Brand!')
                 return redirect('admin_product_app:add_product')
             
-            # Image validatoin
-            if product_image:
-                try:
-                    file_content = product_image.read()
-                    print("this is file content:", file_content)
-                    image = Image.open(BytesIO(file_content))
-                    if not image.format.lower() in ['jpeg', 'jpg', 'png']:
-                        messages.error(request, 'invalid image formate!. upload jpeg or png')
-                        return redirect(request, 'admin_product_app:add_product')
-                except:
-                    messages.error(request, 'Invalid file!')
-                    return redirect('admin_product_app:add_product')
-            else:
-                messages.error(request, 'upload image!')
-                return redirect('admin_product_app:add_product')    
+            # check product is exits or not 
+            elif products.objects.filter(product_name=product_name).exists():
+                messages.error(request, f'{product_name} is alreay exists')
+                return redirect('admin_product_app:add_product')
 
             category_obj = get_object_or_404(category, category_name=product_category)
             brand_obj = get_object_or_404(brands, brand_name=product_brand)
+            product_obj = products.objects.create(product_name=product_name, product_disc=product_category, product_image=product_image, pro_category=category_obj, pro_brand=brand_obj) 
+            if brand_obj.brand_active is False:
+                product_obj.product_active = False
+                product_obj.save()
+            return redirect('admin_product_app:list_products')
 
-            product_obj = products.objects.create(product_name=product_name, product_disc=product_disc, pro_category=category_obj, pro_brand=brand_obj)
-            variants.objects.create(variant_color=product_color, variant_img=product_image, variant_price=product_price, variant_product=product_obj)
-            return redirect('admin_product_app:list_products')                    
-
-
-        categories = category.objects.all()
         brand = brands.objects.all()
-        context = {'categories':categories, 'brand':brand}
+        context = {'brand':brand}
         return render(request, 'admin_template/page-product-add.html', context)
     
     # update product
+    @cache_control(no_cache=True, must_revalidate=True, max_age=0)
     def update_product(request, id):
-        product_obj = get_object_or_404(variants, variant_id=id)
+        product_obj = get_object_or_404(products, product_id=id)
+        brands_data = brands.objects.all()
         if request.method == 'POST':
             name = request.POST.get('name')
             discription = request.POST.get('discription')
-            color = request.POST.get('color')
-            image = request.FILES.get('image')
-            price = request.POST.get('price')
+            product_image = request.FILES.get('image')
+            pro_category = request.POST.get('category')
+            pro_brand = request.POST.get('brand')
 
-            product_obj.variant_product.product_name = name
-            product_obj.variant_product.product_disc = discription
-            product_obj.variant_color = color
-            product_obj.variant_img = image
-            product_obj.variant_price = price
+            # image validation
+            if product_image:
+                try:
+                    file_content = product_image.read()
+                    image = Image.open(BytesIO(file_content))
+                    print(image.format.lower)
+                    if not image.format.lower() in ['jpeg', 'jpg', 'png']:
+                        messages.error(request, 'invalid image formate!. upload jpeg or png')
+                        return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
+                except:
+                    messages.error(request, 'Invalid file!')
+                    return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
+            else:
+                messages.error(request, 'upload image!')
+                return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
+
+            if name == '' or name.isspace() or not type(name) == str:
+                messages.error(request, 'Enter valid name!')
+                return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
+
+            # product discription validation
+            elif discription == '' or discription.isspace() or not type(discription) == str:
+                messages.error(request, 'Enter valid Discription!')
+                return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
+            
+            # product category validation
+            elif pro_category == 'Category':
+                messages.error(request, 'select category!!')
+                return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
+
+            # product cateogory validation
+            elif pro_brand == 'Brand':
+                messages.error(request, 'select Brand!')
+                return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
+            
+            product_obj.product_name = name
+            product_obj.variant_disc = discription
+            product_obj.product_image = product_image
+            category_obj = get_object_or_404(category, category_name=pro_category)
+            product_obj.pro_category = category_obj
+            brand_obj = get_object_or_404(brands, brand_name=pro_brand)
+            product_obj.pro_brand = brand_obj
             product_obj.save()
             return redirect('admin_product_app:list_products')
-        context = {'product_obj':product_obj}
+        context = {'product_obj':product_obj, 'brands_data':brands_data}
         return render(request, 'admin_template/update-product.html', context)
+    
+    # product block and unblock 
+    def block_and_unblock(request, action, id):
+        product_obj = get_object_or_404(products, product_id=id)
+        if action == 'block':
+            product_obj.product_active = False
+            product_obj.save()
+            return redirect('admin_product_app:list_products')
+        elif action == 'unblock':
+            product_obj.product_active = True
+            product_obj.save()
+            return redirect('admin_product_app:list_products')
+#=========================================== end product management ====================================================
 
-    # fetch brand based on category
-    def get_brands(request, category_name):
-        brand_list = []
-        category_obj = get_object_or_404(category, category_name=category_name)
-        brand_data = brands.objects.filter(brand_category=category_obj).values('brand_name')
-        for data in brand_data:
-            brand_list.append(data)
-        context = {'brand_list':brand_list}
-        print(context)
-        return JsonResponse(context, safe=True)
+
+   
+
+
+
+# fetch brand based on category
+def get_category(request, brand_name, id=None):
+    brand_obj = get_object_or_404(brands, brand_name=brand_name)
+    category_name = brand_obj.brand_category.category_name
+    context = {'category_name':category_name}
+    return JsonResponse(context, safe=True)
+
+# fetch category and brnad based on product
+def get_brand_and_category(request, product_name, id=None):
+    product_obj = get_object_or_404(products, product_name=product_name)
+    category_name = product_obj.pro_category.category_name
+    brand_name = product_obj.pro_brand.brand_name 
+    context = {'product_details':[{'name':category_name, 'item':'category'},{'name':brand_name, 'item':'brand'}]}
+    return JsonResponse(context, safe=True)
+    
 
 
 

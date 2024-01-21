@@ -15,54 +15,79 @@ Homeettwe
         {% include 'admin_nav.html' %}
 
         <div class="container mt-5 mb-5 d-flex justify-content-center align-items-center" style="height: 100vh;">
-            <div class="card px-1 py-5 w-50 h-50 row justify-content-center align-items-start">
+            <div class="card px-1 py-5 w-50 h-75 row justify-content-center align-items-start">
                 <form class="card-body" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <h6 class="card-title mb-2">Add Brand</h6>
+                    <h6 class="card-title mb-2">Update product</h6>
                     {% if messages %}
                     {% for message in messages %}
                     <p class="text-danger fw-semibold fs-6">{{ message }}</p>
                     {% endfor %}
                     {% endif %}
 
-                    <div class="row">
+                    <div class="row mt-3">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <input class="form-control" value="{{product_obj.variant_img}}" type="file" placeholder="Image" name="image"> 
+                                <input class="form-control" value="{{product_obj.product_image}}" type="file" placeholder="Image" name="image"> 
                             </div>
                         </div>
                     </div>
-                    <div class="row mt-2">
+                    <div class="row mt-3">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <input class="form-control" value="{{product_obj.variant_product.product_name}}" type="text" placeholder="Name" name="name"> 
+                                <input class="form-control" value="{{product_obj.product_name}}" type="text" placeholder="Name" name="name"> 
                             </div>
                         </div>
                     </div>  
-                    <div class="row mt-2">
+                    <div class="row mt-3">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <input class="form-control" value="{{product_obj.variant_product.product_disc}}" type="text" placeholder="Discription" name="discription"> 
+                                <input class="form-control" value="{{product_obj.product_disc}}" type="text" placeholder="Discription" name="discription"> 
                             </div>
                         </div>
                     </div> 
-                    <div class="row mt-2">
-                        <div class="col-sm-12">
+                    <div class="row mt-3">
+                        <div class="col-sm-6">
                             <div class="form-group">
-                                <input class="form-control" value="{{product_obj.variant_color}}" type="text" placeholder="Color" name="color"> 
+                                <label class="form-label">Brand</label>
+                                <select class="form-select" name="brand" id="brand_area" onchange="get_category()">
+                                    <option>{{product_obj.pro_brand.brand_name}}</option>
+                                    {% for item in brands_data %}
+                                        <option>{{item.brand_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="category" id="category_area">
+                                    <option>{{product_obj.pro_category.category_name}}</option>
+                                </select>
                             </div>
                         </div>
                     </div> 
-                    <div class="row mt-2">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <input class="form-control" value="{{product_obj.variant_price}}" type="text" placeholder="Price" name="price"> 
-                            </div>
-                        </div>
-                    </div> 
-                    <input type="submit" class="btn btn-primary btn-block confirm-button mt-3">
+                    <input type="submit" class="btn btn-primary btn-block confirm-button mt-4">
                 </form>
             </div>
         </div>
     </main>
+
+
+    <script>
+        function get_category(){
+            const brand_name = document.getElementById('brand_area').value;
+            const category_area = document.getElementById('category_area')
+            const url = 'get_category/' + brand_name + '/';
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                category_area.innerHTML = ''
+                var option = document.createElement('option');
+                option.text = data.category_name;
+                option.value = data.category_name;
+                category_area.appendChild(option);
+            }).catch(err => console.log(err));
+        };
+    </script>
 {% endblock content %}

@@ -23,12 +23,7 @@ class products(models.Model):
     pro_brand = models.ForeignKey(brands, on_delete=models.CASCADE, related_name='pro_brand_re')
     product_active = models.BooleanField(default=True)
 
-class variants(models.Model):
-    variant_id = models.BigAutoField(primary_key=True)
-    variant_color = models.CharField(max_length=100, null=False)
-    variant_img = models.ImageField(upload_to='products/', default='products/user_default_image.png')
-    variant_price = models.IntegerField(null=False)
-    variant_product = models.ForeignKey(products, on_delete=models.CASCADE, related_name='variations')
+
     
     
 

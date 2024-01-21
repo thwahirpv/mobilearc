@@ -1,0 +1,121 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+variants
+{% endblock %}
+
+
+{% block content %}
+
+{% include "admin_sidenav.html"%}
+    
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Variants</h2>
+                    <p></p>
+                </div>
+                <div>
+                    <a href="#" class="btn btn-light rounded font-md">Export</a>
+                    <a href="#" class="btn btn-light rounded  font-md">Import</a>
+                    <a href="{% url 'admin_product_app:add_variant' %}" class="btn btn-primary btn-sm rounded">Create new</a>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col col-check flex-grow-0">
+                            <div class="form-check ms-2">
+                                <input class="form-check-input" type="checkbox" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                            <label for="">Products</label>
+                            <select name="products" class="form-select" onchange="window.location.href=this.value;">
+                                <option value="{% url 'admin_product_app:list_variants' %}?product='all' ">All Variants</option>
+                                {% for item in products_data %}
+                                    <option {% if product_name == item.product_name %} selected {% endif %} value="{% url 'admin_product_app:list_variants' %}?product={{item.product_name}}">{{item.product_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-6">
+                            <div class="custom_select">
+                                <label for="">Status</label>
+                                <select class="form-select select-nice" onchange="window.location.href=this.value;">
+                                    <option {% if status_data == 'All' %} selected {% endif %} value="{% url 'admin_product_app:list_variants' %}?status='All' ">Show All</option>
+                                    <option {% if status_data ==  'Active' %} selected {% endif %} value="{% url 'admin_product_app:list_variants' %}?status='Active' ">Active</option>
+                                    <option {% if status_data == 'Blocked' %} selected {% endif %} value="{% url 'admin_product_app:list_variants' %}?status='Blocked' ">Blocked</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    {% for item in variant_data %}
+                    <article class="itemlist">
+                        <div class="row align-items-center">
+                            <div class="col col-check flex-grow-0">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                                <a class="itemside" href="#">
+                                    <div class="left">
+                                        <img src="{{ item.variant_img.url }}" href="" class="img-sm img-thumbnail" alt="Item">
+                                    </div>  
+                                    <div class="info">
+                                        <h6 class="mb-0">Something</h6>
+                                        <p class="text-secondary" style="font-size: 13px;">{{item.variant_product.product_name}}</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-4 col-price"> 
+                                <p class="fw-bolder text-dark">{{item.variant_category.category_name}}</p> 
+                                <p class="text-secondary" style="font-size: 13px;">{{item.variant_brand.brand_name}}</p>
+
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                {% if item.variant_active %}
+                                    <span class="badge rounded-pill alert-success">Active</span>
+                                {% else %}
+                                    <span class="badge rounded-pill alert-danger">Blocked</span>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+                                <a href="{% url 'admin_product_app:update_variant' id=item.variant_id %}" class="btn btn-sm font-sm rounded btn-brand me-3">
+                                    <i class="material-icons md-edit"></i> Edit
+                                </a>
+                                {% if item.variant_active %}
+                                    <a href="" class="fs-6 text-success">
+                                        <i class="fa-sharp fa-solid fa-power-off"></i>
+                                    </a>
+                                {% else %}
+                                    <a href="" class="fs-6 text-danger">
+                                        <i class="fa-sharp fa-solid fa-power-off"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div> <!-- row .// -->
+                    </article> <!-- itemlist  .// -->
+                    {% endfor %}
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            <div class="pagination-area mt-30 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                        <li class="page-item"><a class="page-link" href="#">02</a></li>
+                        <li class="page-item"><a class="page-link" href="#">03</a></li>
+                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#">16</a></li>
+                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </section> <!-- content-main end// -->
+{% endblock content %}

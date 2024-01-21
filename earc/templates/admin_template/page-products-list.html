@@ -22,7 +22,7 @@ Homeettwe
                 <div>
                     <a href="#" class="btn btn-light rounded font-md">Export</a>
                     <a href="#" class="btn btn-light rounded  font-md">Import</a>
-                    <a href="#" class="btn btn-primary btn-sm rounded">Create new</a>
+                    <a href="{% url 'admin_product_app:add_product' %}" class="btn btn-primary btn-sm rounded">Create new</a>
                 </div>
             </div>
             <div class="card mb-4">
@@ -34,28 +34,28 @@ Homeettwe
                             </div>
                         </div>
                         <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
-                            <select name="category" class="form-select">
-                                <option selected>All category</option>
-                                {% for cate in categories %}
-                                    <option value="">{{cate.category_name}}</option>
+                            <label for="">Category</label>
+                            <select name="category" class="form-select" onchange="window.location.href=this.value;">
+                                <option value="{% url 'admin_product_app:list_products' %}?brand='all' ">All Brands</option>
+                                {% for item in brands_data %}
+                                    <option {% if brand_name == item.brand_name %} selected {% endif %} value="{% url 'admin_product_app:list_products' %}?brand={{item.brand_name}}">{{item.brand_name}}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col-md-2 col-6">
-                            <input type="date" value="02.05.2021" class="form-control">
-                        </div>
-                        <div class="col-md-2 col-6">
-                            <select class="form-select">
-                                <option selected>Status</option>
-                                <option>Active</option>
-                                <option>Disabled</option>
-                                <option>Show all</option>
-                            </select>
+                        <div class="col-lg-2 col-6">
+                            <div class="custom_select">
+                                <label for="">Status</label>
+                                <select class="form-select select-nice" onchange="window.location.href=this.value;">
+                                    <option {% if status_data == 'All' %} selected {% endif %} value="{% url 'admin_product_app:list_products' %}?status='All' ">Show All</option>
+                                    <option {% if status_data ==  'Active' %} selected {% endif %} value="{% url 'admin_product_app:list_products' %}?status='Active' ">Active</option>
+                                    <option {% if status_data == 'Blocked' %} selected {% endif %} value="{% url 'admin_product_app:list_products' %}?status='Blocked' ">Blocked</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </header> <!-- card-header end// -->
                 <div class="card-body">
-                    {% for item in product %}
+                    {% for item in product_data %}
                     <article class="itemlist">
                         <div class="row align-items-center">
                             <div class="col col-check flex-grow-0">
@@ -64,30 +64,37 @@ Homeettwe
                                 </div>
                             </div>
                             <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                <a class="itemside" href="#">
+                                <a class="itemside" href="{% url 'admin_product_app:list_variants' %}?id={{item.product_id}}">
                                     <div class="left">
-                                        <!-- <img src="" class="img-sm img-thumbnail" alt="Item"> -->
+                                        <img src="{{ item.product_image.url }}" class="img-sm img-thumbnail" alt="Item">
                                     </div>  
                                     <div class="info">
-                                        <h6 class="mb-0">{{item.variant_product.product_name}}</h6>
-                                    </div>
+                                        <h6 class="fs-6 fw-bolder text-dark">{{item.product_name}}</h6>
+                                        <p class="text-secondary" style="font-size: 13px;">{{item.pro_brand.brand_name}}</p>
+                                   </div>
                                 </a>
                             </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-price"> <span>{{item.variant_price}}</span> </div>
+                            <div class="col-lg-2 col-sm-2 col-4 col-price"> <span>{{item.pro_category.category_name}}</span> </div>
                             <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                {% if item.variant_product.product_active %}
+                                {% if item.product_active %}
                                     <span class="badge rounded-pill alert-success">Active</span>
                                 {% else %}
                                     <span class="badge rounded-pill alert-danger">Blocked</span>
                                 {% endif %}
                             </div>
                             <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                <a href="{% url 'admin_product_app:update_product' id=item.variant_id %}" class="btn btn-sm font-sm rounded btn-brand">
+                                <a href="{% url 'admin_product_app:update_product' id=item.product_id %}" class="btn btn-sm font-sm rounded btn-brand me-3">
                                     <i class="material-icons md-edit"></i> Edit
                                 </a>
-                                <a href="#" class="btn btn-sm font-sm btn-light rounded">
-                                    <i class="material-icons md-delete_forever"></i> Delete
-                                </a>
+                                {% if item.product_active %}
+                                    <a href="{% url 'admin_product_app:product_block_and_unblock' action='block' id=item.product_id  %}" class="fs-6 text-success">
+                                        <i class="fa-sharp fa-solid fa-power-off"></i>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'admin_product_app:product_block_and_unblock' action='unblock' id=item.product_id  %}" class="fs-6 text-danger">
+                                        <i class="fa-sharp fa-solid fa-power-off"></i>
+                                    </a>
+                                {% endif %}
                             </div>
                         </div> <!-- row .// -->
                     </article> <!-- itemlist  .// -->
