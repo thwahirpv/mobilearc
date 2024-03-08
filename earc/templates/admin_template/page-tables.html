@@ -20,7 +20,10 @@ Users
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                         <h6 class="text-dark text-capitalize ps-3">Users table</h6>
-                        <a href="{% url 'admin_app:create_user' %}" class="btn btn-success text-white">Create</a>
+                        <div>
+                            <a href="{% url 'admin_app:create_user' %}" class="btn btn-success text-white">Create</a>
+                            <a href="{% url 'admin_app:blocked_users' %}?x=blocked" class="btn btn-danger text-white">Blocked Users</a>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
@@ -37,6 +40,7 @@ Users
                             </thead>
                             <tbody>
                                 {% for u in user %}
+                                {% if u.is_active %}
                                 <tr>
                                     <td>
                                         <div class="d-flex px-2 py-1">
@@ -81,20 +85,74 @@ Users
                                         </a>
                                     </td>
                                     <td class="align-middle">
-                                        <a href="{% url 'admin_app:delete_user' id=u.user_id %}" class="text-white btn btn-danger btn-xs text-xs">
+                                       
+                                        <button onclick="deleteUser({{u.user_id}})" type="button" class="btn btn-danger">
                                             Delete
-                                        </a>
+                                        </button> 
                                     </td>
+
+                                   
+                                    
                                 </tr>
+                                {% endif %}
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
     </div>
+
+    
   </main>
-  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+<script>
+    function deleteUser(id){
+        const url = 'get_user?id='+id
+        fetch(url)
+        .then(response => response.json()   )
+        .then(data => {
+            console.log(data.username)
+            Swal.fire({
+            title: "Are you sure to delete?",
+            text: data.username,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const url2 = 'delete?id='+id
+                fetch(url2)
+                .then(response => response.json())
+                .then(opration => {
+                    if(opration.opration == 'success'){
+                        Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                        }).then( () => {
+                            window.location.reload()
+                        })
+                    }else{
+                        Swal.fire({
+                        title: "someting wrong",
+                        text: "Your file has been not deleted.",
+                        icon: "error"
+                        });
+                    }
+                })    
+            }
+        });
+        });
+    }
+</script>
+
 {% endblock content %}
+
+
+

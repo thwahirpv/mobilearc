@@ -18,13 +18,20 @@ Login
                     <h4 class="card-title mb-4">Sign in</h4>
 
                     <!-- This is login form -->
-                    <form method="post">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% if messages %}
                             {% for message in messages %}
                                 <p class="text-danger fw-semibold fs-6">{{ message }}</p>
                             {% endfor %}
                         {% endif %}
+                        <div class="mb-4">
+                            <label for="category_image">Image</label>
+                            <input type="file" class="form-control" id="upload_image" onchange="uploadPhoto()" name="category_image">
+                            <div class="d-flex justify-content-center mt-3">
+                                <img style="width: 130px;" id="category_image" src="{{ category_obj.category_image.url }}" alt="">
+                            </div>
+                        </div>
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Name</label>
                             <input type="text" placeholder="Type here" name="name" value="{{category_obj.category_name}}" class="form-control" id="product_name" />
@@ -42,4 +49,21 @@ Login
         </section>
                     
     
+        <script>
+            const upload_image = document.getElementById('upload_image')
+            const category_image = document.getElementById('category_image')
+            upload_image.addEventListener('change', function(){
+                if (upload_image.files[0]) {
+                    const reader = new FileReader()
+                    
+                    reader.onload = function(e) {
+                        category_image.src = e.target.result
+                    }
+
+                    reader.readAsDataURL(upload_image.files[0]);
+                }  
+            });
+            
+            
+        </script>
 {% endblock content %}

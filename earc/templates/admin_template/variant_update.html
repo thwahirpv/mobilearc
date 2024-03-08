@@ -1,117 +1,41 @@
-{% extends "base_page.html" %}
+{% extends 'base_page.html' %}
 {% load static %}
 
 {% block title %}
-update variant
+Login
 {% endblock %}
-
 
 {% block content %}
 
 {% include "admin_sidenav.html"%}
 
-    
-    <main class="main-wrap">
-        {% include 'admin_nav.html' %}
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg main-wrap">
+    {% include 'admin_nav.html' %}
 
-        <div class="container mt-5 mb-5 d-flex justify-content-center align-items-center" style="height: 100vh;">
-            <div class="card px-1 py-5 w-50 h-75 row justify-content-center align-items-start">
-                <form class="card-body" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <h6 class="card-title mb-2">Update product</h6>
-                    {% if messages %}
-                    {% for message in messages %}
-                    <p class="text-danger fw-semibold fs-6">{{ message }}</p>
-                    {% endfor %}
-                    {% endif %}
+        <section class="content-main mt-80 mb-80">
+            <div class="card mx-auto card-login">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Sign in</h4>
 
-                    <div class="row mt-3">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <input class="form-control" value="{{variant_obj.variant.img}}" type="file" placeholder="Image" name="image"> 
-                            </div>
+                    <!-- This is login form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="text-danger fw-semibold fs-6">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="mb-4">
+                            <input type="text" placeholder="Type here" name="ram"  class="form-control" id="product_name" />
+                            <input type="text" placeholder="Type here" name="rom"  class="form-control" id="product_name" />
                         </div>
-                    </div>  
-                    <div class="row mt-3">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <input class="form-control" value="{{variant_obj.variant_disc}}" type="text" placeholder="Discription" name="discription"> 
-                            </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary">Submit</button>
                         </div>
-                    </div> 
-                    <div class="row mt-3">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <input class="form-control" value="{{variant_obj.variant_color}}" type="text" placeholder="color" name="color"> 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <input class="form-control" value="{{variant_obj.variant_price}}" type="number" placeholder="price" name="price"> 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 mt-3">
-                        <div class="form-group">
-                            <label class="form-label">product</label>
-                            <select class="form-select" name="product_name" id="product_name_area" onchange="get_brand_and_category()">
-                                <option value="{{variant_obj.variant_product.product_name}}">{{variant_obj.variant_product.product_name}}</option>
-                                {% for data in product_data %}
-                                    <option>{{data.product_name}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mt-6 mt-3">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="form-label">Category</label>
-                                <select class="form-select" name="category_name" id="category_area" onchange="">
-                                    <option value="{{variant_obj.variant_category.category_name}}">{{variant_obj.variant_category.category_name}}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="form-label">Brand</label>
-                                <select class="form-select" name="brand_name" id="brand_area">
-                                    <option value="{{variant_obj.variant_brand.brand_name}}">{{variant_obj.variant_brand.brand_name}}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div> 
-                    <input type="submit" class="btn btn-primary btn-block confirm-button mt-4">
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
-    </main>
-
-    <script>
-        function get_brand_and_category(){
-            const product_name = document.getElementById('product_name_area').value;
-            const category_area = document.getElementById('category_area')
-            const brand_area = document.getElementById('brand_area')
-            const url = 'getband&category/' + product_name + '/';
-            fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                category_area.innerHTML = '';
-                brand_area.innerHTML = '';
-                data.product_details.forEach(function(data){
-                    option = document.createElement('option')
-                    option.value = data.name
-                    option.text = data.name
-                    if(data.item == 'category'){
-                        category_area.appendChild(option);
-                    }
-                    else if(data.item == 'brand'){
-                        brand_area.appendChild(option)
-                    }      
-                })
-                data
-            }).catch(error => console.log(error));
-        }     
-    </script>
-    {% endblock content %}
+        </section>
+                    
+    
+{% endblock content %}

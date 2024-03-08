@@ -5,6 +5,7 @@
 ADD PRODUCT
 {% endblock %}
 
+    
 
 {% block content %}
 {% include "admin_sidenav.html"%}
@@ -12,125 +13,146 @@ ADD PRODUCT
     <main class="main-wrap">
         {% include 'admin_nav.html' %}
 
-        <section class="content-main">
+        <section class="content-main section-con">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-            <div class="row">
-                <div class="col-9">
-                    <div class="content-header">
-                        <h2 class="content-title">Add new variant</h2>
+            <div class="row justify-content-center">
+                
+                <div class="col-6">
+                    <div class="d-flex justify-content-between">
+                        <h2 class="fs-5">Add Color Variant</h2>
                         <div>
-                            <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+                            <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
                             <button type="submit" class="btn btn-md rounded font-sm hover-up">Publich</button>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h4>Basic</h4>
-                        </div>
-                        <div class="card-body">
-                            {% if messages %}
-                            {% for message in messages %}
-                                <p class="text-danger fw-semibold fs-6">{{ message }}</p>
-                            {% endfor %}
-                            {% endif %}
-                                <div class="mb-4">
-                                    <label class="form-label">Product</label>
-                                    <select name="product_name" id="product_name_area" class="form-select"  onchange="get_brand_and_category()">
-                                        <option selected>product</option>
-                                        {% for item in product_data %}
-                                            <option>{{item.product_name}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Full description</label>
-                                    <textarea placeholder="Type here" name="product_dic" class="form-control" rows="4"></textarea>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="color" class="form-label">Product color</label>
-                                    <input type="text" placeholder="Type here" name="color" class="form-control" id="product_name">
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="mb-4">
-                                            <label class="form-label">price</label>
-                                            <div class="row gx-2">
-                                                <input placeholder="$" type="number" name="variant_price" class="form-control">
-                                            </div>
-                                        </div>
+            
+
+                <div class="row justify-content-center mt-4">
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Details</h4>
+                            </div>
+                            <div class="card-body">
+                                {% if messages %}
+                                {% for message in messages %}
+                                    <p class="text-danger fw-semibold fs-6">{{ message }}</p>
+                                {% endfor %}
+                                {% endif %}
+                                <div class="row gx-2 col-12 mt-3">
+                                    <div>
+                                        <label for="" class="form-label">Color name</label>
+                                        <input type="text" class="form-control" name="color">
                                     </div>
                                 </div>
-                        </div>
-                    </div> <!-- card end// -->
-                    <!-- card end// -->
-                </div>
-                <div class="col-lg-3">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h4>Media</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="input-upload">
-                                <img src="{% static 'assets2/imgs/theme/upload.svg' %}" alt="">
-                                <input class="form-control" type="file" name="product_image">
-                            </div>
-                        </div>
-                    </div> <!-- card end// -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h4>Organization</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row gx-2">
-                                <div class="col-sm-6 mb-3">
-                                    <label class="form-label">Category</label>
-                                    <select name="variant_category" id="category_area" class="form-select">
-                                        <option selected >Category</option>
-                                    </select>
+                                <div class="row gx-2 col-12 mt-4">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h4>Media</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="input-upload row justify-content-center align-items-center" id="image-container">
+                                                <div class="" id="image-icon">
+                                                    <img src="{% static 'assets2/imgs/theme/upload.svg' %}" id="media" alt="" >
+                                                </div>
+                                                <input class="form-control" id="image-input" type="file" multiple name="images">
+                                            </div>
+                                        </div>
+                                    </div> 
                                 </div>
-                                <div class="col-sm-6 mb-3">
-                                    <label class="form-label">Brand</label>
-                                    <select name="variant_brand" id="brand_area" class="form-select">
-                                        <option selected >Brand</option>
-                                    </select>
-                                </div>
-                            </div> <!-- row.// -->
+                            </div> <!-- card end// -->
+                            <!-- card end// -->
                         </div>
-                    </div> <!-- card end// -->
+                    </div>
+                        
                 </div>
             </div>
         </form>
-        </section> <!-- content-main end// -->
+
+
+        <div class="crop-container" id="crop-container">
+            <div class="c-box" id="c-box">
+                
+            </div>
+        </div>
+        </section> 
     </main>
 
-
     <script>
-        function get_brand_and_category(){
-            const product_name = document.getElementById('product_name_area').value;
-            const category_area = document.getElementById('category_area')
-            const brand_area = document.getElementById('brand_area')
-            const url = 'getcandb/' + product_name + '/';
-            fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                category_area.innerHTML = '';
-                brand_area.innerHTML = '';
-                data.product_details.forEach(function(data){
-                    option = document.createElement('option')
-                    option.value = data.name
-                    option.text = data.name
-                    if(data.item == 'category'){
-                        category_area.appendChild(option);
-                    }
-                    else if(data.item == 'brand'){
-                        brand_area.appendChild(option)
-                    }      
+        const imageInput = document.getElementById('image-input')
+        const middleDiv = document.getElementById('middle')
+        const imageIcon = document.getElementById('image-icon')
+        const imageContainer = document.getElementById('image-container')
+        const cropContainer = document.getElementById('crop-container')
+        const cBox = document.getElementById('c-box')
+
+        imageInput.addEventListener('change', ()=>{
+            const url = [];
+            const img_data = imageInput.files
+            const data_set = Object.entries(img_data);
+            imageIcon.style.display = 'None'
+
+            data_set.forEach(([key, value]) => {
+                const link = URL.createObjectURL(value)
+                url.push(link)
+
+                const imageBox = document.createElement('div')
+                imageBox.classList.add('mt-4')
+                imageBox.classList.add('col-4')
+                imageBox.style.width = 33.33333%
+                imageBox.classList.add('position-relative')
+                const img = document.createElement('img');
+                img.src = link
+                img.classList.add('crop-image')
+                imageBox.appendChild(img)
+                imageContainer.appendChild(imageBox)
+
+                const aTag = document.createElement('a')
+                const iTag = document.createElement('i')
+                const middleDiv = document.createElement('div')
+                iTag.classList.add('fa-solid')
+                iTag.classList.add('fa-crop')
+                iTag.style.fontSize = '23px'
+                aTag.appendChild(iTag)
+                middleDiv.classList.add('middle')   
+                middleDiv.appendChild(aTag)
+                imageBox.appendChild(middleDiv)
+
+                imageBox.addEventListener('mouseover', () => {
+                    img.style.opacity = 0.3
+                    middleDiv.style.opacity = 1
                 })
-            }).catch(error => console.log(error));
-        }
-        
+                imageBox.addEventListener('mouseout', () => {
+                    img.style.opacity = 1
+                    middleDiv.style.opacity = 0
+                })
+
+                iTag.addEventListener('click', () => {
+                    cropContainer.style.zIndex = 1
+                    cBox.innerHTML = `<img src="${link}" id="image" width="500px"/>`
+                    var $image = $('#image');
+                    $image.cropper({
+                    aspectRatio: 16 / 9,
+                    crop: function(event) {
+                        console.log(event.detail.x);
+                        console.log(event.detail.y);
+                        console.log(event.detail.width);
+                        console.log(event.detail.height);
+                        console.log(event.detail.rotate);
+                        console.log(event.detail.scaleX);
+                        console.log(event.detail.scaleY);
+                    }
+                    });
+
+                    // Get the Cropper.js instance after initialized
+                    var cropper = $image.data('cropper');
+
+                })
+            })
+
+        });
+            
     </script>
-    {% endblock content %}
+{% endblock content %}

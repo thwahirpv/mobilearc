@@ -34,7 +34,7 @@ Homeettwe
                             </div>
                         </div>
                         <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
-                            <label for="">Category</label>
+                            <label for="">Brands</label>
                             <select name="category" class="form-select" onchange="window.location.href=this.value;">
                                 <option value="{% url 'admin_product_app:list_products' %}?brand='all' ">All Brands</option>
                                 {% for item in brands_data %}
@@ -58,44 +58,42 @@ Homeettwe
                     {% for item in product_data %}
                     <article class="itemlist">
                         <div class="row align-items-center">
-                            <div class="col col-check flex-grow-0">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox">
-                                </div>
+                            <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name d-flex align-items-center gap-3">
+                                <div class="p-2 rounded-circle bg-dark text-white d-flex justify-content-center align-items-center" style="width: 27px; height: 27px;";>
+                                    <a class="fs-6" href="{%  url 'admin_product_app:add_variant' id=item.product_id %}">
+                                        <i class="fa-solid fa-plus text-white"></i>   
+                                    </a>
+                                </div>  
+                                <div class="info">
+                                    <h6 class="fw-bolder text-dark" style="font-size: .9rem;">{{item.product_name}}</h6>
+                                    <p class="text-secondary" style="font-size: 13px;">{{item.pro_category.category_name}} / {{item.pro_brand.brand_name}}</p>
+                               </div>
                             </div>
-                            <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                <a class="itemside" href="{% url 'admin_product_app:list_variants' %}?id={{item.product_id}}">
-                                    <div class="left">
-                                        <img src="{{ item.product_image.url }}" class="img-sm img-thumbnail" alt="Item">
-                                    </div>  
-                                    <div class="info">
-                                        <h6 class="fs-6 fw-bolder text-dark">{{item.product_name}}</h6>
-                                        <p class="text-secondary" style="font-size: 13px;">{{item.pro_brand.brand_name}}</p>
-                                   </div>
-                                </a>
+                            <div class="col-sm-2 col-4 col-price"> 
+                                <a href="{% url 'admin_product_app:list_variant' id=item.product_id %}" class="d-flex justify-content-center align-items-center">
+                                    <img src="{% static 'assets2/imgs/icons/variation.png' %}" style="width: 20px;" alt="">:
+                                    {{item.colors.count}}
+                                </a> 
                             </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-price"> <span>{{item.pro_category.category_name}}</span> </div>
                             <div class="col-lg-2 col-sm-2 col-4 col-status">
                                 {% if item.product_active %}
+                                <a href="{% url 'admin_product_app:product_block_and_unblock' action='block' id=item.product_id  %}" class="fs-6 text-success">
                                     <span class="badge rounded-pill alert-success">Active</span>
+                                </a>
                                 {% else %}
+                                <a href="{% url 'admin_product_app:product_block_and_unblock' action='unblock' id=item.product_id  %}" class="fs-6 text-danger">
                                     <span class="badge rounded-pill alert-danger">Blocked</span>
+                                </a>
                                 {% endif %}
                             </div>
                             <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                <a href="{% url 'admin_product_app:update_product' id=item.product_id %}" class="btn btn-sm font-sm rounded btn-brand me-3">
+                                <a href="{% url 'admin_product_app:update_product' id=item.product_id %}" class="me-5 btn btn-sm font-sm rounded btn-brand me-3">
                                     <i class="material-icons md-edit"></i> Edit
                                 </a>
-                                {% if item.product_active %}
-                                    <a href="{% url 'admin_product_app:product_block_and_unblock' action='block' id=item.product_id  %}" class="fs-6 text-success">
-                                        <i class="fa-sharp fa-solid fa-power-off"></i>
-                                    </a>
-                                {% else %}
-                                    <a href="{% url 'admin_product_app:product_block_and_unblock' action='unblock' id=item.product_id  %}" class="fs-6 text-danger">
-                                        <i class="fa-sharp fa-solid fa-power-off"></i>
-                                    </a>
-                                {% endif %}
-                            </div>
+                                <a href="" class="">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>    
                         </div> <!-- row .// -->
                     </article> <!-- itemlist  .// -->
                     {% endfor %}

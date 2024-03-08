@@ -45,8 +45,6 @@
                                             <img class="img-xs rounded-circle" src="{% static 'assets2/imgs/default.jpg' %}" 
                                             style="width: 43px; height: 43px;" alt="">
                                         {% endif %}
-                                    {% else %}
-                                        <a href="{% url 'user_app:user_login' %}">Login</a>
                                     {% endif %}
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
@@ -59,7 +57,7 @@
                                     <a class="dropdown-item text-danger" href="{% url 'user_app:user_logout' %}"><i class="material-icons md-exit_to_app"></i>Logout</a>
                                 </div>
                             </li>
-                            <!-- {% if user.is_authenticated %}
+                            {% if user.is_authenticated %}
                             <li>
                                 <i class="fi-rs-user"></i>
                                 <a href="{% url 'user_app:user_logout' %}" class="text-dark">Logout</a>
@@ -67,9 +65,9 @@
                             {% else %}
                             <li>
                                 <i class="fi-rs-user"></i>
-                                <a class="text-dark" href="{% url 'user_app:user_login' %}">no</a>   
+                                <a class="text-dark" href="{% url 'user_app:user_login' %}">Login</a>   
                             </li>
-                            {% endif %} -->
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
@@ -453,11 +451,8 @@
                         </nav>
                     </div>
                 </div>
-                <div class="hotline d-none d-lg-block">
-                    <p><i class="fi-rs-headset"></i><span>Hotline</span> 1900 - 888 </p>
-                </div>
-                <p class="mobile-promotion">Happy <span class="text-brand">Mother's Day</span>. Big Sale Up to 40%</p>
-                <div class="header-action-right d-block d-lg-none">
+                <!-- <p class="mobile-promotion">Happy <span class="text-brand">Mother's Day</span>. Big Sale Up to 40%</p> -->
+                <!-- <div class="header-action-right d-block d-lg-none">
                     <div class="header-action-2">
                         <div class="header-action-icon-2">
                             <a href="shop-wishlist.html">
@@ -516,7 +511,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

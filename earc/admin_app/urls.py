@@ -17,10 +17,12 @@ urlpatterns = [
     # =============Dashboard=======================
 
     # ==============Crud oprations=======================
+    path('users/get_user', get_user, name="get_user"),
+    path('users/delete', user_crud_view.delete, name='delete_user'),
     path('users/', user_crud_view.load_table, name='load_table'),
+    path('users/blocked/', user_crud_view.blocked_users, name='blocked_users'),
     path('user/create', user_crud_view.create_user, name='create_user'),
     path('user/<int:id>/update', user_crud_view.update_user, name='update_user'),
-    path('user/<int:id>/delete', user_crud_view.delete, name='delete_user'),
     path('user/<int:id>/block', user_crud_view.block_user, name='block_user'),
     path('user/<int:id>/unblock', user_crud_view.unblock_user, name='unblock_user'),
     # ==============Crud oprations=======================

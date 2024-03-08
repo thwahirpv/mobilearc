@@ -1,0 +1,62 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+Stock
+{% endblock %}
+
+
+{% block content %}
+{% include "admin_sidenav.html"%}
+<main class="main-wrap">
+    {% include 'admin_nav.html' %}
+    <div class="" style="width: 100%; padding: 20px 40px;">
+        <div class="border border-1 border-dark rounded">
+            <div class="border border-1 border-dark border-top-0 border-end-0 border-start-0 p-3">
+                <h4>Color Stock</h4>
+            </div>
+            <div class="row justify-content-center gap-5 p-4">
+                {% for color in color_stock %}
+                <div class="col-5 d-flex bg-white" style="padding: 0; border-radius: 10px;">
+                    <div class="" style="width: 50%;">
+                        <img class="" style="width: 100%; height: 100%; border-top-left-radius: 10px; border-bottom-left-radius: 10px;"  src="{% static 'assets2/imgs/items/1.jpg' %}" alt="Card image cap">
+                    </div>
+                    <div class="mt-1" style="width: 50%; padding: 10px 20px;">
+                      <h5 class="text-center">{{color.color_name}}</h5>
+                      <div class="mt-4 d-flex flex-column justify-content-center align-items-center gap-3">
+                        <h4>Stock</h4>
+                        <p class="fs-3 fw-bold">{{color.color_stock}}</p>
+                      </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <div class="border border-1 border-dark rounded mt-4">
+            <div class="border border-1 border-dark border-top-0 border-end-0 border-start-0 p-3">
+                <h4>Storage Stock</h4>
+            </div>
+            <div class="row justify-content-center gap-5 p-4">
+                {% for storage in storage_stock %}
+                <div class="col-5 d-flex bg-white" style="padding: 0; border-radius: 10px;">
+                    <div class="" style="width: 50%;">
+                        <img class="" style="width: 100%; height: 100%; border-top-left-radius: 10px; border-bottom-left-radius: 10px;"  src="{% static 'assets2/imgs/items/1.jpg' %}" alt="Card image cap">
+                    </div>
+                    <div class="mt-1" style="width: 50%; padding: 10px 20px;">
+                      <h5 class="text-center">{{storage.rom}} / {{storage.ram}}</h5>
+                      <div class="mt-4 d-flex flex-column justify-content-center align-items-center gap-3">
+                        <h4>Stock</h4>
+                        <p class="fs-3 fw-bold">{{storage.storage_stock}}</p>
+                      </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+
+    </div>
+</main>
+{% endblock content %}

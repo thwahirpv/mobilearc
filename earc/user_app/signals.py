@@ -23,8 +23,7 @@ class otp_message_handler:
         send_mail(subject, message, from_email, recipient_list)
      
     # check otp 
-    def check_otp(self,otp, entered_otp):
-        print('this is generated otp',otp)
+    def check_otp(self, otp, entered_otp):
         if otp == entered_otp:
             return True
         else:
@@ -33,9 +32,9 @@ class otp_message_handler:
 # create_user signal    
 @receiver(pre_create)
 def pre_create_handler(sender, instance, **kwargs):
-    otp_obj = otp_message_handler()
+    otp_obj = otp_message_handler() 
     otp = otp_obj.generate_opt()
-    instance.otp=otp
+    instance.otp = otp
     instance.save()
     otp_obj.sent_otp(instance.email, otp)
     

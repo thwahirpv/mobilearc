@@ -1,0 +1,86 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+ADD PRODUCT
+{% endblock %}
+
+
+{% block content %}
+{% include "admin_sidenav.html"%}
+
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+
+        <section class="content-main">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+            <div class="row justify-content-center">
+                
+                <div class="col-6">
+                    <div class="d-flex justify-content-between">
+                        <h2 class="fs-5">Change image</h2>
+                        <div>
+                            <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
+                            <button type="submit" class="btn btn-md rounded font-sm hover-up">Publich</button>
+                        </div>
+                    </div>
+                </div>
+            
+
+                <div class="row justify-content-center mt-4">
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Image</h4>
+                            </div>
+                            <div class="card-body">
+                                {% if messages %}
+                                {% for message in messages %}
+                                    <p class="text-danger fw-semibold fs-6">{{ message }}</p>
+                                {% endfor %}
+                                {% endif %}
+                                <div class="row gx-2 col-12 mt-4">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h4>Media</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="input-upload">
+                                                <img src="{{target_image.product_image.url}}" id="variant_img" alt="">
+                                                <input class="form-control" type="file" id="upload_image" name="select_image">
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div> <!-- card end// -->
+                            <!-- card end// -->
+                        </div>
+                    </div>
+                        
+                </div>
+            </div>
+            
+                
+            
+        </form>
+        </section> 
+    </main>
+
+    <script>
+        const variant_img = document.getElementById('variant_img')
+        const upload_image = document.getElementById('upload_image')
+
+        upload_image.addEventListener('change', function() {
+            if (upload_image.files[0]) {
+                const reader = new FileReader()
+
+                reader.onload = function(e) {
+                    variant_img.src = e.target.result
+                }
+
+                reader.readAsDataURL(upload_image.files[0])
+            }
+        })
+    </script>
+{% endblock content %}

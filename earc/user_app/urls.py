@@ -12,6 +12,7 @@ urlpatterns = [
     path('otp/', otp_checking, name='otp_checking'),
     path('login/', user_login, name='user_login'),
     path('logout/', user_logout, name='user_logout'),
+    path('resent_otp/', otp_resent, name='otp_resent'),
     path('404error/', fournoterror, name='fournoterror')
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

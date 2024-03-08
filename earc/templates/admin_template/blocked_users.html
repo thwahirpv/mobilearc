@@ -1,0 +1,99 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+Users
+{% endblock %}
+
+
+{% block content %}
+
+{% include "admin_sidenav.html"%}
+
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg main-wrap">
+    {% include 'admin_nav.html' %}
+
+    <div class="container-fluid py-4">
+      <div class="row px-0">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
+                        <h6 class="text-dark text-capitalize ps-3">Blocked Users</h6>
+                        <a href="{% url 'admin_app:load_table' %}" class="btn btn-success text-white">Active Users</a>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center">
+                            <thead>
+                                <tr class="">
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Users</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">block & unblock</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for u in user %}
+                                {% if not u.is_active %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div>
+                                              {% if u.profile %}
+                                              <img src="{{ u.profile.url }}" class="rounded-circle shadow-4 avatar avatar-sm me-3 border-radius-lg"
+                                              style="width: 40px; height: 40px;" alt="" />
+                                              {% else %}
+                                                <img src="{% static 'assets2/imgs/default.jpg' %}" class="rounded-circle shadow-4 avatar avatar-sm me-3 border-radius-lg" 
+                                                style="width: 40px; height: 40px;" alt="" >
+                                              {% endif %}
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ u.username }}</h6>
+                                                <p class="text-xs text-secondary mb-0">{{ u.email }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="align-middle text-center text-sm">
+                                        <span class="fw-bold {% if u.is_active %} text-success {% else %} text-danger {% endif %} ">
+                                          {% if u.is_active %}
+                                            Active
+                                          {% else %}
+                                            Block
+                                          {% endif %}
+                                        </span>
+                                    </td>
+                                    
+                                    <td class="align-middle">
+                                        {% if u.is_active %}
+                                        <a href="{% url 'admin_app:block_user' id=u.user_id %}" class="text-white btn btn-dark btn-xs text-secondary text-xs">
+                                            Block
+                                        </a>
+                                        {% else %}
+                                        <a href="{% url 'admin_app:unblock_user' id=u.user_id %}" class="text-white btn btn-secondary btn-xs text-secondary text-xs">
+                                            Unblock
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <td class="align-middle">
+                                        <a href="{% url 'admin_app:delete_user' id=u.user_id %}" class="text-white btn btn-danger btn-xs text-xs">
+                                            Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+  </main>
+  
+{% endblock content %}

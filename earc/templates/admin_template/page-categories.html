@@ -26,13 +26,20 @@ Homeettwe
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form method="post">
+                            <form method="post"  enctype="multipart/form-data">
                                 {% csrf_token %}
                                 {% if messages %}
                                     {% for message in messages %}
                                         <p class="text-danger fw-semibold fs-6">{{ message }}</p>
                                     {% endfor %}
                                 {% endif %}
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Image</label>
+                                    <input id="upload_image" class="form-control" type="file" name="category_image">
+                                    <div class="d-flex justify-content-center mt-3">
+                                        <img id="category_img" style="width: 130px;" src="#" alt="">
+                                    </div>
+                                </div>
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Name</label>
                                     <input type="text" placeholder="Type here" name="name" class="form-control" id="product_name" />
@@ -66,13 +73,18 @@ Homeettwe
                                     </thead>
                                     <tbody>
                                         {% for item in cotegories %}
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
+                                        <tr class="">
+                                            <td>
+                                                <div>
+                                                    {% if item.category_image %}
+                                                    <img src="{{ item.category_image.url }}" class="rounded-circle shadow-4 avatar avatar-sm me-3 border-radius-lg"
+                                                    style="width: 40px; height: 40px;" alt="" />
+                                                    {% else %}
+                                                      <img src="{% static 'assets2/imgs/default.jpg' %}" class="rounded-circle shadow-4 avatar avatar-sm me-3 border-radius-lg" 
+                                                      style="width: 40px; height: 40px;" alt="" >
+                                                    {% endif %}
+                                                  </div>
                                             </td>
-                                            <td>{{ item.category_id }}</td>
                                             <td><b>{{ item.category_name }}</b></td>
                                             <td>{{ item.category_disc }}</td>
                                             <td>
@@ -115,4 +127,23 @@ Homeettwe
             </div>
         </footer>
     </main>
+
+
+
+    <script>
+        const category_img = document.getElementById('category_img')
+        const upload_image = document.getElementById('upload_image')
+
+        upload_image.addEventListener('change', function() {
+            if (upload_image.files[0]) {
+                const reader = new FileReader()
+                
+                reader.onload = function(e) {
+                    category_img.src = e.target.result 
+                }
+
+                reader.readAsDataURL(upload_image.files[0])
+            }
+        })
+    </script>
 {% endblock content %}

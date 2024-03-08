@@ -1,0 +1,154 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+ADD PRODUCT
+{% endblock %}
+
+
+{% block content %}
+{% include "admin_sidenav.html"%}
+
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+
+        <section class="content-main">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+            <div class="row justify-content-center">
+                
+                <div class="col-6">
+                    <div class="d-flex justify-content-between">
+                        <h2 class="fs-5">Add Storage</h2>
+                        <div>
+                            <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
+                            <button type="submit" class="btn btn-md rounded font-sm hover-up">Publich</button>
+                        </div>
+                    </div>
+                </div>
+            
+
+                <div class="row justify-content-center mt-4">
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Details</h4>
+                            </div>
+                            <div class="card-body">
+                                {% if messages %}
+                                {% for message in messages %}
+                                    <p class="text-danger fw-semibold fs-6">{{ message }}</p>
+                                {% endfor %}
+                                {% endif %}
+                                <div class="row gx-2 col-12 mt-3">
+                                    <div>
+                                        <label for="" class="form-label">size price</label>
+                                        <input type="text" class="form-control" name="price_of_size">
+                                    </div>
+                                    <div>
+                                        <label for="" class="form-label">Stock</label>
+                                        <input type="text" class="form-control" name="stock">
+                                    </div>
+                                    <div class="row gx-2 col-12 mt-4">
+                                        <div class="card mb-4">
+                                            <div class="card-header">
+                                                <h4>Rom</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row input-upload ">
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">2 GB</label>
+                                                        <input type="radio" name="ram" value="2 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">4 GB</label>
+                                                        <input type="radio" name="ram" value="4 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1"> 
+                                                        <label for="">8 GB</label>
+                                                        <input type="radio" name="ram" value="8 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">16 GB</label>
+                                                        <input type="radio" name="ram" value="16 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">32 GB</label>
+                                                        <input type="radio" name="ram" value="32 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">64 GB</label>
+                                                        <input type="radio" name="ram" value="64 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">128 GB</label>
+                                                        <input type="radio" name="ram" value="128 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">256 GB</label>
+                                                        <input type="radio" name="ram" value="256 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">512 GB</label>
+                                                        <input type="radio" name="ram" value="512 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">1 TB</label>
+                                                        <input type="radio" name="ram" value="1 TB">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+
+                                    <div class="row gx-2 col-12 mt-4">
+                                        <div class="card mb-4">
+                                            <div class="card-header">
+                                                <h4>Ram</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row input-upload ">
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">2 GB</label>
+                                                        <input type="radio" name="rom" value="2 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">4 GB</label>
+                                                        <input type="radio" name="rom" value="4 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1"> 
+                                                        <label for="">8 GB</label>
+                                                        <input type="radio" name="rom" value="8 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">12 GB</label>
+                                                        <input type="radio" name="rom" value="12 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">16 GB</label>
+                                                        <input type="radio" name="rom" value="16 GB">
+                                                    </div>
+                                                    <div class="col-3 mt-1">
+                                                        <label for="">32 GB</label>
+                                                        <input type="radio" name="rom" value="32 GB">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                                
+                            </div> <!-- card end// -->
+                            <!-- card end// -->
+                        </div>
+                    </div>
+                        
+                </div>
+            </div>
+            
+                
+            
+        </form>
+        </section> 
+    </main>
+{% endblock content %}

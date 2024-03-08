@@ -1,7 +1,7 @@
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from . views import *
+from .views import *
 
  
 app_name = 'admin_product_app'
@@ -12,6 +12,7 @@ urlpatterns = [
     path('add/', product_management.add_product, name='add_product'),
     path('add/getbrands/<str:brand_name>/', get_category, name='get_category_product_adding'),   
     path('edit/<int:id>/', product_management.update_product, name='update_product'),
+    path('delete_product/<int:id>/', product_management.delete_product, name='delete_product'),
     path('edit/<int:id>/get_category/<str:brand_name>/', get_category, name='get_category'),
     path('block/<str:action>/<int:id>/', product_management.block_and_unblock, name='product_block_and_unblock'),   
 
@@ -28,11 +29,13 @@ urlpatterns = [
     path('category/<int:id>/', category_management.update_category, name='update_category'),
     path('category/<str:action>/<int:id>/', category_management.block_and_unblock, name='category_block_and_unblock'),
 
-    # ==========variants=========================
-    path('variants/', variant_management.list_variants,  name='list_variants'),
-    path('variant/add/', variant_management.add_variant, name='add_variant'),
-    path('variant/add/getcandb/<str:product_name>/', get_brand_and_category, name='get_brand_and_category_variant_adding'),
-    path('variant/edit/<int:id>/', variant_management.update_variant, name='update_variant'),
-    path('variant/edit/<int:id>/getband&category/<str:product_name>/', get_brand_and_category, name='get_brand_and_category_variant_updating'),
+    # ============Variations==============
+    path('variants/<int:id>/', variant_management.list_variant, name='list_variant'),
+    path('variant/<int:id>/', variant_management.add_color_variant, name='add_variant'),
+    path('varinat/<int:product_id>/<int:id>/', variant_management.add_storage_variant, name='add_storage_variant'),
+    path('view/<int:id>/', variant_management.variant_detailed_view, name='variant_detailed_view'),
+    path('delete_image/<int:image_id>/<int:id>/', variant_management.delete_image, name='delete_image'),
+    path('change_image/<int:image>/<int:id>/', variant_management.change_image, name='change_image'),
+    path('delete_variant/<int:product_id>/<int:id>/', variant_management.delete_color, name='delete_color')
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

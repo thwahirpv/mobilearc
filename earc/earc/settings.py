@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'admin_product_app',
     'user_app',
     'user_product_app',
+    'mathfilters',
 ]
 
 MIDDLEWARE = [
@@ -119,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 

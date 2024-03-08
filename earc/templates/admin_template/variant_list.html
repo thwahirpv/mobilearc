@@ -2,120 +2,116 @@
 {% load static %}
 
 {% block title %}
-variants
+Brands
 {% endblock %}
+
+<style>
+    /* .add-storage {
+        display: flex;
+        background: black;
+        padding: 3px 10px;
+        border: 20px;
+        box-shadow: 3px 3px 5px 4px rgb(177, 176, 176);
+    } */
+</style>
 
 
 {% block content %}
-
 {% include "admin_sidenav.html"%}
-    
+
     <main class="main-wrap">
         {% include 'admin_nav.html' %}
 
         <section class="content-main">
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Variants</h2>
-                    <p></p>
+                    <h2 class="content-title card-title">Brand </h2>
+                    <p>Brand and vendor management</p>
                 </div>
                 <div>
-                    <a href="#" class="btn btn-light rounded font-md">Export</a>
-                    <a href="#" class="btn btn-light rounded  font-md">Import</a>
-                    <a href="{% url 'admin_product_app:add_variant' %}" class="btn btn-primary btn-sm rounded">Create new</a>
+                    <a href="{% url 'admin_product_app:add_brand' %}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Add New Brand</a>
                 </div>
             </div>
             <div class="card mb-4">
                 <header class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col col-check flex-grow-0">
-                            <div class="form-check ms-2">
-                                <input class="form-check-input" type="checkbox" value="">
+                    <div class="row gx-3">
+                        <div class="col-lg-2 col-6">
+                            <div class="custom_select">
+                                <label for="">Category</label>
+                                <select class="form-select select-nice" onchange="window.location.href=this.value;" name="name" id="category_name">
+                                    <option value="{% url 'admin_product_app:list_brands' %}?category='all' ">All</option>
+                                    {% for item in categories %}
+                                        <option {% if category_name == item.category_name %} selected {% endif %} value="{% url 'admin_product_app:list_brands' %}?category={{item.category_name}}">{{ item.category_name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
-                        </div>
-                        <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
-                            <label for="">Products</label>
-                            <select name="products" class="form-select" onchange="window.location.href=this.value;">
-                                <option value="{% url 'admin_product_app:list_variants' %}?product='all' ">All Variants</option>
-                                {% for item in products_data %}
-                                    <option {% if product_name == item.product_name %} selected {% endif %} value="{% url 'admin_product_app:list_variants' %}?product={{item.product_name}}">{{item.product_name}}</option>
-                                {% endfor %}
-                            </select>
                         </div>
                         <div class="col-lg-2 col-6">
                             <div class="custom_select">
                                 <label for="">Status</label>
                                 <select class="form-select select-nice" onchange="window.location.href=this.value;">
-                                    <option {% if status_data == 'All' %} selected {% endif %} value="{% url 'admin_product_app:list_variants' %}?status='All' ">Show All</option>
-                                    <option {% if status_data ==  'Active' %} selected {% endif %} value="{% url 'admin_product_app:list_variants' %}?status='Active' ">Active</option>
-                                    <option {% if status_data == 'Blocked' %} selected {% endif %} value="{% url 'admin_product_app:list_variants' %}?status='Blocked' ">Blocked</option>
+                                    <option {% if status_data == 'All' %} selected {% endif %} value="{% url 'admin_product_app:list_brands' %}?status='All' ">Show All</option>
+                                    <option {% if status_data ==  'Active' %} selected {% endif %} value="{% url 'admin_product_app:list_brands' %}?status='Active' ">Active</option>
+                                    <option {% if status_data == 'Blocked' %} selected {% endif %} value="{% url 'admin_product_app:list_brands' %}?status='Blocked' ">Blocked</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </header> <!-- card-header end// -->
+                
                 <div class="card-body">
-                    {% for item in variant_data %}
-                    <article class="itemlist">
-                        <div class="row align-items-center">
-                            <div class="col col-check flex-grow-0">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox">
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                <a class="itemside" href="#">
-                                    <div class="left">
-                                        <img src="{{ item.variant_img.url }}" href="" class="img-sm img-thumbnail" alt="Item">
-                                    </div>  
-                                    <div class="info">
-                                        <h6 class="mb-0">Something</h6>
-                                        <p class="text-secondary" style="font-size: 13px;">{{item.variant_product.product_name}}</p>
+                    <div class="row gap-3">
+                        {% for variant in color_variant %}
+                        <div class="card" style="width: 18rem;">
+                
+                            <div id="carouselExampleControls_{{ variant.color_id }}" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    {% for image in variant.images.all %}
+                                    <div class="carousel-item {% if forloop.first %} active  {% endif %}">
+                                        <a href="{% url 'admin_product_app:variant_detailed_view' id=variant.color_id %}">
+                                            <img src="{{ image.product_image.url }}" class="d-block w-100" alt="...">
+                                        </a>
                                     </div>
+                                    {% endfor %}
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls_{{ variant.color_id }}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls_{{ variant.color_id }}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                
+                            <div class="card-body">
+                                <a href="{% url 'admin_product_app:variant_detailed_view' id=variant.color_id %}">
+                                    <h5 class="card-title">{{ variant.color_name }}</h5>
+                                    <!-- <p>{{variant.color_id}}</p> -->
+                                <div style="display: flex;
+                                align-items: center;
+                                width: 50%;
+                                background: white;
+                                border-radius: 20px;
+                                padding: 5px 6px;
+                                border: 20px;
+                                box-shadow: 2px 2px 2px 1px rgb(177, 176, 176);">
+                                    <div style="display: flex; justify-content: center; align-items: center; background: #141432; border-radius: 100%; padding: 0 5px;">
+                                        <a class="fs-6" href="{% url 'admin_product_app:add_storage_variant' product_id=product_obj.product_id id=variant.color_id %}">
+                                            <i class="fa-solid fa-plus text-white"></i>
+                                        </a>
+                                    </div>
+                                    <p style="font-size: .7rem; font-weight: bolder; margin-left: 13px;">
+                                        Storage: 
+                                        <span style="font-weight: bold;">{% if variant.storage %} {{variant.storage.count}} {% else %} 0 {% endif %}</span>
+                                        
+                                    </p>
+                                </div>
                                 </a>
                             </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-price"> 
-                                <p class="fw-bolder text-dark">{{item.variant_category.category_name}}</p> 
-                                <p class="text-secondary" style="font-size: 13px;">{{item.variant_brand.brand_name}}</p>
-
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                {% if item.variant_active %}
-                                    <span class="badge rounded-pill alert-success">Active</span>
-                                {% else %}
-                                    <span class="badge rounded-pill alert-danger">Blocked</span>
-                                {% endif %}
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                <a href="{% url 'admin_product_app:update_variant' id=item.variant_id %}" class="btn btn-sm font-sm rounded btn-brand me-3">
-                                    <i class="material-icons md-edit"></i> Edit
-                                </a>
-                                {% if item.variant_active %}
-                                    <a href="" class="fs-6 text-success">
-                                        <i class="fa-sharp fa-solid fa-power-off"></i>
-                                    </a>
-                                {% else %}
-                                    <a href="" class="fs-6 text-danger">
-                                        <i class="fa-sharp fa-solid fa-power-off"></i>
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div> <!-- row .// -->
-                    </article> <!-- itemlist  .// -->
-                    {% endfor %}
-                </div> <!-- card-body end// -->
-            </div> <!-- card end// -->
-            <div class="pagination-area mt-30 mb-50">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
-                </nav>
-            </div>
-        </section> <!-- content-main end// -->
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
 {% endblock content %}
