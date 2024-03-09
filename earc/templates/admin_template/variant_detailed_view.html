@@ -8,9 +8,12 @@
 <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
 {% endblock %}
 
+
+
 {% block title %}
 ADD PRODUCT
 {% endblock %}
+
 
 
 {% block content %}
@@ -18,107 +21,92 @@ ADD PRODUCT
 <main class="main-wrap">
     {% include 'admin_nav.html' %}
     <section class="content-main mt-50 mb-50">
-        <div class="container">
-            <class class="row">
-                <div class="col-lg-12">
-                    <div class="product-detail accordion-detail">
-                        <div class="row mb-50">
-                            <div class="col-md-6 col-sm-12 col-xs-12">
-                                <div class="detail-gallery">
-                                    <a class="zoom-icon text-white" style="cursor: pointer;"><i class="fa-solid fa-pen-to-square"></i></a>
-                                    <!-- MAIN SLIDES -->
-                                    <div class="product-image-slider">
-                                        
-                                        <figure class="border-radius-10">
-                                            <img src="" id="image_area" alt="product image">
-                                        </figure>
-                                      
-                                    </div>
-                                    <!-- THUMBNAILS -->
-                                    <div class="slider-nav-thumbnails pl-15 pr-15">
-                                        {% for image in color_obj.images.all %}
-                                        <div>
-                                            <img src="{{image.product_image.url}}" id="image{{forloop.counter}}" onload="change_photo({{forloop.counter}})" onclick="change_photo({{forloop.counter}})" alt="product image">
-                                            <div style="width: 100%; height: 20px; display: flex; justify-content: space-between; align-items: center; padding: 0 4px;"> 
-                                                <a href="{% url 'admin_product_app:change_image' image=image.image_id id=color_obj.color_id %}"><i class="fa-solid fa-pen-to-square"></i></a>
-                                                <a href="{% url 'admin_product_app:delete_image' image_id=image.image_id id=color_obj.color_id %}"><i class="fa-solid fa-trash"></i></a>
-                                            </div>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                <!-- End Gallery -->
+        <div class="container" style="display: flex; flex-direction: column;">
+            <!-- variant detials -->
+            <div class="">
+
+                <!-- product name -->
+                <div>
+                    <h1 style="font-family: sans-serif;">{{product_obj.product_name}}     
+                    {% if product_obj.product_active %}
+                        <span class="ms-2 fs-6 rounded-pill bg-success">Active</span>
+                    {% else %}
+                        <span class="ms-2 fs-6 badge rounded-pill bg-danger">Blocked</span>
+                    {% endif %}
+                        
+                    </h1>
+                    <p style="font-weight: bold; margin-top: 3px;">{{product_obj.pro_category.category_name}} / {{product_obj.pro_brand.brand_name}}</p>
+                </div>
+
+                <!-- color namd and storage -->
+                <div style="margin-top: 40px; width: 60%; background: white; border-radius: 10px; 
+                padding: 17px 20px; box-shadow: 3px 3px 10px 3px #e3e3e3;">
+                    <h3 style="font-family: sans-serif; font-weight: bold;">{{color_obj.color_name}}</h3>
+                    <div class="" style="margin-top: 25px; display: flex; gap: 15px;">
+                        {% for item in color_obj.storage.all %}
+                        <div class=""
+                            style="display: flex; justify-content: center; align-items: center; background: #f8f9fa; padding: 7px 8px; border-radius: 8px;">
+                            <p style="font-size: 14px; font-weight: bold; color: black;">{{item.ram}} / {{item.rom}}</p>
+                            <div style="background: white; border-radius: 100%; padding: 2px 7px; margin-left: 8px; ">
+                                <p style="color: black; font-size: 13px; font-weight: bolder; text-align: center;">
+                                    {{item.stock}}
+                                </p>
                             </div>
-
-                            <div class="col-md-6 col-sm-12 col-xs-12">
-                                <div class="detail-info">
-                                    <h2 class="title-detail">{{color_obj.product.product_name}}</h2>
-                                    <div class="product-detail-rating">
-                                        <div class="pro-details-brand" style="display: flex; flex-direction: column;">
-                                            <span> category: <a href="shop-grid-right.html">{{color_obj.product.pro_category.category_name}}</a></span>
-                                            <span> Brands: <a href="shop-grid-right.html">{{color_obj.product.pro_brand.brand_name}}</a></span>
-                                        </div>
-                                        <!-- <div class="product-rate-cover text-end">
-                                            <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width:90%">
-                                                </div>
-                                            </div>
-                                            <span class="font-small ml-5 text-muted"> (25 reviews)</span>
-                                        </div> -->
-                                    </div>
-                                    <div class="clearfix product-price-cover">
-                                        <div class="gy-3 product-price primary-color float-left" style="display: flex; flex-direction: column;">
-                                            <ins><span class="text-brand">{{color_obj.product.price}}</span></ins>
-                                            <div>
-                                                <ins><span class="old-price font-md ml-15">${{color_obj.product.discount_price}}</span></ins>
-                                            <span class="save-price  font-md color3 ml-15">25% Off</span>
-                                            </div> 
-                                        </div>
-                                    </div>
-                                    <div class="bt-1 border-color-1 mt-15 mb-15"></div>
-                                    <div class="short-desc mb-30">
-                                        <p>{{color_obj.product.product_disc}}</p>
-                                    </div>
-                                    <div class="product_sort_info font-xs mb-30">
-                                        <!-- <ul>
-                                            <li class="mb-10"><i class="fi-rs-crown mr-5"></i> 1 Year AL Jazeera Brand Warranty</li>
-                                            <li class="mb-10"><i class="fi-rs-refresh mr-5"></i> 30 Day Return Policy</li>
-                                            <li><i class="fi-rs-credit-card mr-5"></i> Cash on Delivery available</li>
-                                        </ul> -->
-                                    </div>
-                                    <div class="attr-detail attr-color mb-15">
-                                        <strong class="mr-10">Color</strong>
-                                        <p>{{color_obj.color_name}}</p>
-                                    </div>
-                                    <div class="attr-detail attr-size d-flex">
-                                        <strong class="mr-10">Size</strong>
-                                        <ul class="list-filter size-filter font-small">
-                                            {% if product_obj.storage.ram is not None  %}
-                                            <li>Ram: {{product_obj.storage.ram}}</li>
-                                            <li>Rom: {{product_obj.storage.rom}}</li>
-                                            {% else %}
-                                            <li>Ram: No</li>
-                                            <li>Rom: No</li>
-                                            {% endif %}
-                                        </ul>
-                                        </ul>
-
-
-                                    </div>
-                                </div>  
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
-            </class>
+
+                <!-- product details -->
+                <div class="" style="width: 60%; background: white; border-radius: 10px; display: flex; justify-content: center; align-items: center; margin-top: 45px; box-shadow: 3px 3px 10px 3px #e3e3e3; padding: 16px;">
+                    <div style="width: 100%; border-radius: 10px; padding: 15px 20px; background: #f8f9fa;">
+                        <p style="font-size: 15px; font-weight: 600;">
+                            {{product_obj.product_disc}}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- varaint images -->
+                <div style="margin-top: 50px;">
+
+                    <div class="row ">
+                        {% for image in color_obj.images.all %}
+                        <!-- <div class="col-lg-4 col-md-4 col-6">
+                          <a href="#" class="d-block mb-4 h-100">
+                            <img class="img-fluid img-thumbnail" src="{{ image.product_image.url }}" alt="">
+                          </a>
+                          <div class="product-action-1">
+                            <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
+                                <i class="fi-rs-search"></i></a>
+                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                            <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                        </div>
+
+                        </div> -->
+                        <div class="col-lg-4 col-md-4 col-sm-6" >
+                            <div class="product-cart-wrap mb-30">
+                                <div class="product-img-action-wrap">
+                                    <div class="product-img product-img-zoom">
+                                        <img class="default-img pointer" id="image" src="{{image.product_image.url}}" alt="image" style="cursor: pointer;">  
+                                    </div>
+                                    <div class="product-action-1">
+                                        <a aria-label="Edit" class="action-btn hover-up" href="{% url 'admin_product_app:change_image' image_id=image.image_id id=color_obj.color_id %}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a aria-label="Delete" class="action-btn hover-up" href="{% url 'admin_product_app:delete_image' image_id=image.image_id id=color_obj.color_id %}"><i class="fa-solid fa-trash"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                        {% endfor %}
+                      </div>
+                    
+
+                </div>
+            </div>
         </div>
     </section>
 </main>
 <script>
-    function change_photo(id){
-        const image_url = document.getElementById('image'+id).src;
-        let image_area = document.getElementById('image_area');
-        image_area.src = image_url;
-    }
+
 </script>
 
 {% endblock content %}

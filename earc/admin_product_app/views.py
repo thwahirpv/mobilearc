@@ -529,9 +529,9 @@ class variant_management:
         return redirect(reverse('admin_product_app:variant_detailed_view', kwargs={'id':id}))
     
     @never_cache
-    def change_image(request, image=None, id=None):
-        target_image = get_object_or_404(Images, image_id=image)
-        failer_url = reverse('admin_product_app:change_image', kwargs={'image':image, 'id':id})
+    def change_image(request, image_id=None, id=None):
+        target_image = get_object_or_404(Images, image_id=image_id)
+        failer_url = reverse('admin_product_app:change_image', kwargs={'image_id':image_id, 'id':id})
         success_url = reverse('admin_product_app:variant_detailed_view', kwargs={'id':id})
         if request.method == 'POST':
             image_data = request.FILES.get('select_image')

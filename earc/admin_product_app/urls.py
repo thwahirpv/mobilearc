@@ -35,7 +35,7 @@ urlpatterns = [
     path('varinat/<int:product_id>/<int:id>/', variant_management.add_storage_variant, name='add_storage_variant'),
     path('view/<int:id>/', variant_management.variant_detailed_view, name='variant_detailed_view'),
     path('delete_image/<int:image_id>/<int:id>/', variant_management.delete_image, name='delete_image'),
-    path('change_image/<int:image>/<int:id>/', variant_management.change_image, name='change_image'),
+    path('change_image/<int:image_id>/<int:id>/', variant_management.change_image, name='change_image'),
     path('delete_variant/<int:product_id>/<int:id>/', variant_management.delete_color, name='delete_color')
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
