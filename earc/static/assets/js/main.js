@@ -625,14 +625,14 @@
         });
     })
 
-    /*--- VSticker ----*/
+    // /*--- VSticker ----*/
     $('#news-flash').vTicker({
-        speed: 500,
-        pause: 3000,
-        animation: 'fade',
-        mousePause: false,
-        showItems: 1
-    });
+         speed: 500,
+         pause: 3000,
+         animation: 'fade',
+         mousePause: false,
+         showItems: 1
+     });
         
 })(jQuery);
 

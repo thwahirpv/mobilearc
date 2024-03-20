@@ -115,12 +115,8 @@ class user_crud_view(View):
         else:
             return redirect('admin_app:load_table')
     
-    def delete(request):
-        print('hey iam working............')
-        id = request.GET.get('id')
-        url = request.META.get('HTTP_REFERER')
+    def delete(request, id):
         user = get_object_or_404(UserDetails, user_id=id)
-        # context = {'opration':'fail'}
         user.delete()
         context = {'opration':'success'}
         return JsonResponse(context, safe=False)
@@ -138,7 +134,6 @@ def admin_logout(request):
 
 def get_user(request):
     id = request.GET.get('id')
-    print('hai iam here.................')
     data = UserDetails.objects.get(user_id=id)
     username = data.username
     context = {'username': username}

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Homeettwe
+Category
 {% endblock %}
 
 
@@ -97,9 +97,9 @@ Homeettwe
                                             <td><a class="fs-5" href="{% url 'admin_product_app:update_category' id=item.category_id %}"><i class="fa-solid fa-pen-to-square"></i></a></td>
                                             <td class="text-end">
                                                 {% if item.category_active %}
-                                                    <a class="text-danger fs-5" href="{% url 'admin_product_app:category_block_and_unblock' action='block' id=item.category_id %}"><i class="fa-sharp fa-solid fa-power-off"></i></a>
+                                                    <a onclick="blockAndUnblock(action='block', id={{item.category_id}})" class="text-danger fs-5"><i class="fa-sharp fa-solid fa-power-off"></i></a>
                                                 {% else %}
-                                                    <a class="text-success fs-5" href="{% url 'admin_product_app:category_block_and_unblock' action='unblock' id=item.category_id %}"><i class="fa-sharp fa-solid fa-power-off"></i></a>
+                                                    <a onclick="blockAndUnblock(action='unblock', id={{item.category_id}})" class="text-success fs-5"><i class="fa-sharp fa-solid fa-power-off"></i></a>
                                                 {% endif %}
                                             </td>
                                         </tr>
@@ -129,7 +129,7 @@ Homeettwe
     </main>
 
 
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
     <script>
         const category_img = document.getElementById('category_img')
         const upload_image = document.getElementById('upload_image')
@@ -145,5 +145,40 @@ Homeettwe
                 reader.readAsDataURL(upload_image.files[0])
             }
         })
+        
+        
+            function blockAndUnblock(action, id){
+                const getNameURl = `/admin/products/category/get_name/${id}/`
+                fetch(getNameURl)
+                .then(response => response.json())
+                .then(data => {
+                    Swal.fire({
+                    title: `Are you sure to ${action}?`,
+                    text: data.name,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: `Yes, ${action} it`
+                }).then((result) => {
+                    if(result.isConfirmed){
+                        const oprationUrl = `/admin/products/category/${action}/${id}/`
+                        fetch(oprationUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            if(data.status == 'success'){
+                                Swal.fire({
+                                title: data.title,
+                                text: data.text,
+                                icon: "success"
+                                }).then(()=>{
+                                    window.location.reload()
+                                })
+                            }
+                        })
+                 }
+                })
+            })
+        }
     </script>
 {% endblock content %}

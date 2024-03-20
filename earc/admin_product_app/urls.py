@@ -14,14 +14,14 @@ urlpatterns = [
     path('edit/<int:id>/', product_management.update_product, name='update_product'),
     path('delete_product/<int:id>/', product_management.delete_product, name='delete_product'),
     path('edit/<int:id>/get_category/<str:brand_name>/', get_category, name='get_category'),
-    path('block/<str:action>/<int:id>/', product_management.block_and_unblock, name='product_block_and_unblock'),   
+    path('<str:action>/<int:id>/', product_management.block_and_unblock, name='product_block_and_unblock'),   
 
     # ==============Brands=======================
     path('brands/', brand_management.brands, name='list_brands'),
     path('brands/add/', brand_management.add_brand, name='add_brand'),
+    path('brands/<str:action>/<int:id>/', brand_management.block_and_unblock, name='brand_block_and_unblock'),
     path('brand/<int:id>', brand_management.update_brand, name='update_brand'),
     path('brand/del/<int:id>/', brand_management.delete_brand, name='delete_brand'),
-    path('brand/<str:action>/<int:id>/', brand_management.block_and_unblock, name='brand_block_and_unblock'),
 
     # ==========Category=================
     path('category/', category_management.category, name='admin_category'),

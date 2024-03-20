@@ -67,7 +67,7 @@ class category_management:
     
     # category delete
     @never_cache
-    def delete_category(requset, id):
+    def delete_category(request, id):
         category_obj = get_object_or_404(category, category_id=id)
         category_obj.delete()
         return redirect('admin_product_app:admin_category')
@@ -123,18 +123,50 @@ class category_management:
     
     # category block and unblock
     @never_cache
-    def block_and_unblock(requset, action, id):
+    def block_and_unblock(request, action, id):
         category_obj = get_object_or_404(category, category_id=id)
-        if action == 'block':
+
+        if action == 'get_name':
+            context = {
+                'name':category_obj.category_name
+            }
+            return JsonResponse(context, safe=True)
+        
+        elif action == 'block':
             category.objects.filter(category_id=id).update(category_active=False)
             brands.objects.filter(brand_category=category_obj).update(brand_active=False)
             products.objects.filter(pro_category=category_obj).update(product_active=False)
-            return redirect('admin_product_app:admin_category')
+            context = {
+                'status':'success',
+                'title':'Blocked',
+                'text':f"{category_obj.category_name} is Blocked"
+            }
+            return JsonResponse(context, safe=True)
+        
         elif action == 'unblock':
+            if 'brand_id' in request.session:
+                brand_id = request.session.get('brand_id')
+                brand_obj = get_object_or_404(brands, brand_id=brand_id)
+                brand_obj.brand_active = True
+                brand_obj.save()
+                del request.session['brand_id']
+
+            if 'product_id' in request.session:
+                product_id = request.session.get('product_id')
+                product_obj = get_object_or_404(products, product_id=product_id)
+                product_obj.product_active = True
+                product_obj.save()
+                del request.session['product_id']
+
             category.objects.filter(category_id=id).update(category_active=True)
-            brands.objects.filter(brand_category=category_obj).update(brand_active=True)
-            products.objects.filter(pro_category=category_obj).update(product_active=True)
-            return redirect('admin_product_app:admin_category')
+
+            context = {
+                'status':'success',
+                'category':category_obj.category_name, 
+                'title':'Unblocked',
+                'text':f"{category_obj.category_name} is Unblocked"
+            }
+            return JsonResponse(context, safe=True)
 #=========================================== end Category management ====================================================
 
 
@@ -280,20 +312,61 @@ class brand_management:
 
     # Brand block and unblock
     @never_cache
-    def block_and_unblock(requset, action, id):
+    def block_and_unblock(request, action, id):
         brand_obj = get_object_or_404(brands, brand_id=id)
-        if action == 'block':
+        if action == 'get_name':
+            name = brand_obj.brand_name
+            context = {'name':name,'brand_id':brand_obj.brand_id,}
+            return JsonResponse(context, safe=True)
+        elif action == 'block':
             brands.objects.filter(brand_id=id).update(brand_active=False)
             products.objects.filter(pro_brand=brand_obj).update(product_active=False)
-            return redirect('admin_product_app:list_brands')
+            context = {
+                'status':'success', 
+                'name':brand_obj.brand_name,
+                'title':'Blocked',
+                'brand_id':brand_obj.brand_id,
+                'text':f'{brand_obj.brand_name} Brand is Blocked'
+                }
+            return JsonResponse(context, safe=True)
         elif action == 'unblock':
-            brands.objects.filter(brand_id=id).update(brand_active=True)
-            products.objects.filter(pro_brand=brand_obj).update(product_active=True)
-            return redirect('admin_product_app:list_brands')
+            category_status = brand_obj.brand_category.category_active
+            if category_status: 
+                if 'product_id' in request.session:
+                    product_id = request.session.get('product_id')
+                    product_obj = get_object_or_404(products, product_id=product_id)
+                    product_obj.product_active = True
+                    product_obj.save()
+                    del request.session['product_id']
+
+                brands.objects.filter(brand_id=id).update(brand_active=True)
+                
+                context = {
+                    'status':'success',
+                    'name':brand_obj.brand_name,
+                    'title':'Unblocked',
+                    'brand_id':brand_obj.brand_id,
+                    'text':f'{brand_obj.brand_name} Brand is Unblocked'
+                }
+                return JsonResponse(context, safe=True)
+            else:
+                request.session['brand_id'] = brand_obj.brand_id
+                context = {
+                    'status':'warning',
+                    'name':brand_obj.brand_name,
+                    'title':'failed',
+                    'category':brand_obj.brand_category.category_name,
+                    'category_id':brand_obj.brand_category.category_id,
+                    'brand_id':brand_obj.brand_id,
+                    'text':f"Category of {brand_obj.brand_name} is still blocked. if you want unblock {brand_obj.brand_name} first you want to unblock {brand_obj.brand_category.category_name}."
+                }
+                return JsonResponse(context, safe=True)
+            
+
 
     # delete brand
     @never_cache
-    def delete_brand(requset, id):
+    def delete_brand(request, id):
         brand_obj = get_object_or_404(brands, brand_id=id)
         brand_obj.delete()
         return redirect('admin_product_app:list_brands')
@@ -452,15 +525,48 @@ class product_management:
     @never_cache
     def block_and_unblock(request, action, id):
         product_obj = get_object_or_404(products, product_id=id)
-        if action == 'block':
+        brand_obj = product_obj.pro_brand
+
+        if action == 'get_name':
+            context = {
+                'name':product_obj.product_name
+            }
+            return JsonResponse(context, safe=True)
+        
+        elif action == 'block':
             product_obj.product_active = False
             product_obj.save()
-            return redirect('admin_product_app:list_products')
+            context = {
+                'status':'success',
+                'text':f"{product_obj.product_name} is Blocked",
+                'title':'Blocked',
+                'name': product_obj.product_name
+            }
+            return JsonResponse(context, safe=True)
+        
         elif action == 'unblock':
-            product_obj.product_active = True
-            product_obj.save()
-            return redirect('admin_product_app:list_products')
-    
+            if brand_obj.brand_active:
+                product_obj.product_active = True
+                product_obj.save()
+                context = {
+                    'status':'success',
+                    'text':f"{product_obj.product_name} is Unblocked",
+                    'title':'Unblocked',
+                    'name': product_obj.product_name
+                }
+                return JsonResponse(context, safe=True)
+            else:
+                request.session['product_id'] = product_obj.product_id
+                context = {
+                    'status':'warning',
+                    'text':f"Brand of {product_obj.product_name} id still blocked. If you want unblock {product_obj.product_name} first you need to unblock {brand_obj.brand_name}",
+                    'title':'failed',
+                    'brand_id':brand_obj.brand_id,
+                    'name':'product_obj.product_name'
+                }
+                return JsonResponse(context, safe=True)
+            
+
     def delete_product(request, id):
         product_obj = get_object_or_404(products, product_id=id)
         product_obj.delete()

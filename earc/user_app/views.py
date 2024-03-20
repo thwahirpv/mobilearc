@@ -30,15 +30,12 @@ def user_registration(request):
     if request.user.is_authenticated and request.user.is_active: 
         return redirect('user_app:user_home')
     
-    
-    
 
     if request.method == 'POST':
         profile = request.FILES.get('profile')
         username = request.POST.get('username')
         email = request.POST.get('email')
         country_code = request.POST.get('preferred_country')
-        print(country_code)
         number = request.POST.get('phone')
         password = request.POST.get('password')
         conform_pass = request.POST.get('conform_password')

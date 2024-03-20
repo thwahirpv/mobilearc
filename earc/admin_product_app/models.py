@@ -14,7 +14,7 @@ class brands(models.Model):
     brand_name = models.CharField(max_length=100, null=False)
     brand_image = models.ImageField(upload_to='brands/', default='brands/brand_default_logo.png')
     brand_active = models.BooleanField(default=True)
-    brand_category = models.ForeignKey(category, on_delete=models.CASCADE, related_name='brand')
+    brand_category = models.ForeignKey(category, on_delete=models.CASCADE, related_name='brands')
 
 class products(models.Model):
     product_id = models.BigAutoField(primary_key=True, unique=True)

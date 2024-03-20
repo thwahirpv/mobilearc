@@ -114,7 +114,7 @@ Users
         const url = 'get_user?id='+id
         fetch(url)
         .then(response => response.json()   )
-        .then(data => {
+          .then(data => {
             console.log(data.username)
             Swal.fire({
             title: "Are you sure to delete?",
