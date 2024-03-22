@@ -1,0 +1,113 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+Banners
+{% endblock %}
+
+
+{% block content %}
+
+{% include 'admin_sidenav.html' %}
+    
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Banners</h2>
+                    <p>Add, Edit or Block a Banner</p>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Title</th>
+                                            <th>Priority</th>
+                                            <th class="">Edit</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in banners_items %}
+                                        <tr class="fw-bold">
+                                            <td>
+                                                <div>
+                                                    {% if item.banner_image %}
+                                                    <img src="{{ item.banner_image.url }}" class="shadow-4 avatar avatar-sm me-3 border-radius-lg"
+                                                    style="width: 100px; height: 55px;" alt="" />
+                                                    {% endif %}
+                                                  </div>
+                                            </td>
+                                            <td><p class="fw-bold">{{ item.banner_title }}</p></td>
+                                            <!-- <td>{{ item.banner_text }}</td> -->
+                                            <td>
+                                                <p class="fw-bold">{{ item.get_priority_display }}</p>
+                                            </td>
+                                            <td><a class="fs-5" href="{% url 'banner_app:edit_banner' id=item.banner_id %}"><i class="fa-solid fa-pen-to-square"></i></a></td>
+                                            <td class="">
+                                                {% if item.banner_active %}
+                                                    <a onclick="blockAndUnblock(action='block', id={{item.banner_id}})" class="text-success fs-5"><i class="fa-sharp fa-solid fa-power-off"></i></a>
+                                                {% else %}
+                                                    <a onclick="blockAndUnblock(action='unblock', id={{item.banner_id}})" class="text-danger fs-5"><i class="fa-sharp fa-solid fa-power-off"></i></a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> <!-- .col// -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+    <script>
+        function blockAndUnblock(action, id){
+                const getNameURl = `/admin/banner/get_name/${id}/`
+                fetch(getNameURl)
+                .then(response => response.json())
+                .then(data => {
+                    Swal.fire({
+                    title: `Are you sure to ${action}?`,
+                    text: data.title,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: `Yes, ${action} it`
+                }).then((result) => {
+                    if(result.isConfirmed){
+                        const oprationUrl = `/admin/banner/${action}/${id}/`
+                        fetch(oprationUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            if(data.status == 'success'){
+                                Swal.fire({
+                                title: data.title,
+                                text: data.text,
+                                icon: "success"
+                                }).then(()=>{
+                                    window.location.reload()
+                                })
+                            }
+                        })
+                 }
+                })
+            })
+        }
+    </script>
+
+{% endblock content %}

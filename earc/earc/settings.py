@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'user_app',
     'user_product_app',
     'mathfilters',
+    'banner_app'
 ]
 
 MIDDLEWARE = [

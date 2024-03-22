@@ -289,6 +289,7 @@ class brand_management:
 
             if name == '' or category_name == '':
                 messages.error(request, 'Fill those fields!')
+                return redirect('admin_product_app:update_brand')
 
             if not type(name) == str:
                 messages.error(request, 'Enter meaningfull details!')

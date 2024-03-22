@@ -20,7 +20,7 @@ class products(models.Model):
     product_id = models.BigAutoField(primary_key=True, unique=True)
     product_name = models.CharField(max_length=50, null=False)
     product_disc = models.CharField(max_length=1500, null=False)
-    thumbnail = models.ImageField(upload_to='product_thumbnail', default='product_thumbnail/default_product_thumbnail.webp')
+    thumbnail = models.ImageField(upload_to='product_thumbnail/', default='product_thumbnail/default_product_thumbnail.webp')
     price = models.PositiveIntegerField(null=False)
     discount_price = models.PositiveIntegerField(null=False)
     pro_category = models.ForeignKey(category, on_delete=models.CASCADE, related_name='product')

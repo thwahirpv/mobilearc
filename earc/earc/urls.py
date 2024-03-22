@@ -27,13 +27,19 @@ urlpatterns = [
     # ========Direction to admin_app====================
     path('admin/', include('admin_app.urls', namespace='admin_app')),
 
-    # ========direction to admin_products_app==========
+    # ========Direction to admin_products_app==========
     path('admin/products/', include('admin_product_app.urls', namespace='admin_product_app')),
+
+    # ===========Direction to banner_app===============
+    path('admin/banner/', include('banner_app.urls', namespace='banner_app')),
+
 
     #===========Direction to user_app=================
     path('', include('user_app.urls', namespace='user_app')),
 
     #===========Direction to user_product_app=========
     path('products/', include('user_product_app.urls', namespace='user_product_app'))
+
+
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
