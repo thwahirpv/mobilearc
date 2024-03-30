@@ -122,7 +122,7 @@ class category_management:
         return render(request, 'admin_template/page-update-category.html', {'category_obj':category_obj})
     
     # category block and unblock
-    @never_cache
+    
     def block_and_unblock(request, action, id):
         category_obj = get_object_or_404(category, category_id=id)
 
@@ -312,7 +312,7 @@ class brand_management:
         return render(request, 'admin_template/page-brandupdate.html', context)
 
     # Brand block and unblock
-    @never_cache
+   
     def block_and_unblock(request, action, id):
         brand_obj = get_object_or_404(brands, brand_id=id)
         if action == 'get_name':
@@ -523,7 +523,7 @@ class product_management:
         return render(request, 'admin_template/update-product.html', context)
     
     # product block and unblock 
-    @never_cache
+
     def block_and_unblock(request, action, id):
         product_obj = get_object_or_404(products, product_id=id)
         brand_obj = product_obj.pro_brand
@@ -588,8 +588,9 @@ class variant_management:
 
 
     # Add variant
-    @never_cache
+   
     def add_color_variant(request, id=None):
+        product_obj = get_object_or_404(products, product_id=id)
         url = reverse('admin_product_app:add_variant', kwargs={'id':id})
         if request.method == 'POST':
             color_name = request.POST.get('color')
@@ -614,10 +615,11 @@ class variant_management:
                 messages.error(request, 'upload image!')
                 return redirect(url)
             
-            product_obj = get_object_or_404(products, product_id=id)
+            
             color_obj = Colors.objects.create(color_name=color_name, product=product_obj)
-            for image in images:
-                Images.objects.create(product_image=image, color= color_obj)
+            for index, image in enumerate(images, start=1):
+                priority = request.POST.get(f'order_{index}', index)
+                Images.objects.create(product_image=image, priority=priority, color= color_obj)
             return redirect('admin_product_app:list_products')
         return render(request, 'admin_template/page-add-variant.html')
     
@@ -629,13 +631,13 @@ class variant_management:
         return render(request, 'admin_template/variant_detailed_view.html', context)
 
 
-    @never_cache
+    
     def delete_image(request, image_id=None, id=None):
         image=get_object_or_404(Images, image_id=image_id)
         image.delete()
         return redirect(reverse('admin_product_app:variant_detailed_view', kwargs={'id':id}))
     
-    @never_cache
+    
     def change_image(request, image_id=None, id=None):
         target_image = get_object_or_404(Images, image_id=image_id)
         failer_url = reverse('admin_product_app:change_image', kwargs={'image_id':image_id, 'id':id})
@@ -668,7 +670,7 @@ class variant_management:
         context={'target_image':target_image}
         return render(request, 'admin_template/change_varinat_image.html', context)
         
-    @never_cache
+    
     def add_storage_variant(request, product_id=None, id=None):
         url = reverse('admin_product_app:add_storage_variant', kwargs={'product_id':product_id,'id':id})
         color_obj = get_object_or_404(Colors, color_id=id)

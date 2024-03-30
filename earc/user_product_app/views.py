@@ -11,18 +11,45 @@ from io import BytesIO
 from django.urls import reverse
 from django.views.decorators.cache import cache_control
 from django.utils.decorators import method_decorator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 
 
 def product_list(request):
-    products_data = products.objects.all()
-    color_obj = Colors.objects.all()
+    print('haii iam here ..............')
+    if not request.user.is_authenticated or request.user.is_active is False:
+        return redirect('user_app:user_login')
+    
+    page = request.GET.get('page', 1)
+    products_data = products.objects.filter(colors__isnull=False).distinct()
     category_data = category.objects.all()
-    choosed_category = request.GET.get('x', None)
+   
+    # Filter data basaed on category
+    if request.GET:
+        x = request.GET.get('x', None)
+        print(x)
+        if x == 'all':
+            print('haaaaaaai')
+            products_data = products_data.filter(colors__isnull=False).distinct()
+        else:
+            products_data = products_data.filter(pro_category__category_name=x)
+
+    # Pagination section 
+    paginator_obj = Paginator(products_data, 9)
+    try:
+        products_data = paginator_obj.get_page(page)
+    except PageNotAnInteger:
+        products_data = paginator_obj.page(1)
+    except EmptyPage:
+        products_data = paginator_obj.page(paginator_obj.num_pages)
+
     context={'products_data':products_data, 'category_data':category_data}
     return render(request, 'user_template/list_products.html', context)
 
 
 def product_view(request, id):
+    if not request.user.is_authenticated or request.user.is_active is False:
+        return redirect('user_app:user_login')
     product_obj = get_object_or_404(products, product_id=id)
     color_obj = Colors.objects.filter(product=product_obj)
     color_id = color_obj[0].color_id
@@ -33,6 +60,8 @@ def product_view(request, id):
 
 
 def collect_image(request, colorId=None, id=None):
+    if not request.user.is_authenticated or request.user.is_active is False:
+        return redirect('user_app:user_login')
     color_obj = get_object_or_404(Colors, color_id=colorId)
     images = Images.objects.filter(color=color_obj)
     image_data = [{'id':color_obj.color_id, 'link':image.product_image.url} for image in images]

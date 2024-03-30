@@ -118,7 +118,7 @@ Products
         <Script>
             function blockAndUnblock(action, id){
                 console.log(action, id)
-                const getNameURl = `/admin/products/get_name/${id}`
+                const getNameURl = `/admin/products/item/get_name/${id}`
                 fetch(getNameURl)
                 .then(response => response.json())
                 .then(data => {
@@ -132,7 +132,7 @@ Products
                     confirmButtonText: `Yes, ${action} it`
                 }).then((result) => {
                     if(result.isConfirmed){
-                        const oprationUrl = `/admin/products/${action}/${id}`
+                        const oprationUrl = `/admin/products/item/${action}/${id}`
                         fetch(oprationUrl)
                         .then(response => response.json())
                         .then(data => {

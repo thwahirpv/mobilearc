@@ -14,7 +14,7 @@ urlpatterns = [
     path('edit/<int:id>/', product_management.update_product, name='update_product'),
     path('delete_product/<int:id>/', product_management.delete_product, name='delete_product'),
     path('edit/<int:id>/get_category/<str:brand_name>/', get_category, name='get_category'),
-    path('<str:action>/<int:id>/', product_management.block_and_unblock, name='product_block_and_unblock'),   
+    path('item/<str:action>/<int:id>/', product_management.block_and_unblock, name='product_block_and_unblock'),   
 
     # ==============Brands=======================
     path('brands/', brand_management.brands, name='list_brands'),

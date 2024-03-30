@@ -49,16 +49,21 @@ ADD PRODUCT
                                 </div>
                                 <div class="row gx-2 col-12 mt-4">
                                     <div class="card mb-4">
-                                        <div class="card-header">
+                                        <div class="card-header d-flex justify-content-between">
                                             <h4>Media</h4>
+                                            <button type="button" class="btn btn-sm fw-bold text-white" style="background: #088178;" id="addMore">Add More</button>
                                         </div>
                                         <div class="card-body">
-                                            <div class="input-upload row justify-content-center align-items-center" id="image-container">
-                                                <div class="" id="image-icon">
-                                                    <img src="{% static 'assets2/imgs/theme/upload.svg' %}" id="media" alt="" >
-                                                </div>
-                                                <input class="form-control" id="image-input" type="file" multiple name="images">
+                                            <div class="input-upload row gap-3 justify-content-center" id="image-container">
+                                                <div class="col-3 imageInputs">
+                                                    <div class="" id="image-icon">
+                                                        <img src="{% static 'assets2/imgs/theme/upload.svg' %}" id="media-0" alt="" >
+                                                    </div>
+                                                    <input class="form-control ps-1" onchange="setImage(event, idNum=0)" id="image-input-0" type="file" name="images">
+                                                    <input class="form-control mt-2" value="1" type="number" name="order_1">
+                                                </div> 
                                             </div>
+                                            
                                         </div>
                                     </div> 
                                 </div>
@@ -81,78 +86,49 @@ ADD PRODUCT
     </main>
 
     <script>
-        const imageInput = document.getElementById('image-input')
-        const middleDiv = document.getElementById('middle')
-        const imageIcon = document.getElementById('image-icon')
-        const imageContainer = document.getElementById('image-container')
-        const cropContainer = document.getElementById('crop-container')
-        const cBox = document.getElementById('c-box')
+        document.addEventListener('DOMContentLoaded', function() {
+            const addMoreButton = document.getElementById('addMore');
+            const imageInputsContainer = document.getElementById('image-container');
+            const media = document.getElementById('media');
+            const imageInput = document.getElementById('image-input')
+            let imageCount = 1;
 
-        imageInput.addEventListener('change', ()=>{
-            const url = [];
-            const img_data = imageInput.files
-            const data_set = Object.entries(img_data);
-            imageIcon.style.display = 'None'
+            addMoreButton.addEventListener('click', function() {
+                imageCount++;
 
-            data_set.forEach(([key, value]) => {
-                const link = URL.createObjectURL(value)
-                url.push(link)
+                // Create new image input field
+                const newImageInput = document.createElement('div');
+                newImageInput.className = 'col-3';
+                newImageInput.innerHTML = `
+                    <div class="" id="image-icon">
+                        <img src="{% static 'assets2/imgs/theme/upload.svg' %}" id="media-${imageCount}" alt="" >
+                    </div>
+                    <input class="form-control ps-1" type="file" id="image-input-${imageCount}" name="images">
+                    <input class="form-control mt-2" type="number" name="order_${imageCount}" value="${imageCount}">
+                `;
+                imageInputsContainer.appendChild(newImageInput);
 
-                const imageBox = document.createElement('div')
-                imageBox.classList.add('mt-4')
-                imageBox.classList.add('col-4')
-                imageBox.style.width = 33.33333%
-                imageBox.classList.add('position-relative')
-                const img = document.createElement('img');
-                img.src = link
-                img.classList.add('crop-image')
-                imageBox.appendChild(img)
-                imageContainer.appendChild(imageBox)
-
-                const aTag = document.createElement('a')
-                const iTag = document.createElement('i')
-                const middleDiv = document.createElement('div')
-                iTag.classList.add('fa-solid')
-                iTag.classList.add('fa-crop')
-                iTag.style.fontSize = '23px'
-                aTag.appendChild(iTag)
-                middleDiv.classList.add('middle')   
-                middleDiv.appendChild(aTag)
-                imageBox.appendChild(middleDiv)
-
-                imageBox.addEventListener('mouseover', () => {
-                    img.style.opacity = 0.3
-                    middleDiv.style.opacity = 1
+                const fileInput = document.getElementById(`image-input-${imageCount}`)
+                const idNum = imageCount
+                fileInput.addEventListener('change', function(event){
+                    setImage(event, idNum)
                 })
-                imageBox.addEventListener('mouseout', () => {
-                    img.style.opacity = 1
-                    middleDiv.style.opacity = 0
-                })
+            });
 
-                iTag.addEventListener('click', () => {
-                    cropContainer.style.zIndex = 1
-                    cBox.innerHTML = `<img src="${link}" id="image" width="500px"/>`
-                    var $image = $('#image');
-                    $image.cropper({
-                    aspectRatio: 16 / 9,
-                    crop: function(event) {
-                        console.log(event.detail.x);
-                        console.log(event.detail.y);
-                        console.log(event.detail.width);
-                        console.log(event.detail.height);
-                        console.log(event.detail.rotate);
-                        console.log(event.detail.scaleX);
-                        console.log(event.detail.scaleY);
-                    }
-                    });
+           
+        });  
 
-                    // Get the Cropper.js instance after initialized
-                    var cropper = $image.data('cropper');
-
-                })
-            })
-
-        });
-            
+        const setImage = (e, idNum) => {
+            const imgTag = document.getElementById(`media-${idNum}`)
+            const inputFile = document.getElementById(`image-input-${idNum}`)
+            if (inputFile.files[0]){
+                const reader = new FileReader()
+                reader.onload = function(e){
+                    imgTag.src = e.target.result
+                }
+                reader.readAsDataURL(inputFile.files[0])
+            }
+        }
+           
     </script>
 {% endblock content %}

@@ -45,9 +45,19 @@ Homeettwe
                     <div class="row col-6 mt-3">
                         <div class="custom_select">
                             <select name="priority" class="form-select select-nice">
-                                <option value="{% if banner_obj.priority %}{{banner_obj.priority}}{% endif %}" selected>{% if banner_obj %}{{banner_obj.priority}}{% else %}Priority{% endif %}Priority</option>
+                                <option value="{% if banner_obj.priority %}{{banner_obj.priority}}{% endif %}" selected>{% if banner_obj %}{{banner_obj.priority}}{% else %}Priority{% endif %}</option>
                                 {% for value, label in priority %}
                                     <option value="{{value}}" >{{ value }}: {{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div> 
+                    <div class="row col-6 mt-3">
+                        <div class="custom_select">
+                            <select name="banner_type" class="form-select select-nice">
+                                <option value="{% if banner_obj.priority %}{{banner_obj.priority}}{% endif %}" selected>{% if banner_obj %}{{banner_obj.priority}}{% else %}Banner type{% endif %}</option>
+                                {% for key, value in banner_type %}
+                                    <option value="{{key}}" >{{ value }}</option>
                                 {% endfor %}
                             </select>
                         </div>

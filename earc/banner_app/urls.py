@@ -10,6 +10,7 @@ urlpatterns = [
     path('', list_banner, name='list_banner'),
     path('add/', add_banner, name='add_banner'),
     path('edit/<int:id>/', banner_edit, name='edit_banner' ), 
-    path('<str:action>/<int:id>/', block_and_unblock, name='block_and_unblock')
+    path('delete/<int:id>/', delete_banner, name='delete_banner'),
+    path('<str:action>/<int:id>/', block_and_unblock, name='block_and_unblock'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -18,6 +18,7 @@ from PIL import Image
 from io import BytesIO   
 import pycountry
 from . import signals
+from banner_app.models import Banner
                                                                                        
 @never_cache
 def fournoterror(request):
@@ -195,8 +196,15 @@ def user_logout(request):
 
 def user_home(request):
     user = request.user
+    first_banner = Banner.objects.filter(Q(banner_active=True) & Q(banner_type='first_banner')).order_by('priority')
+    secondary_banner = Banner.objects.filter(Q(banner_active=True) & Q(banner_type='secondary_banner'))
+    context = {
+        'user':user,
+        'first_banner':first_banner,
+        'secondary_banner':secondary_banner
+    }
     if request.user.is_authenticated and request.user.is_active:
-        return render(request, 'user_template/index.html', {'user':user})
+        return render(request, 'user_template/index.html', context)
     else:
-        return render(request, 'user_template/index.html', {'user':user})
+        return render(request, 'user_template/index.html', context)
     

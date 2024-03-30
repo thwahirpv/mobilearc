@@ -8,6 +8,10 @@ from django.views import View
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.core.serializers import serialize
+from .models import web_logo
+from django.contrib import messages
+from PIL import Image
+from io import BytesIO
 # from rest_framework.decorators import api_view
 
 
@@ -138,3 +142,38 @@ def get_user(request):
     username = data.username
     context = {'username': username}
     return JsonResponse(context, safe=True)
+
+# settings
+def site_settings(request):
+    return render(request, 'admin_template/settings.html')
+
+# Logo
+def logo(request):
+    if not request.user.is_superuser:
+         return redirect('admin_app:admin_login')
+    
+    logo_image = web_logo.objects.latest('created_at')
+    if request.method == 'POST':
+        image = request.FILES.get('image')
+        if image:
+            try:
+                file_content = image.read()
+                img = Image.open(BytesIO(file_content))
+                if not img.format.lower()  in ['jpg', 'jpeg', 'png']:
+                    messages.error(request, 'Upload jpg, jpeg or png!')
+                    return redirect('admin_app:logo')
+            except:
+                messages.error(request, 'invalid file!')
+                return redirect('admin_app:logo')
+        else:
+            messages.error(request, 'Upload image!')
+            return redirect('admin_app:logo')
+        
+
+        web_logo.objects.create(logo=image)
+        return redirect('admin_app:logo')
+    
+    context = { 
+        'logo_image':logo_image
+    }
+    return render(request, 'admin_template/logo.html', context)

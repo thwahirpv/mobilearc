@@ -1,0 +1,42 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+Settings
+{% endblock %}
+
+
+
+{% block content %}
+
+{% include 'admin_sidenav.html' %}
+    
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+        <section>
+            <div
+            style="width: 100%;
+            height: fit-content;
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            ">
+                <div
+                style="
+                display: flex;
+                justify-content: center;
+                margin-top: 25px;
+                " class="menu-item">
+                <!-- options start -->
+                    <div class="text" style="padding: 10px 100px; background-color: rgb(222, 219, 219); border-radius: 8px;">
+                        <a class="fw-bold" href="{% url 'admin_app:logo' %}">Logo</a>
+                    </div>
+                <!-- options end -->
+
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+{% endblock %}

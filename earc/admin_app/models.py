@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import AbstractUser, BaseUserManager
@@ -57,3 +58,9 @@ class UserDetails(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+
+
+class web_logo(models.Model):
+    logo = models.ImageField(upload_to='logo/')
+    created_at = models.DateTimeField(auto_now_add=True)

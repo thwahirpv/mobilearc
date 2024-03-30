@@ -1,0 +1,94 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+Banners
+{% endblock %}
+
+
+{% block content %}
+
+{% include 'admin_sidenav.html' %}
+    
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+        <div style="display: flex;">
+            <section style="width: 50%;">
+                <div 
+                style="width: 100%;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                ">
+                    <div 
+                    style="display: flex; 
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 10px;
+                    ">
+                    <p id="errorText" class="fw-bold text-danger"></p>
+                        <div>
+                            <img id="mainImage" class="" src="{{ logo_image.logo.url }}"
+                            style="width: 150px; height: 150px;" alt="">
+                        </div>
+                    </div>
+    
+                </div>
+            </section>
+    
+            <section id="" style="width: 50%;">
+                <div style="width: 100%; height: 100%; background: rgba(0, 0, 0, 0.238); display: flex; justify-content: center; align-items: center;">
+                    <div style="width: 50%; height: 55%; border-radius: 10px; display: flex; justify-content: center; align-items: center;">
+                        <div>
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Media</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="input-upload row justify-content-center align-items-center" id="image-container">
+                                            <div class="" id="image-icon">
+                                                <img id="imageSpace" src="{% static 'assets2/imgs/theme/upload.svg' %}" id="media" alt="" >
+                                            </div>
+                                            <input id="uploadImage" class="form-control" type="file" name="image">
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-outline-primary"
+                                        style="background: #088178; color: white;"
+                                    >
+                                    Submit
+                                    </button>
+                                    
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        const imageSpace = document.getElementById('imageSpace')
+        const uploadImage = document.getElementById('uploadImage')
+
+
+        uploadImage.addEventListener('change', function(){
+            if(uploadImage.files[0]){
+                const reader = new FileReader()
+                reader.onload = function(e){
+                    imageSpace.src = e.target.result
+                }
+                reader.readAsDataURL(uploadImage.files[0])
+            }
+        })
+    </script>
+{% endblock %}

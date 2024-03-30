@@ -27,6 +27,9 @@ urlpatterns = [
     path('user/<int:id>/unblock', user_crud_view.unblock_user, name='unblock_user'),
     # ==============Crud oprations=======================
 
+    #===============Settings===========================
+    path('settings/', site_settings, name='site_settings'),
+    path('logo/', logo, name='logo')
     
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

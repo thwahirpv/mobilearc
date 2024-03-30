@@ -230,7 +230,7 @@ Products
                                         </div>
                                         <div class="product-price">
                                             <span>$</span>
-                                            <span id="product_price">{{product.product_price}}</span>
+                                            <span id="product_price">{{product.price}}</span>
                                             <!-- <span class="old-price">$245.8</span> -->
                                         </div>
                                         <div class="product-action-1 show">
@@ -246,12 +246,27 @@ Products
                         <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination justify-content-start">
-                                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">16</a></li>
-                                    <li class="page-item"><a class="page-link" href="#"><i class="fi-rs-angle-double-small-right"></i></a></li>
+                                    {% if products_data.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{products_data.previous_page_number}}">
+                                            <i class="fi-rs-angle-double-small-left"></i>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+
+                                    {% for num in products_data.paginator.page_range %}
+                                    <li class="page-item active" id="page_{{num}}">
+                                        <a class="page-link" href="?page={{num}}">{{num}}</a>
+                                    </li>
+                                    {% endfor %}
+
+                                    {% if products_data.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{products_data.next_page_number}}">
+                                            <i class="fi-rs-angle-double-small-right"></i> 
+                                        </a>
+                                    </li>
+                                    {% endif %}
                                 </ul>
                             </nav>
                         </div>
@@ -260,7 +275,7 @@ Products
                         <div class="widget-category mb-30">
                             <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
                             <ul class="categories">
-                                <li><a href="{% url 'user_product_app:list_products' %}">all</a></li>
+                                <li><a href="{% url 'user_product_app:list_products' %}?x=all ">all</a></li>
                                 {% for item in category_data %}
                                 <li><a href="{% url 'user_product_app:list_products' %}?x={{item.category_name}}">{{item.category_name}}</a></li>
                                 {% endfor %}
@@ -492,7 +507,6 @@ Products
             </div>
         </div>
     </div>
-
 
 
 {% endblock content %}

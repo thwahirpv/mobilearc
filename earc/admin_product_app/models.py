@@ -36,7 +36,11 @@ class Colors(models.Model):
 class Images(models.Model):
     image_id = models.BigAutoField(primary_key=True, unique=True)
     product_image = models.ImageField(upload_to='products/')
+    priority = models.IntegerField(null=True, blank=True)
     color = models.ForeignKey(Colors, on_delete=models.CASCADE, related_name='images')
+
+    class meta:
+        ordering = ['priority']
 
 class Storage(models.Model):
     size_id = models.BigAutoField(primary_key=True, unique=True)

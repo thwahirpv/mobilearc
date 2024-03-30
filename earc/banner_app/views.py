@@ -6,27 +6,32 @@ from io import BytesIO
 from django.http import JsonResponse
 from django.urls import reverse
 from .models import priority_choices
+from django.db.models import Q
 
 
 
 def list_banner(request):
     if not request.user.is_authenticated:
-        return redirect('user_app:admin_login')
+        return redirect('admin_app:admin_login')
     
-    banners_items = Banner.objects.all()
-    context = {'banners_items':banners_items}
+    # first_banner = Banner.objects.filter(Q(banner_active=True) & Q(banner_type='first_banner'))
+    # secondary_banner = Banner.objects.filter(Q(banner_active=True) & Q(banner_type='secondary_banner'))
+    context = {
+        'banners_items':Banner.objects.all()
+    }
     return render(request, 'admin_template/list_banner.html', context)
 
 
 def add_banner(request):
     if not request.user.is_authenticated:
-        return redirect('user_app:admin_login')
+        return redirect('admin_app:admin_login')
     
     if request.method == 'POST':
         banner_title = request.POST.get('banner_title')
         banner_image = request.FILES.get('banner_image')
         priority = request.POST.get('priority')
         banner_text = request.POST.get('banner_text', None)
+        banner_type = request.POST.get('banner_type')
 
         url = reverse('banner_app:add_banner')
 
@@ -55,16 +60,19 @@ def add_banner(request):
                 messages.error(request, 'Enter valid Discription!')
                 return redirect(url)
             
-        Banner.objects.create(banner_title=banner_title, banner_image=banner_image, priority=priority, banner_text=banner_text)
+        Banner.objects.create(banner_title=banner_title, banner_image=banner_image, priority=priority, banner_text=banner_text, banner_type=banner_type)
         return redirect('banner_app:list_banner') 
-    context = {'priority':priority_choices.choices}
+    context = {
+        'priority':priority_choices.choices,
+        'banner_type': Banner.BANNER_TYPE_CHOICES
+        }
     return render(request, 'admin_template/add_banner.html', context)
     
 
 
 def banner_edit(request, id):
     if not request.user.is_authenticated:
-        return redirect('user_app:admin_login')
+        return redirect('admin_app:admin_login')
     
     url  = reverse('banner_app:edit_banner', kwargs={'id':id}) 
     banner_obj = get_object_or_404(Banner, banner_id=id)
@@ -74,6 +82,8 @@ def banner_edit(request, id):
         banner_image = request.FILES.get('banner_image', banner_obj.banner_image)
         priority = request.POST.get('priority', banner_obj.priority)
         banner_text = request.POST.get('banner_text', banner_obj.banner_text)
+        banner_type = request.POST.get('banner_type', banner_obj.banner_type)
+        
 
         if banner_image:
             try:
@@ -102,15 +112,20 @@ def banner_edit(request, id):
         banner_obj.banner_image = banner_image
         banner_obj.priority = priority
         banner_obj.banner_text = banner_text
+        banner_obj.banner_type = banner_type
         banner_obj.save()
         return redirect('banner_app:list_banner')
-    context = {'banner_obj':banner_obj}
+    context = {
+        'banner_obj':banner_obj,
+        'priority':priority_choices.choices,
+        'banner_type':Banner.BANNER_TYPE_CHOICES
+        }
     return render(request, 'admin_template/add_banner.html', context)
 
 
 def block_and_unblock(request, action, id):
     if not request.user.is_authenticated:
-        return redirect('user_app:admin_login')
+        return redirect('admin_app:admin_login')
     
     banner_obj = get_object_or_404(Banner, banner_id=id)
     
@@ -139,4 +154,11 @@ def block_and_unblock(request, action, id):
         }
         return JsonResponse(context, safe=True)
 
+
+def delete_banner(request, id):
+    if not request.user.is_authenticated:
+        return redirect('admin_app:admin_login')
+    banner_obj = get_object_or_404(Banner, banner_id=id)
+    banner_obj.delete()
+    return redirect('banner_app:list_banner')
 

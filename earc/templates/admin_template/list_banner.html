@@ -30,20 +30,23 @@ Banners
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
+                                            <th>Id</th>
                                             <th></th>
                                             <th>Title</th>
                                             <th>Priority</th>
+                                            <th>Type</th>
                                             <th class="">Edit</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for item in banners_items %}
-                                        <tr class="fw-bold">
+                                        <tr class="">
+                                            <td><p class="fw-bold">{{ item.banner_id }}</p></td>
                                             <td>
                                                 <div>
                                                     {% if item.banner_image %}
-                                                    <img src="{{ item.banner_image.url }}" class="shadow-4 avatar avatar-sm me-3 border-radius-lg"
+                                                    <img id="targetImage" src="{{ item.banner_image.url }}" data-preview-src="{{item.banner_image.url}}" class="shadow-4 avatar avatar-sm me-3 border-radius-lg"
                                                     style="width: 100px; height: 55px;" alt="" />
                                                     {% endif %}
                                                   </div>
@@ -52,6 +55,9 @@ Banners
                                             <!-- <td>{{ item.banner_text }}</td> -->
                                             <td>
                                                 <p class="fw-bold">{{ item.get_priority_display }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="fw-bold">{{ item.get_banner_type_display }}</p>
                                             </td>
                                             <td><a class="fs-5" href="{% url 'banner_app:edit_banner' id=item.banner_id %}"><i class="fa-solid fa-pen-to-square"></i></a></td>
                                             <td class="">
@@ -71,10 +77,32 @@ Banners
                 </div>
             </div>
         </section>
+
+
+        <section id="priviewHeader" style="display: none; position: absolute; background: #00000039; top: 0; right: 0; left: 0; bottom: 0;">
+            <div style="width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;">
+                <div style="padding: 10px; border-radius: 10px; background: whitesmoke;">
+                    <img id="bannerImage" src="" alt="">
+                </div>
+            </div>
+        </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
     <script>
+        const targetImage = document.getElementById('targetImage')
+        const priviewHeader = document.getElementById('priviewHeader')
+        const bannerImage = document.getElementById('bannerImage')
+
+        targetImage.addEventListener('click', function(){
+            const priviewImage = this.getAttribute('data-preview-src')
+            priviewHeader.style.display = 'block'
+            bannerImage.src = priviewImage
+            console.log(priviewImage)
+        })
+        priviewHeader.addEventListener('click', function(){
+            priviewHeader.style.display = 'none'
+        })
         function blockAndUnblock(action, id){
                 const getNameURl = `/admin/banner/get_name/${id}/`
                 fetch(getNameURl)
