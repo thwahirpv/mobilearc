@@ -4,140 +4,16 @@
 Products
 {% endblock %}
 {% block content %}
-    <!-- Quick view -->
-    <!-- <div class="modal fade custom-modal" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">              
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>       
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-12 col-xs-12">
-                            <div class="detail-gallery">
-                                <span class="zoom-icon"><i class="fi-rs-search"></i></span> -->
-                                <!-- MAIN SLIDES
-                                <div class="product-image-slider">
-                                    <figure class="border-radius-10">
-                                        <img src="{% static 'assets/imgs/shop/product-16-2.jpg' %}" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="{% static 'assets/imgs/shop/product-16-1.jpg' %}" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="{% static 'assets/imgs/shop/product-16-3.jpg' %}" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="{% static 'assets/imgs/shop/product-16-4.jpg' %}" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="{% static 'assets/imgs/shop/product-16-5.jpg' %}" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="{% static 'assets/imgs/shop/product-16-6.jpg' %}" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="{% static 'assets/imgs/shop/product-16-7.jpg' %}" alt="product image">
-                                    </figure>
-                                </div>
-                                <!-- THUMBNAILS -->
-                                <!-- <div class="slider-nav-thumbnails pl-15 pr-15">
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-3.jpg' %}" alt="product image"></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-4.jpg' %}" alt="product image"></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-5.jpg' %}" alt="product image"></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-6.jpg' %}" alt="product image"></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-7.jpg' %}" alt="product image"></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-8.jpg' %}" alt="product image"></div>
-                                    <div><img src="{% static 'assets/imgs/shop/thumbnail-9.jpg' %}" alt="product image"></div>
-                                </div>
-                            </div> -->
-                            <!-- End Gallery -->
-                            <!-- <div class="social-icons single-share">
-                                <ul class="text-grey-5 d-inline-block">
-                                    <li><strong class="mr-10">Share this:</strong></li>
-                                    <li class="social-facebook"><a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-facebook.svg' %}" alt=""></a></li>
-                                    <li class="social-twitter"> <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-twitter.svg' %}" alt=""></a></li>
-                                    <li class="social-instagram"><a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-instagram.svg' %}" alt=""></a></li>
-                                    <li class="social-linkedin"><a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-pinterest.svg' %}" alt=""></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-12 col-xs-12">
-                            <div class="detail-info">
-                                <h3 class="title-detail mt-30">Colorful Pattern Shirts HD450</h3>
-                                <div class="product-detail-rating">
-                                    <div class="pro-details-brand">
-                                        <span> Brands: <a href="shop-grid-right.html">Bootstrap</a></span>
-                                    </div>
-                                    <div class="product-rate-cover text-end">
-                                        <div class="product-rate d-inline-block">
-                                            <div class="product-rating" style="width:90%">
-                                            </div>
-                                        </div>
-                                        <span class="font-small ml-5 text-muted"> (25 reviews)</span>
-                                    </div>
-                                </div>
-                                <div class="clearfix product-price-cover">
-                                    <div class="product-price primary-color float-left">
-                                        <ins><span class="text-brand">$120.00</span></ins>
-                                        <ins><span class="old-price font-md ml-15">$200.00</span></ins>
-                                        <span class="save-price  font-md color3 ml-15">25% Off</span>
-                                    </div>
-                                </div>
-                                <div class="bt-1 border-color-1 mt-15 mb-15"></div>
-                                <div class="short-desc mb-30">
-                                    <p class="font-sm">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam rem officia, corrupti reiciendis minima nisi modi,!</p>
-                                </div>
-                                
-                                <div class="attr-detail attr-color mb-15">
-                                    <strong class="mr-10">Color</strong>
-                                    <ul class="list-filter color-filter">
-                                        <li><a href="#" data-color="Red"><span class="product-color-red"></span></a></li>
-                                        <li><a href="#" data-color="Yellow"><span class="product-color-yellow"></span></a></li>
-                                        <li class="active"><a href="#" data-color="White"><span class="product-color-white"></span></a></li>
-                                        <li><a href="#" data-color="Orange"><span class="product-color-orange"></span></a></li>
-                                        <li><a href="#" data-color="Cyan"><span class="product-color-cyan"></span></a></li>
-                                        <li><a href="#" data-color="Green"><span class="product-color-green"></span></a></li>
-                                        <li><a href="#" data-color="Purple"><span class="product-color-purple"></span></a></li>
-                                    </ul>
-                                </div>
-                                <div class="attr-detail attr-size">
-                                    <strong class="mr-10">Size</strong>
-                                    <ul class="list-filter size-filter font-small">
-                                        <li><a href="#">S</a></li>
-                                        <li class="active"><a href="#">M</a></li>
-                                        <li><a href="#">L</a></li>
-                                        <li><a href="#">XL</a></li>
-                                        <li><a href="#">XXL</a></li>
-                                    </ul>
-                                </div>
-                                <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                                <div class="detail-extralink">
-                                    <div class="detail-qty border radius">
-                                        <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                        <span class="qty-val">1</span>
-                                        <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                                    </div>
-                                    <div class="product-extra-link2">
-                                        <button type="submit" class="button button-add-to-cart">Add to cart</button>
-                                        <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                        <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                    </div>
-                                </div>
-                                <ul class="product-meta font-xs color-grey mt-50">
-                                    <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
-                                    <li class="mb-5">Tags: <a href="#" rel="tag">Cloth</a>, <a href="#" rel="tag">Women</a>, <a href="#" rel="tag">Dress</a> </li>
-                                    <li>Availability:<span class="in-stock text-success ml-5">8 Items In Stock</span></li>
-                                </ul>
-                            </div>
-                            
-                        </div>
-                    </div>
-                </div>        
-        </div>
-        </div>
-    </div> -->
-    {% include 'user_navbar.html' %}
+    
 
     <main class="main">
+        {% include 'user_navbar.html' %}
+        <div id="message_div" class="position-fixed alert justify-content-center align-items-center" role="alert" 
+            style="top: -15%; left: 50%; right: 50%; z-index: 99; display: flex; background-color: rgba(51, 51, 51, 0.604); height: 52px; width: 52px; animation: ease-in-out;">
+            <div style="">
+                <a id="message_icon_container" class="" style="color: rgb(234, 233, 233); font-size: 36px;"></a>
+            </div>
+        </div>   
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
@@ -146,6 +22,7 @@ Products
                 </div>
             </div>
         </div>
+        
         <section class="mt-50 mb-50">
             <div class="container">
                 <div class="row flex-row-reverse">
@@ -203,15 +80,18 @@ Products
                                 <div class="product-cart-wrap mb-30">
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
-                                            <a href="{% url 'user_product_app:product_view' id=product.product_id %} ">
+                                            <a href="{% url 'user_product_app:product_view' id=product.product_id %}">
                                                 <img class="default-img pointer" id="image" src="{{product.thumbnail.url}}" alt="image" style="cursor: pointer;">
                                                 <!-- <img class="hover-img" src="{% static 'assets/imgs/shop/product-2-2.jpg' %}" alt=""> -->
                                             </a>
                                         </div>
                                         <div class="product-action-1">
-                                            <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
-                                                <i class="fi-rs-search"></i></a>
-                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                            <a href="{% url 'user_product_app:product_view' id=product.product_id %}" aria-label="Quick view" class="action-btn hover-up">
+                                                <i class="fi-rs-search"></i>
+                                            </a>
+                                            <a onclick="add_wishlist_item('{{product.product_id}}')" aria-label="Add To Wishlist" class="action-btn hover-up">
+                                                <i class="fi-rs-heart"></i>
+                                            </a>
                                             <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                         </div>
                                         <!-- <div class="product-badges product-badges-position product-badges-mrg">
@@ -275,14 +155,28 @@ Products
                         <div class="widget-category mb-30">
                             <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
                             <ul class="categories">
-                                <li><a href="{% url 'user_product_app:list_products' %}?x=all ">all</a></li>
+                                <li><a href="{% url 'user_product_app:list_products' %}?cate=all ">all</a></li>
                                 {% for item in category_data %}
-                                <li><a href="{% url 'user_product_app:list_products' %}?x={{item.category_name}}">{{item.category_name}}</a></li>
+                                <li><a href="{% url 'user_product_app:list_products' %}?cate={{item.category_name}}">{{item.category_name}}</a></li>
                                 {% endfor %}
                             </ul>
                         </div>
+
+                        <div class="dropdown w-100">
+                            <a class="w-100 btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Brands
+                            </a>
+                          
+                            <ul class="w-100 text-center dropdown-menu mb-30">
+                            <li><a  class="dropdown-item" href="{% url 'user_product_app:list_products' %}?brand=all">All</a></li>
+                            {% for item in brand_data %}
+                              <li><a  class="dropdown-item" href="{% url 'user_product_app:list_products' %}?brand={{item.brand_name}}">{{ item.brand_name }}</a></li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+
                         <!-- Fillter By Price -->
-                        <div class="sidebar-widget price_range range mb-30">
+                        <div class="mt-4 sidebar-widget price_range range mb-30">
                             <div class="widget-header position-relative mb-20 pb-10">
                                 <h5 class="widget-title mb-10">Fill by price</h5>
                                 <div class="bt-1 border-color-1"></div>
@@ -291,26 +185,31 @@ Products
                                 <div class="price-filter-inner">
                                     <div id="slider-range"></div>
                                     <div class="price_slider_amount">
-                                        <div class="label-input">
-                                            <span>Range:</span><input type="text" id="amount" name="price" placeholder="Add Your Price" />
-                                        </div>
+                                            <form action="" method="get">
+                                                {% csrf_token %}
+                                                <div class="label-input">
+                                                    <input type="text" id="amount" name="price" placeholder="Add Your Price" />
+                                                    <button type="submit" class="mt-1" style="padding: 2px 10px;">Filter</button>
+                                                </div>
+                                            </form>
+                                        
                                     </div>
                                 </div>
                             </div>
-                            <div class="list-group">
+                            <div class="list-group mt-4">
                                 <div class="list-group-item mb-10 mt-10">
-                                    <label class="fw-900">Color</label>
-                                    <div class="custome-checkbox">
-                                        <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="">
-                                        <label class="form-check-label" for="exampleCheckbox1"><span>Red (56)</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox2" value="">
-                                        <label class="form-check-label" for="exampleCheckbox2"><span>Green (78)</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox3" value="">
-                                        <label class="form-check-label" for="exampleCheckbox3"><span>Blue (54)</span></label>
+                                    <div class="widget-category mb-30">
+                                        <h5 class="section-title style-1 mb-30 wow fadeIn animated">Colors</h5>
+                                        <div id="" class="custome-checkbox">
+                                            <ul class="categories">
+                                                <li><a href="{% url 'user_product_app:list_products' %}?color=all">all</a></li>
+                                                {% for item in colors_data %}
+                                                <li><a href="{% url 'user_product_app:list_products' %}?color={{item.color_name}}">{{item.color_name}}</a></li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <label class="fw-900 mt-15">Item Condition</label>
+                                    <!-- <label class="fw-900 mt-15">Item Condition</label>
                                     <div class="custome-checkbox">
                                         <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox11" value="">
                                         <label class="form-check-label" for="exampleCheckbox11"><span>New (1506)</span></label>
@@ -320,10 +219,10 @@ Products
                                         <br>
                                         <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox31" value="">
                                         <label class="form-check-label" for="exampleCheckbox31"><span>Used (45)</span></label>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
-                            <a href="shop-grid-right.html" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Fillter</a>
+                            <!-- <a href="shop-grid-right.html" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Fillter</a> -->
                         </div>
                         <!-- Product sidebar Widget -->
                         <div class="sidebar-widget product-sidebar  mb-30 p-30 bg-grey border-radius-10">
@@ -509,4 +408,43 @@ Products
     </div>
 
 
+<script>
+    const messageDiv = document.getElementById('message_div')
+    const messageIconContainer = document.getElementById('message_icon_container')
+   
+    const add_wishlist_item = (id) => {
+        const url = `add_wishlist/${id}/`
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status){
+                messageIconContainer.innerHTML = ''
+                const tickTag = document.createElement('i')
+                tickTag.classList.add('fa-regular', 'fa-circle-check')
+                messageIconContainer.appendChild(tickTag)
+                messageDiv.style.top = '15%'
+                moniterTopStyle()
+            }else{
+                messageIconContainer.innerHTML = ''
+                const crossTag = document.createElement('i')
+                crossTag.classList.add('fa-regular', 'fa-circle-xmark')
+                messageIconContainer.appendChild(crossTag)
+                messageDiv.style.top = '15%'
+                moniterTopStyle()
+            }
+        })
+    }
+    const moniterTopStyle = () => {
+        const topValue = messageDiv.style.top
+        console.log(topValue);
+        if(topValue === '15%'){
+
+            setTimeout( () => {
+                console.log('its work')
+                messageDiv.style.top = '-15%'
+            },2000)
+        }
+    }
+</script>
+   
 {% endblock content %}

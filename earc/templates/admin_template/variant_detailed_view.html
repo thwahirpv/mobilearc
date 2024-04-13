@@ -27,30 +27,51 @@ ADD PRODUCT
 
                 <!-- product name -->
                 <div>
-                    <h1 style="font-family: sans-serif;">{{product_obj.product_name}}     
-                    {% if product_obj.product_active %}
-                        <span class="ms-2 fs-6 rounded-pill bg-success">Active</span>
-                    {% else %}
-                        <span class="ms-2 fs-6 badge rounded-pill bg-danger">Blocked</span>
-                    {% endif %}
-                        
-                    </h1>
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <h1 style="font-family: sans-serif;">{{product_obj.product_name}}     
+                                {% if product_obj.product_active %}
+                                    <span class="ms-2 fs-6 rounded-pill bg-success">Active</span>
+                                {% else %}
+                                    <span class="ms-2 fs-6 badge rounded-pill bg-danger">Blocked</span>
+                                {% endif %}   
+                            </h1>
+                        </div>  
+                    </div>
                     <p style="font-weight: bold; margin-top: 3px;">{{product_obj.pro_category.category_name}} / {{product_obj.pro_brand.brand_name}}</p>
                 </div>
 
                 <!-- color namd and storage -->
-                <div style="margin-top: 40px; width: 60%; background: white; border-radius: 10px; 
+                <div id="color_storage_container" style="margin-top: 40px; width: 60%; background: white; border-radius: 10px; 
                 padding: 17px 20px; box-shadow: 3px 3px 10px 3px #e3e3e3;">
-                    <h3 style="font-family: sans-serif; font-weight: bold;">{{color_obj.color_name}}</h3>
+                    <div class="d-flex flex-column">
+                        <p class="" id="error"></p>
+                        <div id="color_name_container" style="display: flex;" class="gap-3">
+                            <h3 id="color_name_text" style="font-family: sans-serif; font-weight: bold;">{{color_obj.color_name}}</h3>
+                            <a id="color_name_change_btn" class="fs-5"><i class="fa-solid fa-pen-to-square"></i></a>
+                        </div>
+                        <div id="input_container" style="display: none;">
+                            <form id="color_name_form" class="d-flex gap-3 form-group" action="" method="post" onsubmit="changeName('{{color_obj.color_id}}')">
+                                {% csrf_token %}
+                                <input name="new_name" type="text" class="form-control" placeholder="Color name" id="input_name">
+                                <button type="submit" id="change_color_name_btn" class="btn btn-sm btn-primary">Update</button>
+                            </form>    
+                        </div>
+                    </div>
                     <div class="" style="margin-top: 25px; display: flex; gap: 15px;">
                         {% for item in color_obj.storage.all %}
-                        <div class=""
-                            style="display: flex; justify-content: center; align-items: center; background: #f8f9fa; padding: 7px 8px; border-radius: 8px;">
-                            <p style="font-size: 14px; font-weight: bold; color: black;">{{item.ram}} / {{item.rom}}</p>
-                            <div style="background: white; border-radius: 100%; padding: 2px 7px; margin-left: 8px; ">
-                                <p style="color: black; font-size: 13px; font-weight: bolder; text-align: center;">
-                                    {{item.stock}}
-                                </p>
+                        <div class="storage-item" style="cursor: pointer;" data-storage-id="{{ item.id }}">
+                            <div class="storage-details" style="display: flex; justify-content: center; align-items: center; background: #f8f9fa; padding: 7px 8px; border-radius: 8px;">
+                                <p style="font-size: 14px; font-weight: bold; color: black;">{{ item.ram }} / {{ item.rom }}</p>
+                                <div style="background: white; border-radius: 100%; padding: 2px 7px; margin-left: 8px;">
+                                    <p style="color: black; font-size: 13px; font-weight: bolder; text-align: center;">
+                                        {{ item.stock }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="storage-actions gap-2" style="display: none; justify-content: center;">
+                                <a href="{% url 'admin_product_app:edit_storage' id=item.size_id %}" class="btn btn-xs btn-primary"><i class="material-icons md-edit"></i></a>
+                                <a class="btn btn-xs btn-danger" onclick="deleteStorage('{{ item.size_id }}')"> <i class="fa-solid fa-trash"></i></a>
                             </div>
                         </div>
                         {% endfor %}
@@ -71,18 +92,6 @@ ADD PRODUCT
 
                     <div class="row ">
                         {% for image in color_obj.images.all %}
-                        <!-- <div class="col-lg-4 col-md-4 col-6">
-                          <a href="#" class="d-block mb-4 h-100">
-                            <img class="img-fluid img-thumbnail" src="{{ image.product_image.url }}" alt="">
-                          </a>
-                          <div class="product-action-1">
-                            <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
-                                <i class="fi-rs-search"></i></a>
-                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                            <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                        </div>
-
-                        </div> -->
                         <div class="col-lg-4 col-md-4 col-sm-6" >
                             <div class="product-cart-wrap mb-30">
                                 <div class="product-img-action-wrap">
@@ -97,6 +106,17 @@ ADD PRODUCT
                             </div>
                         </div> 
                         {% endfor %}
+                        <div class="col-lg-4 col-md-4 col-sm-6" >
+                            <div class="product-cart-wrap mb-30">
+                                <div class="product-img-action-wrap">
+                                    <div class="h-100 product-img d-flex justify-content-center align-items-center">
+                                        <a href="{% url 'admin_product_app:add_varient_image' id=color_obj.color_id %}">
+                                            <img class="default-img pointer" id="image" src="{% static 'assets/imgs/page/add.png' %}" alt="image" style="cursor: pointer; width: 160px;">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
                       </div>
                     
 
@@ -105,7 +125,112 @@ ADD PRODUCT
         </div>
     </section>
 </main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
 <script>
+    const colorNameContainer = document.getElementById('color_name_container')
+    const colorNameText = document.getElementById('color_name_text')
+    const nameChangeBtn = document.getElementById('color_name_change_btn')
+    const inputContainer = document.getElementById('input_container')
+    const submitName = document.getElementById('change_color_name_btn')
+    const errorElement = document.getElementById('error')
+    
+
+    document.getElementById('color_storage_container').addEventListener('dblclick', function(){
+        // document.querySelectorAll('.storage-actions').forEach(action => {
+        //         action.style.display = 'none';
+        //     });
+    })
+    
+
+    nameChangeBtn.addEventListener('click', function(){
+        colorNameContainer.style.display = 'none'
+        inputContainer.style.display = 'flex'
+        
+    })
+
+    const changeName = (id) => {
+        const form = document.getElementById('color_name_form')
+        const formData = new FormData(form)
+        const url = `http://127.0.0.1:8000/admin/products/getcolorname/${id}/`
+        fetch(url,{
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status == 'success'){
+                window.location.reload()
+            }else{
+                alert("something wrong color can't change")
+            }
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    // Function to handle delete storage
+    function deleteStorage(id) {
+        const nameUrl = `http://127.0.0.1:8000/admin/products/storage/get_name/${id}/`
+        const deleteUrl = `http://127.0.0.1:8000/admin/products/storage/delete/${id}/`
+        fetch(nameUrl)
+        .then(response => response.json())
+        .then(data => {
+            Swal.fire({
+                title: 'Are you sure to delete',
+                text: data.name,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: 'Yes, Delete it'
+            }).then((result) => {
+                if(result.isConfirmed){
+                        fetch(deleteUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            if(data.status == 'success'){
+                                Swal.fire({
+                                title: 'Success',
+                                text: data.text,
+                                icon: "success"
+                                }).then(()=>{
+                                    window.location.reload()
+                                })
+                            }else{
+                                Swal.fire({
+                                title: 'Failed',
+                                text: data.text,
+                                icon: "warning  "
+                                }).then(()=>{
+                                    window.location.reload()
+                                })
+                            }
+                        })
+                 }
+            })
+        })
+    }
+
+    // Function to handle select change
+    document.querySelectorAll('.storage-item').forEach(item => {
+        item.addEventListener('click', () => {
+            document.querySelectorAll('.storage-actions').forEach(action => {
+                action.style.display = 'none';
+            });
+
+            const actions = item.querySelector('.storage-actions');
+            actions.style.display = 'flex';
+        });
+    });
+    document.querySelectorAll('.storage-item').forEach(item => {
+        item.addEventListener('dblclick', () => {
+            document.querySelectorAll('.storage-actions').forEach(action => {
+                action.style.display = 'none';
+            });
+        });
+    });
 
 </script>
 

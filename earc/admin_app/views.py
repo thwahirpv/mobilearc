@@ -41,13 +41,12 @@ def admin_login(request):
     return render(request, 'admin_template/page-account-login.html', {'log_error':log_error})
 
 
-# Admin Dashboard
-@login_required(login_url='login/')
+
 def admin_dashboard(request):
-    if request.user.is_superuser:
-        return render(request, 'admin_template/index.html')
-    else:
-        return redirect('admin_app:admin_login')
+    if not request.user.is_authenticated or request.user.is_superuser is False:
+         return redirect('admin_app:admin_login')
+    return render(request, 'admin_template/index.html')
+       
 
 
 class user_crud_view(View):

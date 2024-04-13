@@ -1,0 +1,80 @@
+{% extends "user_base.html" %}
+{% load static %}
+{% block title %}
+Forgot password 
+{% endblock %}
+{% block content %}
+<main class="main">
+    <div style="width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <!-- {% if messages %}
+        {% for message in messages %}
+        <p id="error" class="text-danger">{{ message }}</p>
+        {% endfor %}
+        {% endif %} -->
+        <p id="error" class="text-danger">{{ message }}</p>
+        <div id="image_container" style="display: none;">
+            <img id="image" style="width: 110px; height: 110px; border-radius: 100%;" src="" alt="">
+        </div>
+
+        <div id="button_container" class="" style="display: none; margin-top: 22px;">
+            <div class="d-grid gap-2">
+                <a
+                    name=""
+                    id=""
+                    class="btn btn-primary"
+                    href="{% url 'user_app:sent_forget_password_otp' %}"
+                    role="button"
+                    >Sent OTP</a
+                >
+                
+            </div>
+            
+        </div>
+        <div id="form_container" style="margin-top: 28px;" class="w-25">
+            <form id="email_form" action="">
+                {% csrf_token %}
+                <div>
+                    <input class="form-control w-100" placeholder="email" type="text" name="email">
+                </div>
+                <input type="submit" class="btn btn-primary w-100 mt-2">
+            </form>
+        </div>
+    </div>
+</main>
+
+
+<script>
+    const imageContainer = document.getElementById('image_container')
+    const image = document.getElementById('image')
+    const error = document.getElementById('error')
+    const formContainer = document.getElementById('form_container')
+    const buttonContainer = document.getElementById('button_container')
+
+    document.getElementById('email_form').addEventListener('submit', function(event){
+        event.preventDefault();
+
+        const formData = new FormData(this)
+        fetch('', {
+            method:'POST',
+            body:formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status == 'success'){
+                imageContainer.style.display = 'block'
+                image.src = data.user_profile
+                formContainer.style.display = 'none'
+                buttonContainer.style.display = 'block'
+            }else{
+                buttonContainer.style.display = 'none'
+                imageContainer.style.display = 'none'
+                error.innerHTML = data.text
+            }
+            
+        }).catch(error => {
+            error.innerHTML = 'something wrong!'
+        })
+    })
+
+</script>
+{% endblock %}

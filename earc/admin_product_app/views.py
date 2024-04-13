@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.views import View
@@ -25,7 +26,7 @@ class category_management:
         if request.method == 'POST':
             name = request.POST.get('name')
             discription = request.POST.get('discription')
-            image = request.FILE.get('category_image')
+            image = request.FILES.get('category_image')
 
 
             if image:
@@ -421,8 +422,12 @@ class product_management:
             thumbnail = request.FILES.get('thumbnail')
             product_name = request.POST.get('product_name')
             product_disc = request.POST.get('product_dic')
-            product_price = request.POST.get('price')
-            product_diacount_price = request.POST.get('discount_price')
+            try:
+                product_price = int(request.POST.get('price'))
+                product_diacount_price = int(request.POST.get('discount_price'))
+            except:
+                messages.error(request, 'Enter correct price!')
+                return redirect('admin_product_app:add_product')
             product_category = request.POST.get('product_category')
             product_brand = request.POST.get('product_brand')
 
@@ -630,7 +635,32 @@ class variant_management:
         context={'color_obj':color_obj, 'product_obj':product_obj}
         return render(request, 'admin_template/variant_detailed_view.html', context)
 
+    def add_variant_image(request, id):
+        color_obj = get_object_or_404(Colors, color_id=id)
+        priority = color_obj.images.count()+1
+        fail_url = reverse('admin_product_app:add_varient_image', kwargs={'id':id})
+        success_url = reverse('admin_product_app:variant_detailed_view', kwargs={'id':id})
 
+        if request.method == 'POST':
+            image_data = request.FILES.get('select_image')
+
+            if image_data:
+                try:
+                    file_content = image_data.read()
+                    variant_image = Image.open(BytesIO(file_content))
+                    if not variant_image.format.lower() in ['jpeg', 'jpg', 'png']:
+                        messages.error(request, 'invalid image formate!. upload jpeg or png')
+                        return redirect(fail_url)
+                except:
+                    messages.error(request, 'Invalid file!')
+                    return redirect(fail_url)
+            else:
+                messages.error(request, 'upload image!')
+                return redirect(fail_url)
+            
+            Images.objects.create(product_image=image_data, priority=priority, color=color_obj)
+            return redirect(success_url)
+        return render(request, 'admin_template/change_varinat_image.html')
     
     def delete_image(request, image_id=None, id=None):
         image=get_object_or_404(Images, image_id=image_id)
@@ -705,8 +735,76 @@ class variant_management:
         color_obj.delete()
         return redirect(reverse('admin_product_app:list_variant', kwargs={'id':product_id}))
 
+    def get_color_name(request, id):
+        print('i reach this function')
+        print(id)
+        color_obj = get_object_or_404(Colors, color_id=id)
+        if request.method == 'POST':
+            try:
+                new_name = request.POST.get('new_name')
+                print(new_name)
+                color_obj.color_name = new_name
+                color_obj.save()
+                context = {
+                    'status':'success',
+                }
+                return JsonResponse(context, safe=True)
+            except Exception:
+                context = {
+                    'status': 'failed',
+                    'text':'someting wrong!'
+                }
+                return JsonResponse(context, safe=True)
+            
+    def update_storage(request, id):
+        storage_obj = get_object_or_404(Storage, size_id=id)
+        color_id = storage_obj.color.color_id
+        if request.method == 'POST':
+            ram = request.POST.get('ram', storage_obj.ram)
+            rom = request.POST.get('rom', storage_obj.rom)
+            price = request.POST.get('price', storage_obj.price_of_size)
+            stock = request.POST.get('stock', storage_obj.stock)
+            
+            if 'GB' not in ram:
+                ram = ram+'GB'
+            elif 'GB' not in rom:
+                rom = rom+'GB'
+
+            storage_obj.ram = ram
+            storage_obj.rom = rom 
+            storage_obj.price_of_size = price
+            storage_obj.stock = stock 
+            storage_obj.save()
+            return redirect(reverse('admin_product_app:variant_detailed_view', kwargs={'id':color_id}))
+        context = {
+            'storage_obj':storage_obj
+        }
+        return render(request, 'admin_template/update_storage.html', context)
    
 
+    def delete_storage(request, id, action):
+        storage_obj = get_object_or_404(Storage, size_id=id)
+        context = {}
+        if action == 'get_name':
+            storage_name = storage_obj.rom+'/'+storage_obj.ram
+            context = {
+                'status': 'success',
+                'name': storage_name
+            }
+            return JsonResponse(context, safe=True)
+        else:
+            try:
+                storage_obj.delete()
+                context = {
+                    'status':'success',
+                    'text':'Successfully Deleted'
+                }
+            except:
+                context = {
+                    'status':'failed',
+                    'text': 'Deleting is Failed'
+                }
+            return JsonResponse(context, safe=True)
 
 
 # fetch brand based on category
@@ -723,6 +821,10 @@ def get_brand_and_category(request, product_name, id=None):
     brand_name = product_obj.pro_brand.brand_name 
     context = {'product_details':[{'name':category_name, 'item':'category'},{'name':brand_name, 'item':'brand'}]}
     return JsonResponse(context, safe=True)
+
+
+
+
 
 
 

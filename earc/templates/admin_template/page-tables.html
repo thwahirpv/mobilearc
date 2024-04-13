@@ -113,9 +113,8 @@ Users
     function deleteUser(id){
         const url = 'get_user?id='+id
         fetch(url)
-        .then(response => response.json()   )
+        .then(response => response.json())
           .then(data => {
-            console.log(data.username)
             Swal.fire({
             title: "Are you sure to delete?",
             text: data.username,
@@ -126,7 +125,7 @@ Users
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                const url2 = 'delete?id='+id
+                const url2 = `/admin/users/delete/${id}/`
                 fetch(url2)
                 .then(response => response.json())
                 .then(opration => {

@@ -1,107 +1,75 @@
 ﻿{% extends "user_base.html" %}
 {% load static %}
 {% load mathfilters %}
-
-{% block extra_links %}
-<!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
-{% endblock extra_links %}
-
 {% block title %}
-Products
+Home
 {% endblock %}
-<style>
-    img {
-        cursor: pointer;
-    }
 
-    .product-image {
-        max-height: 400px;
-        width: auto;
-        margin: auto;
-    }
 
-    .thumbnail-image {
-        max-width: 100px;
-        height: auto;
-        cursor: pointer;
-    }
-
-    .pointer {
-        cursor: pointer;
-    }
-
-    .storage_border {
-        background: #000;
-    }
-
-    .img_border {
-        border: solid black 10px;
-    }
-</style>
 
 {% block content %}
-<!-- Quick view -->
-
-<div class="main">
-    {% include 'user_nav.html' %}
+    
     <main class="main">
+        {% include 'user_nav.html' %}
+        <div id="message_div" class="position-fixed alert justify-content-center align-items-center" role="alert" 
+            style="top: -15%; left: 50%; right: 50%; z-index: 1; display: flex; background-color: rgba(51, 51, 51, 0.604); height: 52px; width: 52px; animation: ease-in-out;">
+            <div>
+                <a id="message_icon_container" class="" style="color: rgb(234, 233, 233); font-size: 36px;"></a>
+            </div>
+        </div>  
+        <!-- Bread crumb -->
         <div class="page-header breadcrumb-wrap">
             <div class="container">
-                <div class="breadcrumb d-flex">
+                <div class="d-flex breadcrumb">
                     <a href="{% url 'user_app:user_home' %}" rel="nofollow">Home</a>
-                    <span></span>
-                    <a href="{% url 'user_product_app:list_products' %}">Shop</a>
-                    <span></span>
+                    <span></span> 
+                    <a href="{% url 'user_product_app:list_products' %}" rel="nofollow">Shop</a>
+                    <span></span> 
                     <p style="font-size: 13px; cursor: pointer;">{{product_obj.product_name}}</p>
                 </div>
             </div>
         </div>
+
+
+        <!-- Product detailed view section -->
         <section class="mt-50 mb-50">
             <div class="container">
-                <div class="row flex-row-reverse">
+                <div class="row">
                     <div class="col-lg-12">
                         <div class="product-detail accordion-detail">
-                            <div class="row mb-50">
-                                <div class="col-md-6 col-sm-12 col-xs-12">
+                            <div class="row gap-2 mb-50">
+                                <div class="col-md-5 col-sm-12 col-xs-12">
 
-                                    <div class="container mt-5">
-                                        <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
-                                            <div class="carousel-inner">
-                                                <div class="carousel-item active">
-                                                    <img id="mainImg"
-                                                        src="https://via.placeholder.com/800x400/AAAAAA/FFFFFF?text=Main+Image+1"
-                                                        class="d-block w-100 product-image" alt="Main Image 1">
-                                                </div>
-                                            </div>
+                                    <!-- Product main image -->
+                                    <div class="detail-gallery">
+                                        <span class="zoom-icon"><i class="fi-rs-search"></i></span>
+                                        <!-- MAIN SLIDES -->
+                                        <div class="product-image-slider image-container" id="image-container">
+                                            <figure id="mainImageContainer" class="border-radius-10">
+                                             <img id="mainImg" src="" alt="">
+                                            </figure>
                                         </div>
 
 
-                                        <div id="thumbnailCarousel" class="carousel slide mt-3" data-bs-ride="carousel">
-                                            <div class="carousel-inner">
-                                                <div class="carousel-item active">
-                                                    <div class="row justify-content-center" id="choose_image_container">
-
-                                                        <div class="col-2">
-                                                            <img src="https://via.placeholder.com/200x100/AAAAAA/FFFFFF?text=Thumbnail+1"
-                                                                class="d-block w-100" alt="Thumbnail 1">
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <!-- Product image thumbniles -->
+                                        <div id="thumbnileContainer" class="d-flex gap-1">
+                                         
                                         </div>
-                                    </div>
                                 </div>
+                            </div>
 
-
+                                <!-- Detail Info -->
                                 <div class="col-md-6 col-sm-12 col-xs-12">
                                     <div class="detail-info">
-                                        <h2 class="title-detail">{{product_obj.product_name}}</h2>
+                                        <!-- product name -->
+                                        <h2 class="title-detail">{{ product_obj.product_name }}</h2>
                                         <div class="product-detail-rating">
+                                            <!-- Brand name -->
                                             <div class="pro-details-brand">
-                                                <span> Brands: <a
-                                                        href="shop-grid-right.html">{{product_obj.pro_brand.brand_name}}</a></span>
+                                                <span> Brands: <a href="shop-grid-right.html">{{ product_obj.pro_brand.brand_name }}</a></span>
                                             </div>
+
+                                            <!-- Rating -->
                                             <div class="product-rate-cover text-end">
                                                 <div class="product-rate d-inline-block">
                                                     <div class="product-rating" style="width:90%">
@@ -110,66 +78,50 @@ Products
                                                 <span class="font-small ml-5 text-muted"> (25 reviews)</span>
                                             </div>
                                         </div>
+
                                         <div class="clearfix product-price-cover">
                                             <div class="product-price primary-color float-left">
-                                                <ins><span id="main_price" class="text-brand"></span></ins>
-                                                <ins><span class="old-price font-md ml-15"
-                                                        id="old-price">${{product_obj.discount_price}}</span></ins>
-                                                <span class="save-price  font-md color3 ml-15"
-                                                    id="percentage">{{product_obj.discount_price|div:product_obj.price|mul:100|floatformat:0}}%</span>
+                                                <!-- selling price -->
+                                                <ins><span id="sellingPrice" class="text-brand">{{ product_obj.price|sub:product_obj.discount_price }}</span></ins>
+
+                                                <!-- Orginal price -->
+                                                <ins><span class="old-price font-md ml-15">{{ product_obj.price }}</span></ins>
+
+                                                <!-- discount percentage -->
+                                                <span id="percentage" class="save-price  font-md color3 ml-15"></span>
                                             </div>
                                         </div>
                                         <div class="bt-1 border-color-1 mt-15 mb-15"></div>
-                                        <div class="short-desc mb-30">
-                                            <p>{{product_obj.product_disc}}</p>
-                                        </div>
+                                       
                                         <div class="product_sort_info font-xs mb-30">
                                             <ul>
-                                                <li class="mb-10"><i class="fi-rs-crown mr-5"></i> 1 Year AL Jazeera
-                                                    Brand Warranty</li>
-                                                <li class="mb-10"><i class="fi-rs-refresh mr-5"></i> 30 Day Return
-                                                    Policy</li>
-                                                <li><i class="fi-rs-credit-card mr-5"></i> Cash on Delivery available
-                                                </li>
+                                                <li class="mb-10"><i class="fi-rs-crown mr-5"></i> 1 Year AL Jazeera Brand Warranty</li>
+                                                <li class="mb-10"><i class="fi-rs-refresh mr-5"></i> 30 Day Return Policy</li>
+                                                <li><i class="fi-rs-credit-card mr-5"></i> Cash on Delivery available</li>
                                             </ul>
                                         </div>
+
                                         <div class="attr-detail attr-color mb-15">
                                             <strong class="mr-10">Color</strong>
+                                            <!-- color variants -->
                                             <ul class="list-filter color-filter">
-                                                {% if color_obj %}
-                                                {% for color in color_obj %}
-                                                {% with color_image=color.images.first %}
-                                                <a href="" id="image_color{{forloop.counter}}">
-                                                    <img class=""
-                                                        onclick="collect_image(color_id={{color.color_id}}, id={{forloop.counter}})"
-                                                        value="{{color.color_id}}" class="rounded-circle ms-1"
-                                                        style="width: 40px; height: 40px;"
-                                                        src="{{ color_image.product_image.url }}" alt="">
-                                                </a>
-                                                {% endwith %}
+                                                {% for color in colors_obj %}
+                                                <li id="color_{{forloop.counter}}" class="">
+                                                    <a href="#" data-color="Red">
+                                                        <span class="">
+                                                            <img onclick="collectDetails(colorId={{color.color_id}}, {{forloop.counter}})" src="{{ color.images.first.product_image.url }}" alt="">
+                                                        </span>
+                                                    </a>
+                                                </li>
                                                 {% endfor %}
-                                                {% else %}
-                                                <p style="font-size: 12px; font-weight: bold;" class="text-secoundary">
-                                                    NO variants</p>
-                                                {% endif %}
                                             </ul>
                                         </div>
+
+                                        <!-- Storage variant -->
                                         <div class="attr-detail attr-size">
                                             <strong class="mr-10">Size</strong>
-                                            <ul class="size-filter font-small">
-                                                {% with storages=color_obj.storage.all %}
-                                                {% for storage in storages %}
-                                                <div id="size_div{{forloop.counter}}"
-                                                    class="d-flex justify-content-center align-items-center ms-1"
-                                                    onclick="calculatePriceWithSize(price={{product_obj.price}}, discount={{product_obj.discount_price}}, sizePrice={{storage.price_of_size}}, id={{forloop.counter}})"
-                                                    style="cursor: pointer; border: solid black 1px; padding: 1px 2px;">
-                                                    <li style="font-size: 11px; cursor: pointer;">
-                                                        <p class="" style="font-size: 10px;">{{storage.ram}} \
-                                                            {{storage.rom}}</p>
-                                                    </li>
-                                                </div>
-                                                {% endfor %}
-                                                {% endwith %}
+                                            <ul id="storage_container" class="d-flex gap-2 list-filter size-filter font-small">
+                                                  
                                             </ul>
                                         </div>
                                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
@@ -180,363 +132,295 @@ Products
                                                 <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
                                             </div>
                                             <div class="product-extra-link2">
-                                                <button type="submit" class="button button-add-to-cart">Add to
-                                                    cart</button>
-                                                <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                    href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                <a aria-label="Compare" class="action-btn hover-up"
-                                                    href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                                <button class="button button-add-to-cart">Add to cart</button>
+                                                <a  class="action-btn hover-up" onclick="add_wishlist_item('{{product_obj.product_id}}')"><i class="fi-rs-heart"></i></a>
+                                                <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                             </div>
                                         </div>
                                         <ul class="product-meta font-xs color-grey mt-50">
-                                            <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
-                                            <li class="mb-5">Tags: <a href="#" rel="tag">Cloth</a>, <a href="#"
-                                                    rel="tag">Women</a>, <a href="#" rel="tag">Dress</a> </li>
-                                            <li>Availability:<span class="in-stock text-success ml-5">8 Items In
-                                                    Stock</span></li>
+                                            <li class="mb-5">Tags: <a href="#" rel="tag">{{ product_obj.pro_category.category_name }}</a>, <a href="#" rel="tag">{{ product_obj.pro_brand.brand_name }}</a>, <a href="#" rel="tag">{{ product_obj.product_name }}</a> </li>
+                                            <li>Availability:<span class="in-stock text-success ml-5" id="stock_count"></span></li>
                                         </ul>
                                     </div>
-                                    <!-- Detail Info -->
                                 </div>
+                                <!-- Detail Info -->
                             </div>
-                            <div class="tab-style3">
-                                <ul class="nav nav-tabs text-uppercase">
-                                    <li class="nav-item">
-                                        <a class="nav-link active" id="Description-tab" data-bs-toggle="tab"
-                                            href="#Description">Description</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="Additional-info-tab" data-bs-toggle="tab"
-                                            href="#Additional-info">Additional info</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="Reviews-tab" data-bs-toggle="tab"
-                                            href="#Reviews">Reviews (3)</a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content shop_info_tab entry-main-content">
-                                    <div class="tab-pane fade show active" id="Description">
-                                        <div class="">
-                                            <p>{{product_obj.product_disc}}</p>
-                                            <ul class="product-more-infor mt-30">
-                                                <li><span>Product name</span> {{product_obj.product_name}}</li>
-                                                <li><span>Brand</span> {{product_obj.pro_brand.brand_name}}</li>
-                                                <li><span>Category</span> {{product_obj.pro_category.category_name}}
-                                                </li>
-                                                <li><span>Color</span>{{ product_obj.colors.color_name }}</li>
-                                                <li><span>Sizes</span>
-                                                    {% with storages=product_obj.storage.all %}
-                                                    {% for storage in storages %}
-                                                    <span style="font-size: 12px; cursor: pointer;">{{storage.ram}} |
-                                                        {{storage.rom}}</span>
-                                                    {% if not forloop.last %}
-                                                    ,
-                                                    {% endif %}
-                                                    {% endfor %}
-                                                    {% endwith %}
-                                                </li>
-                                            </ul>
-                                            <hr class="wp-block-separator is-style-dots">
-                                            <p>Laconic overheard dear woodchuck wow this outrageously taut beaver hey
-                                                hello far meadowlark imitatively egregiously hugged that yikes minimally
-                                                unanimous pouted flirtatiously as beaver beheld above forward
-                                                energetic across this jeepers beneficently cockily less a the raucously
-                                                that magic upheld far so the this where crud then below after jeez
-                                                enchanting drunkenly more much wow callously irrespective limpet.</p>
-                                            <h4 class="mt-30">Packaging & Delivery</h4>
-                                            <hr class="wp-block-separator is-style-wide">
-                                            <p>Less lion goodness that euphemistically robin expeditiously bluebird
-                                                smugly scratched far while thus cackled sheepishly rigid after due one
-                                                assenting regarding censorious while occasional or this more crane
-                                                went more as this less much amid overhung anathematic because much held
-                                                one exuberantly sheep goodness so where rat wry well concomitantly.
-                                            </p>
-                                            <p>Scallop or far crud plain remarkably far by thus far iguana lewd
-                                                precociously and and less rattlesnake contrary caustic wow this near
-                                                alas and next and pled the yikes articulate about as less cackled
-                                                dalmatian
-                                                in much less well jeering for the thanks blindly sentimental whimpered
-                                                less across objectively fanciful grimaced wildly some wow and rose
-                                                jeepers outgrew lugubrious luridly irrationally attractively
-                                                dachshund.
-                                            </p>
-                                        </div>
+
+
+                            <div class="row">
+                                <div class="col-lg-10 m-auto entry-main-content">
+                                    <h2 class="section-title style-1 mb-30">Description</h2>
+                                    <div class="description mb-50">
+                                        <p>{{ product_obj.product_disc }}</p>
+                                        <ul class="product-more-infor mt-30">
+                                            <li><span>OS</span>{{ product_obj.pro_category.category_name }}</li>
+                                            <li><span>Brand</span>{{ product_obj.pro_brand.brand_name }}</li>
+                                            <li>
+                                                <span>Color</span> 
+                                                {% for color in colors_obj %}
+                                                {{ color.color_name }}
+                                                {% if not forloop.last %}
+                                                , 
+                                                {% endif %}
+                                                {% endfor %}
+                                            </li>
+                                            
+                                        </ul>
+                                        <hr class="wp-block-separator is-style-dots">
+                                        <h4 class="mt-30">Packaging & Delivery</h4>
+                                        <hr class="wp-block-separator is-style-wide">
+                                        <p>Less lion goodness that euphemistically robin expeditiously bluebird smugly scratched far while thus cackled sheepishly rigid after due one assenting regarding censorious while occasional or this more crane
+                                            went more as this less much amid overhung anathematic because much held one exuberantly sheep goodness so where rat wry well concomitantly.
+                                        </p>
+                                        <p>Scallop or far crud plain remarkably far by thus far iguana lewd precociously and and less rattlesnake contrary caustic wow this near alas and next and pled the yikes articulate about as less cackled dalmatian
+                                            in much less well jeering for the thanks blindly sentimental whimpered less across objectively fanciful grimaced wildly some wow and rose jeepers outgrew lugubrious luridly irrationally attractively
+                                            dachshund.
+                                        </p>
                                     </div>
-                                    <div class="tab-pane fade" id="Additional-info">
-                                        <table class="font-md">
-                                            <tbody>
-                                                <tr class="stand-up">
-                                                    <th>Stand Up</th>
-                                                    <td>
-                                                        <p>35″L x 24″W x 37-45″H(front to back wheel)</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="folded-wo-wheels">
-                                                    <th>Folded (w/o wheels)</th>
-                                                    <td>
-                                                        <p>32.5″L x 18.5″W x 16.5″H</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="folded-w-wheels">
-                                                    <th>Folded (w/ wheels)</th>
-                                                    <td>
-                                                        <p>32.5″L x 24″W x 18.5″H</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="door-pass-through">
-                                                    <th>Door Pass Through</th>
-                                                    <td>
-                                                        <p>24</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="frame">
-                                                    <th>Frame</th>
-                                                    <td>
-                                                        <p>Aluminum</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="weight-wo-wheels">
-                                                    <th>Weight (w/o wheels)</th>
-                                                    <td>
-                                                        <p>20 LBS</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="weight-capacity">
-                                                    <th>Weight Capacity</th>
-                                                    <td>
-                                                        <p>60 LBS</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="width">
-                                                    <th>Width</th>
-                                                    <td>
-                                                        <p>24″</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="handle-height-ground-to-handle">
-                                                    <th>Handle height (ground to handle)</th>
-                                                    <td>
-                                                        <p>37-45″</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="wheels">
-                                                    <th>Wheels</th>
-                                                    <td>
-                                                        <p>12″ air / wide track slick tread</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="seat-back-height">
-                                                    <th>Seat back height</th>
-                                                    <td>
-                                                        <p>21.5″</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="head-room-inside-canopy">
-                                                    <th>Head room (inside canopy)</th>
-                                                    <td>
-                                                        <p>25″</p>
-                                                    </td>
-                                                </tr>
-                                                <tr class="pa_color">
-                                                    <th>Color</th>
-                                                    <td class="d-flex">
-                                                        {% for color in color_obj %}
-                                                        <p style="font-size: 13px;">{{color.color_name}} {% if not forloop.last %} , {% endif %}
-                                                        </p>
-                                                        {% endfor %}
-                                                    </td>
-                                                </tr>
-                                                <tr class="pa_size">
-                                                    <th>Size</th>
-                                                    <td>
-                                                        {% with storages=color_obj.storage.all %}
-                                                        {% for storage in storages %}
-                                                        <p style="font-size: 12px;">{{storage.ram}} | {{storage.rom}} {% if not forloop.last %} , {% endif %}</p>
-                                                        {% endfor %}
-                                                        {% endwith %}
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <h3 class="section-title style-1 mb-30">Additional info</h3>
+                                    <table class="font-md mb-30">
+                                        <tbody>
+                                            <tr class="stand-up">
+                                                <th>Stand Up</th>
+                                                <td>
+                                                    <p>35″L x 24″W x 37-45″H(front to back wheel)</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="folded-wo-wheels">
+                                                <th>Folded (w/o wheels)</th>
+                                                <td>
+                                                    <p>32.5″L x 18.5″W x 16.5″H</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="folded-w-wheels">
+                                                <th>Folded (w/ wheels)</th>
+                                                <td>
+                                                    <p>32.5″L x 24″W x 18.5″H</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="door-pass-through">
+                                                <th>Door Pass Through</th>
+                                                <td>
+                                                    <p>24</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="frame">
+                                                <th>Frame</th>
+                                                <td>
+                                                    <p>Aluminum</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="weight-wo-wheels">
+                                                <th>Weight (w/o wheels)</th>
+                                                <td>
+                                                    <p>20 LBS</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="weight-capacity">
+                                                <th>Weight Capacity</th>
+                                                <td>
+                                                    <p>60 LBS</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="width">
+                                                <th>Width</th>
+                                                <td>
+                                                    <p>24″</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="handle-height-ground-to-handle">
+                                                <th>Handle height (ground to handle)</th>
+                                                <td>
+                                                    <p>37-45″</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="wheels">
+                                                <th>Wheels</th>
+                                                <td>
+                                                    <p>12″ air / wide track slick tread</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="seat-back-height">
+                                                <th>Seat back height</th>
+                                                <td>
+                                                    <p>21.5″</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="head-room-inside-canopy">
+                                                <th>Head room (inside canopy)</th>
+                                                <td>
+                                                    <p>25″</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="pa_color">
+                                                <th>Color</th>
+                                                <td>
+                                                    <p>Black, Blue, Red, White</p>
+                                                </td>
+                                            </tr>
+                                            <tr class="pa_size">
+                                                <th>Size</th>
+                                                <td>
+                                                    <p>M, S</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="social-icons single-share">
+                                        <ul class="text-grey-5 d-inline-block">
+                                            <li><strong class="mr-10">Share this:</strong></li>
+                                            <li class="social-facebook"><a href="#"><img src="assets/imgs/theme/icons/icon-facebook.svg" alt=""></a></li>
+                                            <li class="social-twitter"> <a href="#"><img src="assets/imgs/theme/icons/icon-twitter.svg" alt=""></a></li>
+                                            <li class="social-instagram"><a href="#"><img src="assets/imgs/theme/icons/icon-instagram.svg" alt=""></a></li>
+                                            <li class="social-linkedin"><a href="#"><img src="assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a></li>
+                                        </ul>
                                     </div>
-                                    <div class="tab-pane fade" id="Reviews">
-                                        <!--Comments-->
-                                        <div class="comments-area">
-                                            <div class="row">
-                                                <div class="col-lg-8">
-                                                    <h4 class="mb-30">Customer questions & answers</h4>
-                                                    <div class="comment-list">
-                                                        <div class="single-comment justify-content-between d-flex">
-                                                            <div class="user justify-content-between d-flex">
-                                                                <div class="thumb text-center">
-                                                                    <img src="{% static 'assets/imgs/page/avatar-6.jpg' %}"
-                                                                        alt="">
-                                                                    <h6><a href="#">Jacky Chan</a></h6>
-                                                                    <p class="font-xxs">Since 2012</p>
-                                                                </div>
-                                                                <div class="desc">
-                                                                    <div class="product-rate d-inline-block">
-                                                                        <div class="product-rating" style="width:90%">
-                                                                        </div>
+                                    <h3 class="section-title style-1 mb-30 mt-30">Reviews (3)</h3>
+                                    <!--Comments-->
+                                    <div class="comments-area style-2">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <h4 class="mb-30">Customer questions & answers</h4>
+                                                <div class="comment-list">
+                                                    <div class="single-comment justify-content-between d-flex">
+                                                        <div class="user justify-content-between d-flex">
+                                                            <div class="thumb text-center">
+                                                                <img src="assets/imgs/page/avatar-6.jpg" alt="">
+                                                                <h6><a href="#">Jacky Chan</a></h6>
+                                                                <p class="font-xxs">Since 2012</p>
+                                                            </div>
+                                                            <div class="desc">
+                                                                <div class="product-rate d-inline-block">
+                                                                    <div class="product-rating" style="width:90%">
                                                                     </div>
-                                                                    <p>Thank you very fast shipping from Poland only
-                                                                        3days.</p>
-                                                                    <div class="d-flex justify-content-between">
-                                                                        <div class="d-flex align-items-center">
-                                                                            <p class="font-xs mr-30">December 4, 2020 at
-                                                                                3:12 pm </p>
-                                                                            <a href="#"
-                                                                                class="text-brand btn-reply">Reply <i
-                                                                                    class="fi-rs-arrow-right"></i> </a>
-                                                                        </div>
+                                                                </div>
+                                                                <p>Thank you very fast shipping from Poland only 3days.</p>
+                                                                <div class="d-flex justify-content-between">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <p class="font-xs mr-30">December 4, 2020 at 3:12 pm </p>
+                                                                        <a href="#" class="text-brand btn-reply">Reply <i class="fi-rs-arrow-right"></i> </a>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <!--single-comment -->
-                                                        <div class="single-comment justify-content-between d-flex">
-                                                            <div class="user justify-content-between d-flex">
-                                                                <div class="thumb text-center">
-                                                                    <img src="{% static 'assets/imgs/page/avatar-7.jpg' %}"
-                                                                        alt="">
-                                                                    <h6><a href="#">Ana Rosie</a></h6>
-                                                                    <p class="font-xxs">Since 2008</p>
-                                                                </div>
-                                                                <div class="desc">
-                                                                    <div class="product-rate d-inline-block">
-                                                                        <div class="product-rating" style="width:90%">
-                                                                        </div>
+                                                    </div>
+                                                    <!--single-comment -->
+                                                    <div class="single-comment justify-content-between d-flex">
+                                                        <div class="user justify-content-between d-flex">
+                                                            <div class="thumb text-center">
+                                                                <img src="assets/imgs/page/avatar-7.jpg" alt="">
+                                                                <h6><a href="#">Ana Rosie</a></h6>
+                                                                <p class="font-xxs">Since 2008</p>
+                                                            </div>
+                                                            <div class="desc">
+                                                                <div class="product-rate d-inline-block">
+                                                                    <div class="product-rating" style="width:90%">
                                                                     </div>
-                                                                    <p>Great low price and works well.</p>
-                                                                    <div class="d-flex justify-content-between">
-                                                                        <div class="d-flex align-items-center">
-                                                                            <p class="font-xs mr-30">December 4, 2020 at
-                                                                                3:12 pm </p>
-                                                                            <a href="#"
-                                                                                class="text-brand btn-reply">Reply <i
-                                                                                    class="fi-rs-arrow-right"></i> </a>
-                                                                        </div>
+                                                                </div>
+                                                                <p>Great low price and works well.</p>
+                                                                <div class="d-flex justify-content-between">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <p class="font-xs mr-30">December 4, 2020 at 3:12 pm </p>
+                                                                        <a href="#" class="text-brand btn-reply">Reply <i class="fi-rs-arrow-right"></i> </a>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <!--single-comment -->
-                                                        <div class="single-comment justify-content-between d-flex">
-                                                            <div class="user justify-content-between d-flex">
-                                                                <div class="thumb text-center">
-                                                                    <img src="{% static 'assets/imgs/page/avatar-8.jpg' %}"
-                                                                        alt="">
-                                                                    <h6><a href="#">Steven Keny</a></h6>
-                                                                    <p class="font-xxs">Since 2010</p>
-                                                                </div>
-                                                                <div class="desc">
-                                                                    <div class="product-rate d-inline-block">
-                                                                        <div class="product-rating" style="width:90%">
-                                                                        </div>
+                                                    </div>
+                                                    <!--single-comment -->
+                                                    <div class="single-comment justify-content-between d-flex">
+                                                        <div class="user justify-content-between d-flex">
+                                                            <div class="thumb text-center">
+                                                                <img src="assets/imgs/page/avatar-8.jpg" alt="">
+                                                                <h6><a href="#">Steven Keny</a></h6>
+                                                                <p class="font-xxs">Since 2010</p>
+                                                            </div>
+                                                            <div class="desc">
+                                                                <div class="product-rate d-inline-block">
+                                                                    <div class="product-rating" style="width:90%">
                                                                     </div>
-                                                                    <p>Authentic and Beautiful, Love these way more than
-                                                                        ever expected They are Great earphones</p>
-                                                                    <div class="d-flex justify-content-between">
-                                                                        <div class="d-flex align-items-center">
-                                                                            <p class="font-xs mr-30">December 4, 2020 at
-                                                                                3:12 pm </p>
-                                                                            <a href="#"
-                                                                                class="text-brand btn-reply">Reply <i
-                                                                                    class="fi-rs-arrow-right"></i> </a>
-                                                                        </div>
+                                                                </div>
+                                                                <p>Authentic and Beautiful, Love these way more than ever expected They are Great earphones</p>
+                                                                <div class="d-flex justify-content-between">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <p class="font-xs mr-30">December 4, 2020 at 3:12 pm </p>
+                                                                        <a href="#" class="text-brand btn-reply">Reply <i class="fi-rs-arrow-right"></i> </a>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <!--single-comment -->
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-4">
-                                                    <h4 class="mb-30">Customer reviews</h4>
-                                                    <div class="d-flex mb-30">
-                                                        <div class="product-rate d-inline-block mr-15">
-                                                            <div class="product-rating" style="width:90%">
-                                                            </div>
-                                                        </div>
-                                                        <h6>4.8 out of 5</h6>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <span>5 star</span>
-                                                        <div class="progress-bar" role="progressbar" style="width: 50%;"
-                                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%
-                                                        </div>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <span>4 star</span>
-                                                        <div class="progress-bar" role="progressbar" style="width: 25%;"
-                                                            aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%
-                                                        </div>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <span>3 star</span>
-                                                        <div class="progress-bar" role="progressbar" style="width: 45%;"
-                                                            aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">45%
-                                                        </div>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <span>2 star</span>
-                                                        <div class="progress-bar" role="progressbar" style="width: 65%;"
-                                                            aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%
-                                                        </div>
-                                                    </div>
-                                                    <div class="progress mb-30">
-                                                        <span>1 star</span>
-                                                        <div class="progress-bar" role="progressbar" style="width: 85%;"
-                                                            aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" class="font-xs text-muted">How are ratings
-                                                        calculated?</a>
+                                                    <!--single-comment -->
                                                 </div>
                                             </div>
-                                        </div>
-                                        <!--comment form-->
-                                        <div class="comment-form">
-                                            <h4 class="mb-15">Add a review</h4>
-                                            <div class="product-rate d-inline-block mb-30">
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-8 col-md-12">
-                                                    <form class="form-contact comment_form" action="#" id="commentForm">
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <div class="form-group">
-                                                                    <textarea class="form-control w-100" name="comment"
-                                                                        id="comment" cols="30" rows="9"
-                                                                        placeholder="Write Comment"></textarea>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <div class="form-group">
-                                                                    <input class="form-control" name="name" id="name"
-                                                                        type="text" placeholder="Name">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <div class="form-group">
-                                                                    <input class="form-control" name="email" id="email"
-                                                                        type="email" placeholder="Email">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-12">
-                                                                <div class="form-group">
-                                                                    <input class="form-control" name="website"
-                                                                        id="website" type="text" placeholder="Website">
-                                                                </div>
-                                                            </div>
+                                            <div class="col-lg-4">
+                                                <h4 class="mb-30">Customer reviews</h4>
+                                                <div class="d-flex mb-30">
+                                                    <div class="product-rate d-inline-block mr-15">
+                                                        <div class="product-rating" style="width:90%">
                                                         </div>
-                                                        <div class="form-group">
-                                                            <button type="submit"
-                                                                class="button button-contactForm">Submit
-                                                                Review</button>
-                                                        </div>
-                                                    </form>
+                                                    </div>
+                                                    <h6>4.8 out of 5</h6>
                                                 </div>
+                                                <div class="progress">
+                                                    <span>5 star</span>
+                                                    <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                                                </div>
+                                                <div class="progress">
+                                                    <span>4 star</span>
+                                                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                                </div>
+                                                <div class="progress">
+                                                    <span>3 star</span>
+                                                    <div class="progress-bar" role="progressbar" style="width: 45%;" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">45%</div>
+                                                </div>
+                                                <div class="progress">
+                                                    <span>2 star</span>
+                                                    <div class="progress-bar" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
+                                                </div>
+                                                <div class="progress mb-30">
+                                                    <span>1 star</span>
+                                                    <div class="progress-bar" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
+                                                </div>
+                                                <a href="#" class="font-xs text-muted">How are ratings calculated?</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--comment form-->
+                                    <div class="comment-form">
+                                        <h4 class="mb-15">Add a review</h4>
+                                        <div class="product-rate d-inline-block mb-30">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-8 col-md-12">
+                                                <form class="form-contact comment_form" action="#" id="commentForm">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <textarea class="form-control w-100" name="comment" id="comment" cols="30" rows="9" placeholder="Write Comment"></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <input class="form-control" name="name" id="name" type="text" placeholder="Name">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <input class="form-control" name="email" id="email" type="email" placeholder="Email">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <input class="form-control" name="website" id="website" type="text" placeholder="Website">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button type="submit" class="button button-contactForm">Submit
+                                                            Review</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -553,33 +437,22 @@ Products
                                                 <div class="product-img-action-wrap">
                                                     <div class="product-img product-img-zoom">
                                                         <a href="shop-product-right.html" tabindex="0">
-                                                            <img class="default-img"
-                                                                src="{% static 'assets/imgs/shop/product-2-1.jpg' %}"
-                                                                alt="">
-                                                            <img class="hover-img"
-                                                                src="{% static 'assets/imgs/shop/product-2-2.jpg' %}"
-                                                                alt="">
+                                                            <img class="default-img" src="assets/imgs/shop/product-2-1.jpg" alt="">
+                                                            <img class="hover-img" src="assets/imgs/shop/product-2-2.jpg" alt="">
                                                         </a>
                                                     </div>
                                                     <div class="product-action-1">
-                                                        <a aria-label="Quick view" class="action-btn small hover-up"
-                                                            data-bs-toggle="modal" data-bs-target="#quickViewModal
+                                                        <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal
 "><i class="fi-rs-search"></i></a>
-                                                        <a aria-label="Add To Wishlist"
-                                                            class="action-btn small hover-up" href="shop-wishlist.html"
-                                                            tabindex="0"><i class="fi-rs-heart"></i></a>
-                                                        <a aria-label="Compare" class="action-btn small hover-up"
-                                                            href="shop-compare.html" tabindex="0"><i
-                                                                class="fi-rs-shuffle"></i></a>
+                                                        <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="fi-rs-heart"></i></a>
+                                                        <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="fi-rs-shuffle"></i></a>
                                                     </div>
-                                                    <div
-                                                        class="product-badges product-badges-position product-badges-mrg">
+                                                    <div class="product-badges product-badges-position product-badges-mrg">
                                                         <span class="hot">Hot</span>
                                                     </div>
                                                 </div>
                                                 <div class="product-content-wrap">
-                                                    <h2><a href="shop-product-right.html" tabindex="0">Ulstra Bass
-                                                            Headphone</a></h2>
+                                                    <h2><a href="shop-product-right.html" tabindex="0">Ulstra Bass Headphone</a></h2>
                                                     <div class="rating-result" title="90%">
                                                         <span>
                                                         </span>
@@ -596,33 +469,22 @@ Products
                                                 <div class="product-img-action-wrap">
                                                     <div class="product-img product-img-zoom">
                                                         <a href="shop-product-right.html" tabindex="0">
-                                                            <img class="default-img"
-                                                                src="{% static 'assets/imgs/shop/product-3-1.jpg' %}"
-                                                                alt="">
-                                                            <img class="hover-img"
-                                                                src="{% static 'assets/imgs/shop/product-4-2.jpg' %}"
-                                                                alt="">
+                                                            <img class="default-img" src="assets/imgs/shop/product-3-1.jpg" alt="">
+                                                            <img class="hover-img" src="assets/imgs/shop/product-4-2.jpg" alt="">
                                                         </a>
                                                     </div>
                                                     <div class="product-action-1">
-                                                        <a aria-label="Quick view" class="action-btn small hover-up"
-                                                            data-bs-toggle="modal" data-bs-target="#quickViewModal
+                                                        <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal
 "><i class="fi-rs-search"></i></a>
-                                                        <a aria-label="Add To Wishlist"
-                                                            class="action-btn small hover-up" href="shop-wishlist.html"
-                                                            tabindex="0"><i class="fi-rs-heart"></i></a>
-                                                        <a aria-label="Compare" class="action-btn small hover-up"
-                                                            href="shop-compare.html" tabindex="0"><i
-                                                                class="fi-rs-shuffle"></i></a>
+                                                        <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="fi-rs-heart"></i></a>
+                                                        <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="fi-rs-shuffle"></i></a>
                                                     </div>
-                                                    <div
-                                                        class="product-badges product-badges-position product-badges-mrg">
+                                                    <div class="product-badges product-badges-position product-badges-mrg">
                                                         <span class="sale">-12%</span>
                                                     </div>
                                                 </div>
                                                 <div class="product-content-wrap">
-                                                    <h2><a href="shop-product-right.html" tabindex="0">Smart Bluetooth
-                                                            Speaker</a></h2>
+                                                    <h2><a href="shop-product-right.html" tabindex="0">Smart Bluetooth Speaker</a></h2>
                                                     <div class="rating-result" title="90%">
                                                         <span>
                                                         </span>
@@ -639,33 +501,22 @@ Products
                                                 <div class="product-img-action-wrap">
                                                     <div class="product-img product-img-zoom">
                                                         <a href="shop-product-right.html" tabindex="0">
-                                                            <img class="default-img"
-                                                                src="{% static 'assets/imgs/shop/product-4-1.jpg' %}"
-                                                                alt="">
-                                                            <img class="hover-img"
-                                                                src="{% static 'assets/imgs/shop/product-4-2.jpg' %}"
-                                                                alt="">
+                                                            <img class="default-img" src="assets/imgs/shop/product-4-1.jpg" alt="">
+                                                            <img class="hover-img" src="assets/imgs/shop/product-4-2.jpg" alt="">
                                                         </a>
                                                     </div>
                                                     <div class="product-action-1">
-                                                        <a aria-label="Quick view" class="action-btn small hover-up"
-                                                            data-bs-toggle="modal" data-bs-target="#quickViewModal
+                                                        <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal
 "><i class="fi-rs-search"></i></a>
-                                                        <a aria-label="Add To Wishlist"
-                                                            class="action-btn small hover-up" href="shop-wishlist.html"
-                                                            tabindex="0"><i class="fi-rs-heart"></i></a>
-                                                        <a aria-label="Compare" class="action-btn small hover-up"
-                                                            href="shop-compare.html" tabindex="0"><i
-                                                                class="fi-rs-shuffle"></i></a>
+                                                        <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="fi-rs-heart"></i></a>
+                                                        <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="fi-rs-shuffle"></i></a>
                                                     </div>
-                                                    <div
-                                                        class="product-badges product-badges-position product-badges-mrg">
+                                                    <div class="product-badges product-badges-position product-badges-mrg">
                                                         <span class="new">New</span>
                                                     </div>
                                                 </div>
                                                 <div class="product-content-wrap">
-                                                    <h2><a href="shop-product-right.html" tabindex="0">HomeSpeak 12UEA
-                                                            Goole</a></h2>
+                                                    <h2><a href="shop-product-right.html" tabindex="0">HomeSpeak 12UEA Goole</a></h2>
                                                     <div class="rating-result" title="90%">
                                                         <span>
                                                         </span>
@@ -682,33 +533,22 @@ Products
                                                 <div class="product-img-action-wrap">
                                                     <div class="product-img product-img-zoom">
                                                         <a href="shop-product-right.html" tabindex="0">
-                                                            <img class="default-img"
-                                                                src="{% static 'assets/imgs/shop/product-5-1.jpg' %}"
-                                                                alt="">
-                                                            <img class="hover-img"
-                                                                src="{% static 'assets/imgs/shop/product-3-2.jpg' %}"
-                                                                alt="">
+                                                            <img class="default-img" src="assets/imgs/shop/product-5-1.jpg" alt="">
+                                                            <img class="hover-img" src="assets/imgs/shop/product-3-2.jpg" alt="">
                                                         </a>
                                                     </div>
                                                     <div class="product-action-1">
-                                                        <a aria-label="Quick view" class="action-btn small hover-up"
-                                                            data-bs-toggle="modal" data-bs-target="#quickViewModal
+                                                        <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal
 "><i class="fi-rs-search"></i></a>
-                                                        <a aria-label="Add To Wishlist"
-                                                            class="action-btn small hover-up" href="shop-wishlist.html"
-                                                            tabindex="0"><i class="fi-rs-heart"></i></a>
-                                                        <a aria-label="Compare" class="action-btn small hover-up"
-                                                            href="shop-compare.html" tabindex="0"><i
-                                                                class="fi-rs-shuffle"></i></a>
+                                                        <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="fi-rs-heart"></i></a>
+                                                        <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="fi-rs-shuffle"></i></a>
                                                     </div>
-                                                    <div
-                                                        class="product-badges product-badges-position product-badges-mrg">
+                                                    <div class="product-badges product-badges-position product-badges-mrg">
                                                         <span class="hot">Hot</span>
                                                     </div>
                                                 </div>
                                                 <div class="product-content-wrap">
-                                                    <h2><a href="shop-product-right.html" tabindex="0">Dadua Camera 4K
-                                                            2021EF</a></h2>
+                                                    <h2><a href="shop-product-right.html" tabindex="0">Dadua Camera 4K 2021EF</a></h2>
                                                     <div class="rating-result" title="90%">
                                                         <span>
                                                         </span>
@@ -724,8 +564,7 @@ Products
                                 </div>
                             </div>
                             <div class="banner-img banner-big wow fadeIn f-none animated mt-50">
-                                <img class="border-radius-10" src="{% static 'assets/imgs/banner/banner-4.png' %}"
-                                    alt="">
+                                <img class="border-radius-10" src="assets/imgs/banner/banner-4.png" alt="">
                                 <div class="banner-text">
                                     <h4 class="mb-15 mt-40">Repair Services</h4>
                                     <h2 class="fw-600 mb-20">We're an Apple <br>Authorised Service Provider</h2>
@@ -733,7 +572,6 @@ Products
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
@@ -745,13 +583,11 @@ Products
                     <div class="col-lg-7 mb-md-3 mb-lg-0">
                         <div class="row align-items-center">
                             <div class="col flex-horizontal-center">
-                                <img class="icon-email" src="{% static 'assets/imgs/theme/icons/icon-email.svg' %}"
-                                    alt="">
+                                <img class="icon-email" src="assets/imgs/theme/icons/icon-email.svg" alt="">
                                 <h4 class="font-size-20 mb-0 ml-3">Sign up to Newsletter</h4>
                             </div>
                             <div class="col my-4 my-md-0 des">
-                                <h5 class="font-size-15 ml-4 mb-0">...and receive <strong>$25 coupon for first
-                                        shopping.</strong></h5>
+                                <h5 class="font-size-15 ml-4 mb-0">...and receive <strong>$25 coupon for first shopping.</strong></h5>
                             </div>
                         </div>
                     </div>
@@ -772,8 +608,7 @@ Products
                     <div class="col-lg-4 col-md-6">
                         <div class="widget-about font-md mb-md-5 mb-lg-0">
                             <div class="logo logo-width-1 wow fadeIn animated">
-                                <a href="index.html"><img src="{% static 'assets/imgs/theme/logo.svg' %}"
-                                        alt="logo"></a>
+                                <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo"></a>
                             </div>
                             <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
                             <p class="wow fadeIn animated">
@@ -787,16 +622,11 @@ Products
                             </p>
                             <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
                             <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
-                                <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-facebook.svg' %}"
-                                        alt=""></a>
-                                <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-twitter.svg' %}"
-                                        alt=""></a>
-                                <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-instagram.svg' %}"
-                                        alt=""></a>
-                                <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-pinterest.svg' %}"
-                                        alt=""></a>
-                                <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-youtube.svg' %}"
-                                        alt=""></a>
+                                <a href="#"><img src="assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
+                                <a href="#"><img src="assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
+                                <a href="#"><img src="assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
+                                <a href="#"><img src="assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
+                                <a href="#"><img src="assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
                             </div>
                         </div>
                     </div>
@@ -828,16 +658,13 @@ Products
                             <div class="col-md-8 col-lg-12">
                                 <p class="wow fadeIn animated">From App Store or Google Play</p>
                                 <div class="download-app wow fadeIn animated">
-                                    <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active"
-                                            src="{% static 'assets/imgs/theme/app-store.jpg' %}" alt=""></a>
-                                    <a href="#" class="hover-up"><img
-                                            src="{% static 'assets/imgs/theme/google-play.jpg' %}" alt=""></a>
+                                    <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active" src="assets/imgs/theme/app-store.jpg" alt=""></a>
+                                    <a href="#" class="hover-up"><img src="assets/imgs/theme/google-play.jpg" alt=""></a>
                                 </div>
                             </div>
                             <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
                                 <p class="mb-20 wow fadeIn animated">Secured Payment Gateways</p>
-                                <img class="wow fadeIn animated"
-                                    src="{% static 'assets/imgs/theme/payment-method.png' %}" alt="">
+                                <img class="wow fadeIn animated" src="assets/imgs/theme/payment-method.png" alt="">
                             </div>
                         </div>
                     </div>
@@ -850,13 +677,11 @@ Products
                     <div class="footer-bottom"></div>
                 </div>
                 <div class="col-lg-6">
-                    <p class="float-md-left font-sm text-muted mb-0">&copy; 2021, <strong
-                            class="text-brand">Evara</strong> - HTML Ecommerce Template </p>
+                    <p class="float-md-left font-sm text-muted mb-0">&copy; 2021, <strong class="text-brand">Evara</strong> - HTML Ecommerce Template </p>
                 </div>
                 <div class="col-lg-6">
                     <p class="text-lg-end text-start font-sm text-muted mb-0">
-                        Designed by <a href="http://alithemes.com/" target="_blank">Alithemes.com</a>. All rights
-                        reserved
+                        Designed by <a href="http://alithemes.com/" target="_blank">Alithemes.com</a>. All rights reserved
                     </p>
                 </div>
             </div>
@@ -877,149 +702,149 @@ Products
             </div>
         </div>
     </div>
-</div>
 
+    <script>
+        const messageDiv = document.getElementById('message_div')
+        const messageIconContainer = document.getElementById('message_icon_container')
 
+        function collectDetails(colorId, count){
+            const thumbnileContainer = document.getElementById('thumbnileContainer')
+            const storageContainer = document.getElementById('storage_container')
+            const mainImg = document.getElementById('mainImg')
 
-<Script>
+            const url = 'get_details/' + colorId + '/'
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                thumbnileContainer.innerHTML = ''
+                data.image_data.forEach(function(item, index){
+                    const imgDivTag = document.createElement('div')
+                    const imgTag = document.createElement('img')
+                    if(index == 0){
+                        mainImg.src = item.link
+                    }
+                    imgTag.src = item.link
+                    imgTag.style.height = '70px'
+                    imgTag.onclick = function(){
+                        changeMainImage(item.link)
+                    }
+                    imgDivTag.appendChild(imgTag)
+                    thumbnileContainer.appendChild(imgDivTag)
+                })
+                
+                storageContainer.innerHTML = ''
+                data.storage_data.forEach(function(item, index){
+                    if (index == 0){
+                        const sellingPrice = document.getElementById('sellingPrice')
+                        const discountPercentage = document.getElementById('percentage')
+                        const stockCount = document.getElementById('stock_count')
+                        sellingPrice.innerHTML = item.price
+                        stockCount.innerHTML = item.stock
+                        discountPercentage.innerHTML = item.percentage+'%'
+                    }
+                    const liTag = document.createElement('li')
+                    const aTag = document.createElement('a')
+                    aTag.innerHTML = item.ram + '+' + item.rom
+                    aTag.id = `storage_${index}`
+                    liTag.appendChild(aTag)
+                    aTag.classList.add('remove')
+                    liTag.onclick = function(){
+                        changeProductPrice(item, index)
+                    }
+                    storageContainer.appendChild(liTag)
+                })
+            })
+        }
 
-    const colorId = {{ color_id }}
-    //   onload carousel
-    document.addEventListener("DOMContentLoaded", function () {
-        // Get reference to the main carousel's img element
-        var mainImg = document.getElementById("mainImg");
+        function changeMainImage(link){
+            const mainImg = document.getElementById('mainImg')
+            mainImg.src = link 
+        }
 
+        function changeProductPrice(item, index){
+            const sellingPrice = document.getElementById('sellingPrice')
+            const stockCount = document.getElementById('stock_count')
+            const storage = document.getElementById(`storage_${index}`)
+            const remove = document.querySelectorAll('.remove')
+            const discountPercentage = document.getElementById('percentage')
+            remove.forEach(element => {
+                element.style.background = 'white'
+                element.style.color = 'black'
+            })
+            sellingPrice.innerHTML = item.price
+            storage.style.background = '#088178'
+            stockCount.innerHTML = item.stock
+            discountPercentage.innerHTML = item.percentage+'%'
+        }
 
-        // Get reference to the thumbnail carousel's inner container
-        var thumbnailContainer = document.querySelector("#choose_image_container");
-
-        // Get references to all variant images
-        var variantImages = document.querySelectorAll(".attr-color .list-filter .color-filter a img");
-
-        // Set the src attribute of the main image to the src of the first variant image
-        mainImg.src = variantImages[0].src;
-
-        // Clear the existing content of the thumbnail carousel
-        thumbnailContainer.innerHTML = '';
-
-        // Populate the thumbnail carousel with variant images
-        variantImages.forEach(function (image, index) {
-            // Create a new thumbnail element
-            var thumbnailItem = document.createElement('div');
-            thumbnailItem.classList.add('col-2');
-
-            // Create an img element for the thumbnail
-            var thumbnailImg = document.createElement('img');
-            thumbnailImg.src = image.src;
-            thumbnailImg.classList.add('d-block', 'w-100');
-
-            // Append the thumbnail img to the thumbnail item
-            thumbnailItem.appendChild(thumbnailImg);
-
-            // Append the thumbnail item to the thumbnail container
-            thumbnailContainer.appendChild(thumbnailItem);
-
-            // Set the first thumbnail as active
-            if (index === 0) {
-                thumbnailItem.classList.add('active');
-            }
-        });
+    
+    const id = {{color_obj.color_id}}
+    window.addEventListener('pageshow', function(event) {
+        setFirstOne(colorId=id)
+        const colorContainer = document.getElementById('color_1')
+        colorContainer.classList.add('active')
+        const storage = document.getElementById('storage_0')
     });
 
-    // carousel 
-    function collect_image(colorId, id) {
-        const image_container = $('#choose_image_container');
-        const mainImg = $('#mainImg');
-        const imageBorder = $('#image_color' + id)
-        const url = 'get_image/' + colorId + '/';
+    function setFirstOne(colorId){
+        collectDetails(colorId)
+    }
 
-        $.ajax({
-            url: url,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                image_container.empty(); // Clear previous content
-                $.each(data.image_data, function (index, item) {
-                    if (index === 0) {
-                        mainImg.attr({
-                            src: item.link
-                        })
-                    }
+    const imageContainer = document.getElementById('image-container');
+    const image = document.getElementById('mainImg');
 
-                    const imgElement = $('<img>').attr({
-                        src: item.link,
-                        alt: 'Thumbnail' + index,
-                        id: 'image' + item.id,
-                    }).addClass('d-block', 'w-100');
-                    const image_parent = $('<div>').append(imgElement).addClass('col-2')
-                    image_container.append(image_parent)
-                    // Attach click event listener to each thumbnail
-                    imgElement.on('click', function () {
-                        // $('#mainCarousel').carousel(index); // Activate corresponding slide in main carousel
-                        selectMainImage(item)
-                    });
-                });
-                console.log(image_container);
-            },
-            error: function (xhr, status, error) {
-                console.error('Error fetching data:', error);
+    imageContainer.addEventListener('mousemove', function(e) {
+        const zoomLevel = 2; // Adjust zoom level as needed
+        const x = e.pageX - this.offsetLeft;
+        const y = e.pageY - this.offsetTop;
+        const offsetX = x / this.offsetWidth * 50;
+        const offsetY = y / this.offsetHeight * 50;
+
+        image.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+        image.style.transform = `scale(${zoomLevel})`;
+    });
+
+    imageContainer.addEventListener('mouseleave', function() {
+        image.style.transform = 'scale(1)';
+    });
+   
+    const add_wishlist_item = (id) => {
+        console.log('hey its workinng')
+        const url = `http://127.0.0.1:8000/products/add_wishlist/${id}/`
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status){
+                messageIconContainer.innerHTML = ''
+                const tickTag = document.createElement('i')
+                tickTag.classList.add('fa-regular', 'fa-circle-check')
+                messageIconContainer.appendChild(tickTag)
+                messageDiv.style.top = '15%'
+                moniterTopStyle()
+            }else{
+                messageIconContainer.innerHTML = ''
+                const crossTag = document.createElement('i')
+                crossTag.classList.add('fa-regular', 'fa-circle-xmark')
+                messageIconContainer.appendChild(crossTag)
+                messageDiv.style.top = '15%'
+                moniterTopStyle()
             }
-        });
+        })
+    }
+    const moniterTopStyle = () => {
+        const topValue = messageDiv.style.top
+        console.log(topValue);
+        if(topValue === '15%'){
+
+            setTimeout( () => {
+                console.log('its work')
+                messageDiv.style.top = '-15%'
+            },2000)
+        }
     }
 
+    
+    </script>
 
-    // JavaScript for selecting main image when thumbnail is clicked
-    function selectMainImage(item) {
-        const mainImg = document.getElementById('mainImg')
-        mainImg.src = item.link
-
-    }
-
-
-
-    function calculatePrice(sizePrice, id) {
-        const price_area = document.getElementById('main_price')
-        const oldPrice = document.getElementById('old-price')
-        const percentage = document.getElementById('percentage')
-        const sizeDiv = document.getElementById('size_div' + id)
-
-        const productPrice = {{ product_obj.price }}
-        const discountPrice = {{ product_obj.discount_price }}
-        price_area.innerText = productPrice - discountPrice
-        oldPrice.innerText = productPrice
-        const priceDivide = discountPrice / productPrice
-        const pers = (priceDivide * 100).toFixed(1)
-        percentage.innerText = pers + '%'
-    }
-
-
-    function calculatePriceWithSize(price, discount, sizePrice, id) {
-        const price_area = document.getElementById('main_price')
-        const oldPrice = document.getElementById('old-price')
-        const percentage = document.getElementById('percentage')
-        const sizeDiv = document.getElementById('size_div' + id)
-
-        const finalPrice = (price - discount) + sizePrice
-        price_area.innerText = finalPrice
-        oldPrice.innerText = price + sizePrice
-
-        const priceDivide = discount / finalPrice
-        console.log(price_area)
-        const pers = (priceDivide * 100).toFixed(1)
-        console.log(pers)
-        percentage.innerText = pers + '%'
-        sizeDiv.classList.add('storage_border')
-        // sizeDiv.style.border = 'solid 3px black'  
-    }
-
-
-    window.addEventListener('load', function () {
-        calculatePrice()
-        collect_image(colorId, 0)
-    })
-
-
-
-</Script>
-
-{% endblock content %}
+{% endblock %}
