@@ -1,5 +1,5 @@
 from django import template
-from admin_app.models import web_logo, UserDetails
+from admin_app.models import web_logo
 
 
 register = template.Library()
@@ -10,6 +10,6 @@ def get_logo_url():
     if logo_obj:
         return logo_obj.logo.url
     return "" 
-
+    
 
 

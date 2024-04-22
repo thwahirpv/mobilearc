@@ -70,6 +70,11 @@ Products
                                </div>
                             </div>
                             <div class="col-sm-2 col-4 col-price"> 
+                                <a href="{% url 'admin_product_app:stock_view' id=item.product_id %}" class="d-flex justify-content-center align-items-center">
+                                    Stock
+                                </a> 
+                            </div>
+                            <div class="col-sm-2 col-4 col-price"> 
                                 <a href="{% url 'admin_product_app:list_variant' id=item.product_id %}" class="d-flex justify-content-center align-items-center">
                                     <img src="{% static 'assets2/imgs/icons/variation.png' %}" style="width: 20px;" alt="">:
                                     {{item.colors.count}}

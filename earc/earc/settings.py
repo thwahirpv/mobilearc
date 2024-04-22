@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'user_product_app',
     'mathfilters',
     'humanize',
-    'banner_app'
+    'banner_app',
+    'cart_app',
+    'checkout_app'
 ]
 
 MIDDLEWARE = [

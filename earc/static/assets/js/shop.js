@@ -63,24 +63,54 @@
             });
         });
         //Qty Up-Down
-        $('.detail-qty').each(function () {
-            var qtyval = parseInt($(this).find('.qty-val').text(), 10);
-            $('.qty-up').on('click', function (event) {
-                event.preventDefault();
-                qtyval = qtyval + 1;
-                $(this).prev().text(qtyval);
-            });
-            $('.qty-down').on('click', function (event) {
-                event.preventDefault();
-                qtyval = qtyval - 1;
-                if (qtyval > 1) {
-                    $(this).next().text(qtyval);
-                } else {
-                    qtyval = 1;
-                    $(this).next().text(qtyval);
-                }
-            });
-        });
+        // $('.detail-qty').each(function () {
+        //     var qtyval = parseInt($(this).find('.qty-val').text(), 10);
+        //     $('.qty-up').on('click', function (event) {
+        //         event.preventDefault();
+        //         qtyval = qtyval + 1;
+        //         $(this).prev().text(qtyval);
+        //     });
+        //     $('.qty-down').on('click', function (event) {
+        //         event.preventDefault();
+        //         qtyval = qtyval - 1;
+        //         if (qtyval > 1) {
+        //             $(this).next().text(qtyval);
+        //         } else {
+        //             qtyval = 1;
+        //             $(this).next().text(qtyval);
+        //         }
+        //     });
+        // });
+        // var qtyval = parseInt($(this).find('.qty-val').text(), 10);
+        //     $('.qty-up').on('click', function (event) {
+        //         event.preventDefault();
+        //         qtyval = qtyval + 1;
+        //         // $(this).prev().text(qtyval);
+        //     });
+            // $('.qty-down').on('click', function (event) {
+            //     event.preventDefault();
+            //     qtyval = qtyval - 1;
+            //     if (qtyval > 1) {
+            //         $(this).next().text(qtyval);
+            //     } else {
+            //         qtyval = 1;
+            //         $(this).next().text(qtyval);
+            //     }
+            // });
+
+        
+       
+
+        document.getElementById('qty-down-btn').addEventListener('click', function(event){
+            event.preventDefault();
+            const qtyElement = document.getElementById('qty-value')
+            const qty = document.getElementById('qty-value').value - 1;
+            if(qty < 1){
+                qtyElement.innerHTML = document.getElementById('qty-value').value;
+            }else{
+                qtyElement.innerHTML = qty
+            }   
+        })
 
         $('.dropdown-menu .cart_list').on('click', function (event) {
             event.stopPropagation();

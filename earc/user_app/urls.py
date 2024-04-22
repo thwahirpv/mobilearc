@@ -17,6 +17,12 @@ urlpatterns = [
     path('email/', forget_password_user_conform, name='forget_password_user_conform'),
     path('forget_otp/', sent_forget_password_otp, name='sent_forget_password_otp'),
     path('forget_password/', forget_password, name='forget_password'),
-    path('change_password/', change_password, name='change_password')
+    path('change_password/', change_password, name='change_password'),
+    path('account/', account_view, name='account_view'),
+    path('user/', update_password, name='update_password'),
+    path('details/<int:id>/', update_details, name='update_details'),
+    path('address/', add_address, name='add_address'),
+    path('address/<int:id>/', update_address, name='update_address'),
+    path('delete_address/<int:id>/', delete_address, name='delete_address')
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

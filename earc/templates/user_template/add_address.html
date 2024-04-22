@@ -1,0 +1,112 @@
+{% extends "user_base.html" %}
+{% load static %}
+{% block title %}
+Add address
+{% endblock %}
+{% block content %}
+
+<main class="main">
+    {% include 'user_nav.html' %}
+    <section>
+        <div style="width: 100%; height: fit-content; display: flex; justify-content: center; align-items: center;">
+            <div style="width: 50%; height: fit-content; display: flex; flex-direction: column;">
+                <div style="width: 100%; padding: 10px 20px; background: whitesmoke;">
+                    <h5 class="fw-bold">Delivary address</h5>
+                </div>
+                <div style="width: 100%; padding: 10px 20px" class="mt-3">
+                    <!-- ========== Start user or phone number messages ========== -->
+                        {% if messages %}
+                        {% for message in messages %}
+                            <p class="text-danger fw-semibold fs-6">{{ message }}</p>
+                        {% endfor %}
+                        {% endif %}
+                    <!-- ========== End user or phone number messages ========== -->
+                    <form method="post" {% if address_obj %} action="{% url 'user_app:update_address' id=address_obj.address_id %}" {% endif %} enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <!-- name -->
+                            <div class="col-12">
+                                <div data-mdb-input-init class="form-outline">
+                                    <label class="form-label" for="form7Example1">Name</label>
+                                    <input type="text" id="form7Example1" class="form-control" name="name" value="{{ address_obj.name }}"/>
+                                </div>
+                            </div>
+
+                            <div data-mdb-input-init class="row form-outline mt-3">
+                                <div class="col-6">
+                                    <label style="text-align: center;" for="">Home</label>
+                                    <input type="radio" value="Home" name="address_type">
+                                </div>
+                                <div class="col-6">
+                                    <label style="text-align: center;" for="">Office</label>
+                                    <input type="radio" value="Office" name="address_type">
+                                </div>
+                            </div>
+            
+                            <!-- Text input -->
+                            <div data-mdb-input-init class="col-12 form-outline mt-3">
+                                <label class="form-label" for="form7Example3">Company or Home name</label>
+                                <input type="text" id="form7Example3" class="form-control" value="{{address_obj.building_name}}" name="building_name"/>
+                            </div>
+
+                            <!-- Number input -->
+                            <div data-mdb-input-init class="row-outline mt-3">
+                                <div class="col-12">
+                                    <select name="country_code">
+                                        <!-- Populate the dropdown with country options dynamically -->
+                                        <option value="">Select Country</option>
+                                        {% for country_code, country_name in COUNTRY_CHOICES %}
+                                            <option value="{{ country_code }}">{{ country_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label" for="form7Example6">Phone</label>
+                                    <input type="text" id="form7Example6" class="form-control" value="{{address_obj.phone}}" name="phone"/>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div data-mdb-input-init class="col-12 -outline mt-3">
+                                        <label class="form-label" for="form7Example6">State</label>
+                                        <input type="text" id="form7Example6" class="form-control" value="{{address_obj.state}}" name="state"/>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div data-mdb-input-init class="col-12 -outline mt-3">
+                                        <label class="form-label" for="form7Example6">City</label>
+                                        <input type="text" id="form7Example6" class="form-control" value="{{address_obj.city}}" name="city"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div data-mdb-input-init class="col-12 -outline mt-3">
+                                <label class="form-label" for="form7Example6">Pincode</label>
+                                <input type="text" id="form7Example6" class="form-control" value="{{address_obj.pincode}}" name="pincode"/>
+                            </div>
+
+                            <!-- Text input -->
+                            <div data-mdb-input-init class="col-12 form-outline mt-3">
+                                <label class="form-label" for="form7Example4">Address</label>
+                                <input type="text" id="form7Example4" class="form-control" value="{{address_obj.address}}" name="address"/>
+                            </div>
+
+                            {% if address_obj %}
+                            <div data-mdb-input-init class="col-12 form-outline mt-3">
+                                <button class="btn btn-sm btn-primary">Update</button>
+                            </div>
+                            {% else %}
+                            <div data-mdb-input-init class="col-12 form-outline mt-3">
+                                <button class="btn btn-sm btn-primary">Submit</button>
+                            </div>
+                            {% endif %}
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

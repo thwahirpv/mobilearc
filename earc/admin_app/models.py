@@ -64,3 +64,17 @@ class UserDetails(AbstractUser):
 class web_logo(models.Model):
     logo = models.ImageField(upload_to='logo/')
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Address(models.Model):
+    address_id = models.BigAutoField(primary_key=True, unique=True, blank=False)
+    name = models.CharField(null=True, max_length=300)
+    address_type = models.CharField(max_length=50, null=False)
+    building_name = models.CharField(max_length=300, null=False)
+    phone =  PhoneNumberField(blank=False, null=False)
+    state = models.CharField(null=False, max_length=150)
+    city = models.CharField(null=False, max_length=200)
+    pincode = models.CharField(null=False, max_length=10)
+    address = models.CharField(null=False, max_length=1000)
+    user = models.ForeignKey(UserDetails, on_delete=models.CASCADE, related_name='user_address')
+

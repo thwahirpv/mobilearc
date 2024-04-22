@@ -126,13 +126,14 @@ Home
                                         </div>
                                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                                         <div class="detail-extralink">
-                                            <div class="detail-qty border radius">
-                                                <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                                <span class="qty-val">1</span>
-                                                <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                                            </div>
-                                            <div class="product-extra-link2">
-                                                <button class="button button-add-to-cart">Add to cart</button>
+                                            <form class="d-inline" id="cart_form" method="post" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="color_id" value="" id="colorId_input">
+                                                <input type="hidden" name="storage_id" value="" id="storageId_input">
+                                                <input style="width: 70px;" class="" type="number" name="quantity" value="1">
+                                                <button class="btn btn-primary">Add to cart</button>
+                                            </form>
+                                            <div class="d-inline product-extra-link2">
                                                 <a  class="action-btn hover-up" onclick="add_wishlist_item('{{product_obj.product_id}}')"><i class="fi-rs-heart"></i></a>
                                                 <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                             </div>
@@ -706,6 +707,9 @@ Home
     <script>
         const messageDiv = document.getElementById('message_div')
         const messageIconContainer = document.getElementById('message_icon_container')
+        const productIdInput = document.getElementById('productId_input')
+        const colorIdInpupt = document.getElementById('colorId_input')
+        const storageIdInput = document.getElementById('storageId_input')
 
         function collectDetails(colorId, count){
             const thumbnileContainer = document.getElementById('thumbnileContainer')
@@ -718,6 +722,7 @@ Home
             .then(response => response.json())
             .then(data => {
                 thumbnileContainer.innerHTML = ''
+                colorIdInpupt.value = data.cart_details.color_id
                 data.image_data.forEach(function(item, index){
                     const imgDivTag = document.createElement('div')
                     const imgTag = document.createElement('img')
@@ -742,6 +747,7 @@ Home
                         sellingPrice.innerHTML = item.price
                         stockCount.innerHTML = item.stock
                         discountPercentage.innerHTML = item.percentage+'%'
+                        storageIdInput.value = item.id
                     }
                     const liTag = document.createElement('li')
                     const aTag = document.createElement('a')
@@ -776,6 +782,7 @@ Home
             storage.style.background = '#088178'
             stockCount.innerHTML = item.stock
             discountPercentage.innerHTML = item.percentage+'%'
+            storageIdInput.value = item.id
         }
 
     
@@ -808,6 +815,18 @@ Home
     imageContainer.addEventListener('mouseleave', function() {
         image.style.transform = 'scale(1)';
     });
+
+
+    const moniterTopStyle = () => {
+        const topValue = messageDiv.style.top
+        console.log(topValue);
+        if(topValue === '15%'){
+
+            setTimeout( () => {
+                messageDiv.style.top = '-15%'
+            },2000)
+        }
+    }
    
     const add_wishlist_item = (id) => {
         console.log('hey its workinng')
@@ -832,17 +851,35 @@ Home
             }
         })
     }
-    const moniterTopStyle = () => {
-        const topValue = messageDiv.style.top
-        console.log(topValue);
-        if(topValue === '15%'){
+    
 
-            setTimeout( () => {
-                console.log('its work')
-                messageDiv.style.top = '-15%'
-            },2000)
-        }
-    }
+    document.getElementById('cart_form').addEventListener('submit', function(event){
+        event.preventDefault();
+
+        const formData = new FormData(event.target)
+        fetch('http://127.0.0.1:8000/cart/add/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status){
+                messageIconContainer.innerHTML = ''
+                const tickTag = document.createElement('i')
+                tickTag.classList.add('fa-regular', 'fa-circle-check')
+                messageIconContainer.appendChild(tickTag)
+                messageDiv.style.top = '15%'
+                moniterTopStyle()
+            }else{
+                messageIconContainer.innerHTML = ''
+                const crossTag = document.createElement('i')
+                crossTag.classList.add('fa-regular', 'fa-circle-xmark')
+                messageIconContainer.appendChild(crossTag)
+                messageDiv.style.top = '15%'
+                moniterTopStyle()
+            }
+        })
+    })
 
     
     </script>

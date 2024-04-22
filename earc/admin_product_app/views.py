@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.views.decorators.cache import cache_control
 from django.utils.decorators import method_decorator
 from django.db.models import F, Sum, Count, ExpressionWrapper, IntegerField
+from django.db.models import Max, Prefetch
 # ==================================================================================================================
 
 
@@ -577,6 +578,18 @@ class product_management:
         product_obj = get_object_or_404(products, product_id=id)
         product_obj.delete()
         return redirect('admin_product_app:list_products')
+    
+    def stock_view(request, id):
+        stock_obj = products.objects.filter(product_id=id).prefetch_related(
+            Prefetch('colors', queryset=Colors.objects.order_by('-color_id').prefetch_related(
+                Prefetch('storage', queryset=Storage.objects.order_by('-size_id'), to_attr='storages')
+            ), to_attr='colours')
+        )    
+        context = {
+            'stock_obj': stock_obj
+        }
+        return render(request, 'admin_template/stock_view.html', context)
+        
 #=========================================== end product management ====================================================
 
 

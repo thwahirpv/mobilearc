@@ -95,14 +95,19 @@ def collect_image(request, colorId=None, id=None):
     images = Images.objects.filter(color=color_obj)
     image_data = [{'id':color_obj.color_id, 'link':image.product_image.url} for image in images]
     storage_data =[
-        {'ram':storage.ram, 
+        {
+        'id':storage.size_id,
+        'ram':storage.ram, 
          'rom':storage.rom, 
          'stock':storage.stock, 
          'size_price':storage.price_of_size, 
          'price':product_obj.price+int(storage.price_of_size),
          'percentage':product_obj.get_discount_percentage(size_Price=storage.price_of_size)
          } for storage in storages]
-    return JsonResponse({'image_data':image_data, 'storage_data':storage_data}, safe=True)
+    cart_details = {
+        'color_id': color_obj.color_id
+    }
+    return JsonResponse({'image_data':image_data, 'storage_data':storage_data, 'cart_details':cart_details}, safe=True)
 
 
 
@@ -215,7 +220,6 @@ class wishlist_management:
                 wishlist_data = request.session.get(session_id, [])
                 for i, item in enumerate(wishlist_data):
                     if item['product'] == id:
-                        print('hellllllllllllllll')
                         del wishlist_data[i]
                         break
                 request.session[session_id] = wishlist_data
@@ -225,12 +229,7 @@ class wishlist_management:
                         'text': f'{product_obj.product_name} is removed'
                     }
                 return JsonResponse(context, safe=True)
-
-                    
-
-
             
-
 # ===========Wishlist End=========================
 
 

@@ -39,11 +39,15 @@
                                 <a class="" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false">
                                     {% if user.is_authenticated %} 
                                         {% if user.profile %}
+                                        <a href="{% url 'user_app:account_view' %}">
                                             <img class="img-xs rounded-circle" src="{{ user.profile.url }}" 
                                             style="width: 43px; height: 43px;" alt="">
+                                        </a>
                                         {% else %}
+                                        <a href="{% url 'user_app:account_view' %}">
                                             <img class="img-xs rounded-circle" src="{% static 'assets2/imgs/default.jpg' %}" 
                                             style="width: 43px; height: 43px;" alt="">
+                                        </a>
                                         {% endif %}
                                     {% endif %}
                                 </a>
@@ -110,7 +114,7 @@
                                 </a>
                             </div>
                             <div class="header-action-icon-2">
-                                <a class="mini-cart-icon" href="shop-cart.html">
+                                <a class="mini-cart-icon" href="{% url 'cart_app:view_cart' %}">
                                     <img alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-cart.svg' %}">
                                     <span class="pro-count blue">2</span>
                                 </a>

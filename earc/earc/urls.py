@@ -41,7 +41,11 @@ urlpatterns = [
     path('products/', include('user_product_app.urls', namespace='user_product_app')),
 
     # ============Direction to cart_management=======================
-    path('cart/', include('cart_management.urls', namespace='cart_management'))
+    path('cart/', include('cart_app.urls', namespace='cart_app')),
+
+
+    # =============Direction to checkout_app======================
+    path('checkout/', include('checkout_app.urls', namespace='checkout_app'))
 
 
 ]

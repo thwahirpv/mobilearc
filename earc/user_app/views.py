@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from admin_app.models import UserDetails
+from admin_app.models import UserDetails, Address
 from django.contrib import messages
 from .signals import otp_message_handler
 from django.contrib.auth.decorators import login_required                                                                                                       
@@ -23,6 +23,7 @@ from admin_product_app.models import products, Colors, Images
 from django.db.models import Max, Prefetch
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
                                                                                        
 @never_cache
 def fournoterror(request):
@@ -78,7 +79,6 @@ def user_registration(request):
         # Checking phone number valid
         try:
             phone_number = PhoneNumber.from_string(number, region=country_code)
-            print(phone_number.as_international)
             if not phone_number.is_valid():
                 messages.error(request, 'Invalid mobile number')
                 return redirect('user_app:user_registration')
@@ -129,7 +129,6 @@ def otp_checking(request):
     if request.user.is_authenticated:
         return redirect('user_app:user_login')
     if request.user.is_active: 
-        print('is active')
         return redirect('user_app:user_login')
     
 
@@ -192,7 +191,7 @@ def user_login(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        print(email, password)
+        
         user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
@@ -209,36 +208,31 @@ def user_logout(request):
 
 def user_home(request):
     context = {}
+    first_banner = Banner.objects.filter(Q(banner_active=True) & Q(banner_type='first_banner')).order_by('priority')
+    secondary_banner = Banner.objects.filter(Q(banner_active=True) & Q(banner_type='secondary_banner'))
+
+    latest_products = products.objects.filter(product_active=True).order_by('-product_id')[:8].prefetch_related(
+        Prefetch('colors', queryset=Colors.objects.order_by('-color_id')[:1].prefetch_related(
+        Prefetch('images', queryset=Images.objects.order_by('priority')[:1], to_attr='pic')
+        ), to_attr='color')
+    )
+    context = {
+        'first_banner':first_banner,
+        'secondary_banner':secondary_banner,
+        'latest_products':latest_products
+        }
     if request.user.is_authenticated and request.user.is_active is True:
         user = request.user
-        first_banner = Banner.objects.filter(Q(banner_active=True) & Q(banner_type='first_banner')).order_by('priority')
-        secondary_banner = Banner.objects.filter(Q(banner_active=True) & Q(banner_type='secondary_banner'))
-
-        latest_products = products.objects.filter(product_active=True).order_by('-product_id')[:8].prefetch_related(
-            Prefetch('colors', queryset=Colors.objects.order_by('-color_id')[:1].prefetch_related(
-                Prefetch('images', queryset=Images.objects.order_by('priority')[:1], to_attr='pic')
-            ), to_attr='color')
-        )
-        context = {
-            'user':user,
-            'first_banner':first_banner,
-            'secondary_banner':secondary_banner,
-            'latest_products':latest_products
-        }
+        context['user'] = user
+        return render(request, 'user_template/index.html', context)
     else:
-        return render(request, 'user_template/index.html')
-
-    return render(request, 'user_template/index.html', context)
+        return render(request, 'user_template/index.html', context)
     
     
 
 def forget_password_user_conform(request):
-    print('iam tochc this function')
-    print(request.method)
     if request.method == 'POST':
         email = request.POST.get('email')
-        print(email)
-        print('now iam inside the post method')
         if UserDetails.objects.filter(email=email).exists():
             user_obj = UserDetails.objects.get(email=email)
             request.session['email'] = user_obj.email
@@ -312,12 +306,11 @@ def forget_password(request):
 def change_password(request):
     if request.method == 'POST':
         email = request.session.get('email')
+        del request.session['email']
         user = get_object_or_404(UserDetails, email=email)
         password = request.POST.get('password')
         conform_password = request.POST.get('conform_password')
-        print(password, conform_password)
-        print(user.email)
-        print('old password:', user.password)
+      
 
         try:
             validate_password(password)
@@ -329,11 +322,244 @@ def change_password(request):
             messages.error(request, 'Password is not match!', extra_tags='text-danger')
             print('its not match')
             return redirect('user_app:change_password')
-        
-        user.set_password(password)
-        user.save()
-        print('after changing:', user.email, user.password)
-        del request.session['email']
-        messages.success(request, 'Password Successfully changed', extra_tags='text-success')
-        return redirect('user_app:user_login')
+        if user.is_authenticated:
+            print('he is authenticated')
+            user.set_password(password)
+            user.save()
+            user = authenticate(request, email=email, password=password)
+            login(request, user)
+            messages.success(request, 'Password Successfully changed', extra_tags='text-success')
+            return redirect('user_app:account_view')
+        else:
+            user.set_password(password)
+            user.save()
+            messages.success(request, 'Password Successfully changed', extra_tags='text-success')
     return render(request, 'user_template/change_password.html')
+
+
+def account_view(request):
+    if not request.user.is_authenticated or request.user.is_active is False:
+        return redirect('user_app:user_login')
+    
+    user = request.user
+    address_data = Address.objects.filter(user=user)
+    context = {
+        'user':user,
+        'address_data':address_data
+    }
+    return render(request, 'user_template/page-account.html', context)
+
+
+def update_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if UserDetails.objects.filter(email=email).exists():
+            user_obj = UserDetails.objects.get(email=email)
+            request.session['email'] = user_obj.email
+            context = {
+                'email': user_obj.email,
+                'user_profile':user_obj.profile.url,
+            }
+            return render(request, 'user_template/find_user.html', context)
+        else:
+            context = {
+                'status': 'fail',
+                'text': 'email is not exits!'
+            }
+            return render(request, 'user_template/find_user.html', context)
+    return render(request, 'user_template/find_user.html')
+
+
+
+def update_details(request, id):
+    try:
+        if request.method == 'POST':
+            user_obj = get_object_or_404(UserDetails, user_id=id)
+            profile = request.FILES.get('profile', user_obj.profile)
+            username = request.POST.get('username', user_obj.username)
+            email = request.POST.get('email', user_obj.email)
+            phone_number = request.POST.get('mobile', user_obj.phone_number)
+
+            if user_obj:
+                user_obj.profile = profile
+                user_obj.username = username
+                user_obj.email = email
+                user_obj.phone_number = phone_number
+                user_obj.save()
+            return redirect('user_app:account_view')
+    except:
+        return redirect('user_app:account_view')
+    
+
+def add_address(request):
+    if not request.user.is_authenticated or request.user.is_active is False:
+        return redirect('user_app:user_login')
+    user = request.user
+    
+    try:
+        if request.method == 'POST':
+            name = request.POST.get('name')
+            address_type = request.POST.get('address_type', None)
+            building_name = request.POST.get('building_name')
+            country_code = request.POST.get('country_code')
+            phone = request.POST.get('phone')
+            state = request.POST.get('state')
+            city = request.POST.get('city')
+            pincode = request.POST.get('pincode')
+            address = request.POST.get('address')
+
+         
+            if name == '' or name.isdigit():
+                messages.error(request, 'Enter valid name!')
+                return redirect('user_app:add_address')
+            elif address_type is None:
+                messages.error('select one of them home or office!')
+                return redirect('user_app:add_address')
+            elif building_name == '':
+                messages.error(request, 'Enter valid Building name!')
+                return redirect('user_app:add_address')
+            elif state == '' or state.isdigit():
+                messages.error(request, 'Enter valid State!')
+                return redirect('user_app:add_address')
+            elif city == '' or city.isdigit():
+                messages.error(request, 'Enter valid City!')
+                return redirect('user_app:add_address')
+            elif pincode == '' or any(pin.isalpha() for pin in pincode):
+                messages.error(request, 'Enter valid pincode!')
+                return redirect('user_app:add_address')
+            elif address == '' or address.isdigit():
+                messages.error(request, 'Enter valid Adress!')
+                return redirect('user_app:add_address')
+            
+            
+            try:
+                phone_number = PhoneNumber.from_string(phone, region=country_code)
+                if not phone_number.is_valid():
+                    messages.error(request, 'Enter valid Number!')
+                    return redirect('user_app:add_address')
+            except:
+                messages.error(request, 'Its not look like phone Number!')
+                return redirect('user_app:add_address')
+
+            Address.objects.create(
+                name=name, 
+                address_type=address_type, 
+                building_name=building_name,
+                phone=phone_number,
+                state=state,
+                city=city,
+                pincode=pincode,
+                address=address,
+                user = user
+            )
+            return redirect('user_app:account_view')
+    except Exception as e:
+        return redirect('user_app:add_address')
+    
+    COUNTRY_CHOICES = [(country.alpha_2, country.name) for country in pycountry.countries]
+    context = {
+        'COUNTRY_CHOICES':COUNTRY_CHOICES,
+    }
+    return render(request, 'user_template/add_address.html',context)
+
+
+
+def update_address(request, id):
+    if not request.user.is_authenticated or request.user.is_active is False:
+        return redirect('user_app:user_login')
+    user = request.user
+    address_obj = Address.objects.get(address_id=id)
+    
+    try:
+        if request.method == 'POST':
+            name = request.POST.get('name', address_obj.name)
+            address_type = request.POST.get('address_type', address_obj.address_type)
+            building_name = request.POST.get('building_name', address_obj.building_name)
+            country_code = request.POST.get('country_code')
+            phone = request.POST.get('phone', address_obj.phone)
+            state = request.POST.get('state', address_obj.state)
+            city = request.POST.get('city', address_obj.city)
+            pincode = request.POST.get('pincode', address_obj.pincode)
+            address = request.POST.get('address', address_obj.address)
+
+            print(name, address_type, building_name, country_code, phone, state,city, pincode, address)
+
+            if name == '' or name.isdigit():
+                messages.error(request, 'Enter valid name!')
+                return redirect('user_app:add_address')
+            elif address_type is None:
+                messages.error('select one of them home or office!')
+                return redirect('user_app:add_address')
+            elif building_name == '':
+                messages.error(request, 'Enter valid Building name!')
+                return redirect('user_app:add_address')
+            elif state == '' or state.isdigit():
+                messages.error(request, 'Enter valid State!')
+                return redirect('user_app:add_address')
+            elif city == '' or city.isdigit():
+                messages.error(request, 'Enter valid City!')
+                return redirect('user_app:add_address')
+            elif pincode == '' or any(pin.isalpha() for pin in pincode):
+                messages.error(request, 'Enter valid pincode!')
+                return redirect('user_app:add_address')
+            elif address == '' or address.isdigit():
+                messages.error(request, 'Enter valid Adress!')
+                return redirect('user_app:add_address')
+            
+            
+            try:
+                phone_number = PhoneNumber.from_string(phone, region=country_code)
+                if not phone_number.is_valid():
+                    messages.error(request, 'Enter valid Number!')
+                    return redirect('user_app:add_address')
+            except:
+                messages.error(request, 'Its not look like phone Number!')
+                return redirect('user_app:add_address')
+
+
+            address_obj.name = name
+            address_obj.address_type = address_type
+            address_obj.building_name = building_name
+            address_obj.phone = phone_number
+            address_obj.state = state
+            address_obj.city = city
+            address_obj.pincode = pincode
+            address_obj.address = address
+            address_obj.save()
+            
+            return redirect('user_app:account_view')
+    except Exception as e:
+        return redirect('user_app:add_address')
+    
+    COUNTRY_CHOICES = [(country.alpha_2, country.name) for country in pycountry.countries]
+    context = {
+        'COUNTRY_CHOICES':COUNTRY_CHOICES,
+        'address_obj':address_obj
+    }
+    return render(request, 'user_template/add_address.html',context)
+
+
+
+
+def delete_address(request, id):
+    try:
+        address_obj = Address.objects.get(address_id=id)
+        if address_obj:
+            address_obj.delete()
+            context ={
+                'status':True,
+                'text':'Address Deleted'
+            }
+            return JsonResponse(context, safe=True)
+        else:
+            context = {
+                'status':False, 
+                'text':'Address not found!'
+            }
+            return JsonResponse(context, safe=True)
+    except Exception as e:
+        context = {
+            'status':False, 
+            'text':'Address not found!'
+        }
+        return JsonResponse(context, safe=True)
