@@ -14,6 +14,8 @@ from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 import uuid
+import json
+from checkout_app.models import review
 
 
 def product_list(request):
@@ -23,7 +25,8 @@ def product_list(request):
     category_data = category.objects.filter(category_active=True)
     brand_data = brands.objects.filter(brand_active=True)
     colors_data = Colors.objects.all().distinct()
-    print('first', products_data.count())
+
+    
    
     # Filter data basaed on category
     if request.GET:
@@ -78,10 +81,20 @@ def product_view(request, id):
     product_obj = get_object_or_404(products, product_id=id)
     colors_obj = Colors.objects.filter(product=product_obj)
     color_obj = colors_obj[0]
+    
+    try:
+        review_data = review.objects.filter(
+            product = product_obj,
+            customer = request.user
+        )
+    except:
+        review_data = review.objects.none()
+    
     context={
         'product_obj':product_obj, 
         'colors_obj':colors_obj,
-        'color_obj':color_obj
+        'color_obj':color_obj,
+        'review_data':review_data
     }
     return render(request, 'user_template/product_view.html', context)
 
@@ -110,6 +123,39 @@ def collect_image(request, colorId=None, id=None):
     return JsonResponse({'image_data':image_data, 'storage_data':storage_data, 'cart_details':cart_details}, safe=True)
 
 
+
+def quantity_check(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        storage_id = data.get('storage_id')
+        quantity = int(data.get('quantity'))
+        print('------------------------')
+        print(storage_id, quantity)
+
+        try:
+            storage_obj = Storage.objects.get(size_id=storage_id)
+            print(storage_obj.stock)
+        except Exception as e:
+            pass
+
+        if storage_obj:
+            if storage_obj.stock < quantity:
+                context = {
+                    'status':False,
+                    'text':'out of stock'
+                }
+                return JsonResponse(context, safe=True)
+            else:
+                context = {
+                    'status':True,
+                    'text':'stock in'
+                }
+                return JsonResponse(context, safe=True)
+
+
+
+
+        
 
 
 # ============Wishlist start======================

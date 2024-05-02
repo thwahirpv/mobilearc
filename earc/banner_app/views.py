@@ -11,7 +11,7 @@ from django.db.models import Q
 
 
 def list_banner(request):
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or request.user.is_superuser is False:
         return redirect('admin_app:admin_login')
     
     # first_banner = Banner.objects.filter(Q(banner_active=True) & Q(banner_type='first_banner'))
@@ -23,7 +23,7 @@ def list_banner(request):
 
 
 def add_banner(request):
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or request.user.is_superuser is False:
         return redirect('admin_app:admin_login')
     
     if request.method == 'POST':
@@ -71,7 +71,7 @@ def add_banner(request):
 
 
 def banner_edit(request, id):
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or request.user.is_superuser is False:
         return redirect('admin_app:admin_login')
     
     url  = reverse('banner_app:edit_banner', kwargs={'id':id}) 
@@ -124,7 +124,7 @@ def banner_edit(request, id):
 
 
 def block_and_unblock(request, action, id):
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or request.user.is_superuser is False:
         return redirect('admin_app:admin_login')
     
     banner_obj = get_object_or_404(Banner, banner_id=id)
@@ -156,7 +156,7 @@ def block_and_unblock(request, action, id):
 
 
 def delete_banner(request, id):
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or request.user.is_superuser is False:
         return redirect('admin_app:admin_login')
     banner_obj = get_object_or_404(Banner, banner_id=id)
     banner_obj.delete()

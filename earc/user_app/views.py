@@ -19,7 +19,7 @@ from io import BytesIO
 import pycountry
 from . import signals
 from banner_app.models import Banner
-from admin_product_app.models import products, Colors, Images
+from admin_product_app.models import products, Colors, Images, brands, category
 from django.db.models import Max, Prefetch
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -216,10 +216,15 @@ def user_home(request):
         Prefetch('images', queryset=Images.objects.order_by('priority')[:1], to_attr='pic')
         ), to_attr='color')
     )
+    category_data = category.objects.filter(category_active=True)
+    brands_data = brands.objects.filter(brand_active=True)
+
     context = {
         'first_banner':first_banner,
         'secondary_banner':secondary_banner,
-        'latest_products':latest_products
+        'latest_products':latest_products,
+        'brands_data':brands_data,
+        'category_data':category_data
         }
     if request.user.is_authenticated and request.user.is_active is True:
         user = request.user
@@ -408,6 +413,8 @@ def add_address(request):
             pincode = request.POST.get('pincode')
             address = request.POST.get('address')
 
+            next_url = request.GET.get('next')
+
          
             if name == '' or name.isdigit():
                 messages.error(request, 'Enter valid name!')
@@ -452,7 +459,7 @@ def add_address(request):
                 address=address,
                 user = user
             )
-            return redirect('user_app:account_view')
+            return redirect(next_url)
     except Exception as e:
         return redirect('user_app:add_address')
     

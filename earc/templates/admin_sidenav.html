@@ -46,16 +46,16 @@
                         <span class="text">Banner</span>
                     </a>
                     <div class="submenu">
-                        <a href="{% url 'banner_app:list_banner' %}" class="{% if request.path == '/admin/banner/' %} active {% endif %}">Banners</a>
-                        <a href="{% url 'banner_app:add_banner' %}" class="{% if request.path == '/admin/banner/add/' %} active {% endif %}">Add banner</a>
+                        <a href="{% url 'banner_app:list_banner' %}" class="{% if request.path == '/admin/banner/' %} active fw-bold {% endif %}">Banners</a>
+                        <a href="{% url 'banner_app:add_banner' %}" class="{% if request.path == '/admin/banner/add/' %} active fw-bold {% endif %}">Add banner</a>
                     </div>
                 </li>
-                <li class="menu-item has-submenu">
+                <li class="menu-item has-submenu {% if 'order' in request.path %} active {% endif %}">
                     <a class="menu-link" > <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
                     <div class="submenu">
-                        <a href="page-orders-1.html">Order list 1</a>
+                        <a href="{% url 'admin_order_app:order_list' %}" class="{% if request.path == '/admin/order/' %} active fw-bold {% endif %}">Order list</a>
                         <a href="page-orders-2.html">Order list 2</a>
                         <a href="page-orders-detail.html">Order detail</a>
                     </div>

@@ -1,0 +1,187 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+Oders
+{% endblock %}
+
+
+{% block content %}
+
+{% include 'admin_sidenav.html' %}
+    
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+        
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Order List </h2>
+                </div>
+                <div>
+                    <input type="text" placeholder="Search order ID" class="form-control bg-white">
+                </div>
+            </div>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row gx-3">
+                        <div class="col-lg-4 col-md-6 me-auto">
+                            <input type="text" placeholder="Search..." class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <select class="form-select">
+                                <option>Status</option>
+                                <option>Active</option>
+                                <option>Disabled</option>
+                                <option>Show all</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <select class="form-select">
+                                <option>Show 20</option>
+                                <option>Show 30</option>
+                                <option>Show 40</option>
+                            </select>
+                        </div>
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col" class="text-end"> Action </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order_data %}
+                                <tr>
+                                    <td class="fw-bold">{{item.cart_id}}</td>
+                                    <td class="fw-bold"><b class="fw-bold">{{item.product.product_name}}</b></td>
+                                    <td class="d-flex flex-column">
+                                        <p class="fw-bold">{{item.order_customer.customer.username}}</p>
+                                        <p class="" style="font-size: 12px;">{{item.order_customer.customer.email}}</p>
+                                    </td>
+                                    <td class="fw-bold">${{item.total_price}}</td>
+                                    <td>
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            <select onchange="changeStatus(this, '{{item.cart_id}}')" name="priority" class="badge rounded-pill 
+                                            {% if item.status <= 3 %} alert-warning {% elif item.status == 4 %} alert-success {% elif item.status == 5 %} alert-danger {% endif %}">
+                                                <option value="{{item.status}}" selected>{{item.get_status_display}}</option>
+                                                {% for value, label in status %}
+                                                    <option value="{{value}}" >{{ label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </form>
+                                      
+                                    </td>
+                                    <td class="fw-bold">{{ item.update_at|date:"d/m/y" }}</td>
+                                    <td class="text-end">
+                                        <a href="{% url 'admin_order_app:order_details' id=item.cart_id %}" class="btn btn-md rounded font-sm">Detail</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div> <!-- table-responsive //end -->
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            <div class="pagination-area mt-15 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        {% if order_data.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{order_data.previous_page_number}}">
+                                <i class="fi-rs-angle-double-small-left"> << </i>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% for num in order_data.paginator.page_range %}
+                        <li class="page-item active" id="page_{{num}}">
+                            <a class="page-link" href="?page={{num}}">{{num}}</a>
+                        </li>
+                        {% endfor %}
+
+                        {% if order_data.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{order_data.next_page_number}}">
+                                <i class="fi-rs-angle-double-small-right"> >> </i> 
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script data-cfasync="false" src="../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+    <script>
+        const changeStatus = (selectedElement, id) => {
+            const csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+            fetch(`http://127.0.0.1:8000/admin/order/update_status/`,{
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrf_token
+                },
+                body: JSON.stringify({
+                    id:id,
+                    value:selectedElement.value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status == true){
+                    console.log('its working', data.title)
+                    Swal.fire({
+                        toast: true,
+                        title: data.title,
+                        icon: "success",
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        allowOutsideClick: true, 
+                        timerProgressBar: true,
+                        position: 'top-end',
+                        timer: 10000,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    })
+                }else{
+                    Swal.fire({
+                    title: data.title,
+                    icon: "warning",
+                    showCancelButton: false,
+                    position: 'top-end',
+                    timer: 2000 
+                })
+                }
+            })
+        }
+    </script>
+  {% endblock %}

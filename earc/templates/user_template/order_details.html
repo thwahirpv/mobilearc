@@ -1,0 +1,509 @@
+{% extends "user_base.html" %}
+{% load static %}
+{% load order_tags %}
+
+
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block styling %}
+<style>
+    .card {
+        z-index: 0;
+        background-color: #ECEFF1;
+        padding-bottom: 20px;
+        margin-top: 90px;
+        margin-bottom: 90px;
+        border-radius: 10px;
+    }
+
+    .top {
+        padding-top: 40px;
+        padding-left: 13% !important;
+        padding-right: 13% !important;
+    }
+
+    /*Icon progressbar*/
+    #progressbar {
+        margin-bottom: 30px;
+        overflow: hidden;
+        color: #455A64;
+        padding-left: 0px;
+        margin-top: 30px;
+    }
+
+    #progressbar li {
+        list-style-type: none;
+        font-size: 13px;
+        float: left;
+        position: relative;
+        font-weight: 400;
+    }
+
+    #progressbar .step0:before {
+        font-family: FontAwesome;
+        content: "\f10c";
+        color: #fff;
+    }
+
+    #progressbar li:before {
+        width: 40px;
+        height: 40px;
+        line-height: 45px;
+        display: block;
+        font-size: 20px;
+        background: #C5CAE9;
+        border-radius: 50%;
+        margin: auto;
+        padding: 0px;
+    }
+
+    /*ProgressBar connectors*/
+    #progressbar li:after {
+        content: '';
+        width: 100%;
+        height: 12px;
+        background: #C5CAE9;
+        position: absolute;
+        left: 0;
+        top: 16px;
+        z-index: -1;
+    }
+
+    #progressbar li:last-child:after {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        position: absolute;
+        left: -50%;
+    }
+
+    #progressbar li:nth-child(2):after,
+    #progressbar li:nth-child(3):after {
+        left: -50%;
+    }
+
+    #progressbar li:first-child:after {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        position: absolute;
+        left: 50%;
+    }
+
+    #progressbar li:last-child:after {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    #progressbar li:first-child:after {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+
+    /*Color number of the step and the connector before it*/
+    #progressbar li.active:before,
+    #progressbar li.active:after {
+        background: #088178;
+    }
+
+    #progressbar li.active:before {
+        font-family: FontAwesome;
+        content: "\f00c";
+    }
+
+    .icon {
+        width: 60px;
+        height: 60px;
+        margin-right: 15px;
+    }
+
+    .icon-content {
+        padding-bottom: 20px;
+    }
+
+    @media screen and (max-width: 992px) {
+        .icon-content {
+            width: 50%;
+        }
+    }
+    .rate {
+    float: left;
+    height: 46px;
+    padding: 0 10px;
+}
+.rate:not(:checked) > input {
+    position:absolute;
+    display: none;
+}
+.rate:not(:checked) > label {
+    float:right;
+    width:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:30px;
+    color:#ccc;
+}
+.rate:not(:checked) > label:before {
+    content: '★ ';
+}
+.rate > input:checked ~ label {
+    color: #ffc700;    
+}
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #deb217;  
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+    color: #c59b08;
+}
+
+    /*comment*/
+    .comments-area {
+  background: transparent;
+  border-top: 1px solid #e2e9e1;
+  padding: 45px 0;
+  margin-top: 50px;
+}
+
+.comments-area h5 {
+  font-size: 16px;
+  margin-bottom: 0px;
+}
+
+.comments-area a {
+  color: #2a2a2a;
+}
+
+.comments-area .comment-list {
+  padding-bottom: 48px;
+}
+
+.comments-area .comment-list:last-child {
+  padding-bottom: 0px;
+}
+
+.comments-area .comment-list.left-padding {
+  padding-left: 25px;
+}
+
+.comments-area .comment-list .single-comment {
+  padding: 0 0 15px 0;
+  margin: 0 0 15px 0;
+}
+
+.comments-area .comment-list .single-comment:not(:last-child) {
+  border-bottom: 1px solid #e2e9e1;
+}
+
+.comments-area .thumb {
+  margin-right: 20px;
+}
+
+.comments-area .thumb img {
+  width: 70px;
+  border-radius: 50%;
+}
+
+.comments-area .date {
+  font-size: 14px;
+  color: #999999;
+  margin-bottom: 0;
+  margin-left: 20px;
+}
+
+.comments-area .comment {
+  margin-bottom: 10px;
+  color: #777777;
+  font-size: 15px;
+}
+
+.comments-area .btn-reply {
+  background-color: transparent;
+  color: #888888;
+  padding: 5px 18px;
+  font-size: 14px;
+  display: block;
+  font-weight: 400;
+}
+
+.comments-area.style-2 {
+  border: 0;
+  margin-top: 0;
+  padding: 25px 0;
+}
+
+.comments-area h4 {
+  margin-bottom: 35px;
+  color: #2a2a2a;
+  font-size: 18px;
+}
+.comments-area .thumb {
+    min-width: 100px;
+}
+.product-rate {
+  background-image: url("/static/assets/imgs/theme/rating-stars.png");
+  background-position: 0 -12px;
+  background-repeat: repeat-x;
+  height: 12px;
+  width: 60px;
+  transition: all 0.5s ease-out 0s;
+  -webkit-transition: all 0.5s ease-out 0s;
+}
+
+.product-rating {
+  height: 12px;
+  background-repeat: repeat-x;
+  background-image: url("/static/assets/imgs/theme/rating-stars.png");
+  background-position: 0 0;
+}
+
+.w-20{
+    width: 20%;
+}
+.w-40{
+    width: 40%;
+}
+.w-60{
+    width: 60%;
+}
+.w-80{
+    width: 80%;
+}
+.w-100{
+    width: 100%;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="main">
+    {% include 'user_nav.html' %}
+    <div style="width: 100%; height: fit-content; padding: 80px;">
+        <div class="row" style="padding: 15px; border-bottom: solid 1px gray;">
+            <div class="col-6" style="padding-bottom: 40px;">
+                <div style="display: flex; justify-content: center; align-order_objs: center;">
+                    <img style="width: 300px;" class="img-fluid" src="{{ order_obj.product.thumbnail.url }}">
+                </div>
+            </div>
+            <div class="col-6" style="margin-top: 30px; padding-bottom: 40px;">
+                <div style="width: 100%; display: flex; flex-direction: column; align-order_objs: center; padding: 0px 50px;">
+                    <div>
+                        <h3>{{order_obj.product.product_name}}</h3>
+                    </div>
+                    <div style="width: 50%; margin-top: 50px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <p class="" style="font-weight: bolder; font-size: 16px;">Color:</p>
+                            <p style="font-weight: 600; font-size: 16px;">{{order_obj.color.color_name}}</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <p class="" style="font-weight: bolder; font-size: 16px;">Storage:</p>
+                            <p style="font-weight: 600; font-size: 16px;">{{order_obj.storage.rom}}/{{order_obj.storage.ram}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="width: 100%; display: flex; justify-content: center; align-order_objs: center; padding: 80px; border-bottom: solid 1px gray;">
+            <div class="gap-3" style="width: 55%; display: flex; flex-direction: column; justify-content: center; align-order_objs: center;">
+                <div style="width: 50%; display: flex; justify-content: space-between;">
+                    <h5 style="font-size: 15px; font-weight: bolder;">Price:</h5>
+                    <p style="font-size: 15px; font-weight: bolder;">{{order_obj.product.price}} <span class="text-success">+</span></p>
+                </div>
+                <div style="width: 50%; display: flex; justify-content: space-between;">
+                    <h5 style="font-size: 15px; font-weight: bolder;">Storage price:</h5>
+                    <p style="font-size: 15px; font-weight: bolder;">{{order_obj.storage.price_of_size}} <span class="text-success">+</span></p>
+                </div>
+                <div style="width: 50%; display: flex; justify-content: space-between;">
+                    <h5 style="font-size: 15px; font-weight: bolder;">Discount price:</h5>
+                    <p style="font-size: 15px; font-weight: bolder;">{{order_obj.product.discount_price}} <span class="text-danger">-</span></p>
+                </div>
+                <div style="width: 50%; display: flex; justify-content: space-between;">
+                    <h5 style="font-size: 15px; font-weight: bolder;">Coupen:</h5>
+                    <p style="font-size: 15px; font-weight: bolder;">0 <span class="text-danger">-</span></p>
+                </div>
+                <div style="width: 50%; display: flex; justify-content: space-between;">
+                    <h5 style="font-size: 15px; font-weight: bolder;">Shipping:</h5>
+                    <p style="font-size: 15px; font-weight: bolder;">0 <span class="text-success">+</span></p>
+                </div>
+                <div
+                    style="width: 50%; display: flex; justify-content: space-between; border-top: solid 1px gray; padding-top: 12px;">
+                    <h5 style="font-size: 15px; font-weight: bolder;">Total:</h5>
+                    <p style="font-size: 15px; font-weight: bolder;">{% total_purchase_price order_obj %}</p>
+                </div>
+            </div>
+        </div>
+        <div style="width: 100%; border-bottom: solid 1px gray;">
+            <div class="container px-1 px-md-4 py-5 mx-auto">
+                <div class="w-100">
+                    <div class="row w-100 d-flex justify-content-center">
+                        <div class="col-12">
+                            <ul id="progressbar" class="text-center row">
+                                <li class="{% if 1 <= order_obj.status %} active {% endif %} step0 col">Placed</li>
+                                {% if order_obj.status == 5 %}
+                                    <li class="{% if 5 <= order_obj.status %} active text-danger {% endif %} step0 col">Cancelled</li>
+                                {% else %}
+                                <li class="{% if 2 <= order_obj.status %} active {% endif %} step0 col">Shipped</li>
+                                <li class="{% if 3 <= order_obj.status %} active {% endif %} step0 col">Out of Delivery</li>
+                                <li class="{% if 4 <= order_obj.status %} active {% endif %} step0 col">Deliveried</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <!-- {% if order_obj.status >= 4 %}
+                        <a href="" class="btn btn-sm">Re Order</a>
+                        {% else %}
+                        <a onclick="cancelOrder('{{order_obj.cart_id}}')" class="btn btn-sm" style="background: rgb(174, 24, 24);">Order cancel</a>
+                        {% endif %} -->
+                        {% if not order_obj.status >= 4 %}
+                        <a onclick="cancelOrder('{{order_obj.cart_id}}')" class="btn btn-sm" style="background: rgb(174, 24, 24);">Order cancel</a>
+                        {% endif %}
+                    </div>  
+                </div>
+            </div>
+        </div>
+        {% if rating_obj %}
+        <div class="comments-area style-2">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 d-flex flex-column align-items-center">
+                    <h4 class="mb-30">Customer reviews</h4>
+                    <div class="comment-list">
+                        {% for item in rating_obj %}
+                        <div class="single-comment justify-content-between d-flex">
+                            <div class="user justify-content-between d-flex">
+                                <div class="thumb text-center">
+                                    <img style="width: 50px; height: 50px;" src="{{item.customer.profile.url}}" alt="">
+                                    <h6><a href="#">{{item.customer.username}}</a></h6>
+                                    <!-- <p class="font-xxs">Since 2012</p> -->
+                                </div>
+                                <div class="desc">
+                                    <div class="product-rate d-inline-block">
+                                        <div class="product-rating w-{% percentage_star item %}">
+                                        </div>
+                                    </div>
+                                    <p>{{item.comment}}</p>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <p class="font-xs mr-30">{{ item.created_at }}</p>
+                                            <!-- <a href="#" class="text-brand btn-reply">Reply <i class="fi-rs-arrow-right"></i> </a> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>  
+        </div>
+        {% endif %}
+
+        {% if order_obj.status == 4 %}
+        <div class="gap-4" style="width: 100%; height: fit-content; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-top: 100px;">
+            <div>
+                <h5>Rate our product</h5>
+            </div>
+            <div>
+                <form action="" method="post" id="rate_form">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{order_obj.cart_id}}" name="cart_id">
+                    <div class="rate">
+                        <input type="radio" id="star5" name="rate" value="5" />
+                        <label for="star5" title="text">5 stars</label>
+                        <input type="radio" id="star4" name="rate" value="4" />
+                        <label for="star4" title="text">4 stars</label>
+                        <input type="radio" id="star3" name="rate" value="3" />
+                        <label for="star3" title="text">3 stars</label>
+                        <input type="radio" id="star2" name="rate" value="2" />
+                        <label for="star2" title="text">2 stars</label>
+                        <input type="radio" id="star1" name="rate" value="1" />
+                        <label for="star1" title="text">1 star</label>
+                    </div>
+                    <div>
+                        <textarea style="width: 500px; height: 100px;" name="comment" id="" cols="30" rows="5">
+    
+                        </textarea>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-sm">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+<script>
+    const cancelOrder = (id) => {
+        fetch(`http://127.0.0.1:8000/checkout/cancel/get_order/${id}/`)
+        .then(response => response.json())
+        .then(data => {
+            if(data.status == true){
+                Swal.fire({
+                    title: 'Are you sure to Cancel this order?',
+                    text: data.name,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "",
+                    confirmButtonColor: '#d33',
+                    cancelButtonText: 'No',
+                    confirmButtonText: 'Order cancel'
+                }).then((result)=>{
+                if(result.isConfirmed){
+                    fetch(`http://127.0.0.1:8000/checkout/cancel/cancel_order/${id}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.status == true){
+                            Swal.fire({
+                                title: data.text,
+                                text: data.name,
+                                icon: "success"
+                            }).then(()=>{
+                                window.location.reload()
+                             })
+                        }
+                    })
+                }
+            })
+            }else{
+                Swal.fire({
+                    title: data.title,
+                    icon: "warning"
+                })
+            }
+        })
+    }
+
+
+    document.getElementById('rate_form').addEventListener('submit', function(event){
+        event.preventDefault();
+
+        const formData = new FormData(this)
+
+        fetch('http://127.0.0.1:8000/checkout/rate/',{
+            method: 'POST',
+            body:formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status == true){
+                window.location.reload()
+            }else{
+                window.location.reload()
+            }
+        })
+    })
+    
+
+</script>
+{% endblock %}

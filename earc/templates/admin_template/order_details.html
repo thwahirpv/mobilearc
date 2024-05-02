@@ -1,0 +1,381 @@
+{% extends "base_page.html" %}
+{% load static %}
+{% load admin_order_tags %}
+
+{% block title %}
+Details
+{% endblock %}
+
+{% block styling %}
+<style>
+    /*comment*/
+.comments-area {
+  background: transparent;
+  border-top: 1px solid #e2e9e1;
+  padding: 45px 0;
+  margin-top: 50px;
+}
+
+.comments-area h5 {
+  font-size: 16px;
+  margin-bottom: 0px;
+}
+
+.comments-area a {
+  color: #2a2a2a;
+}
+
+.comments-area .comment-list {
+  padding-bottom: 48px;
+}
+
+.comments-area .comment-list:last-child {
+  padding-bottom: 0px;
+}
+
+.comments-area .comment-list.left-padding {
+  padding-left: 25px;
+}
+
+.comments-area .comment-list .single-comment {
+  padding: 0 0 15px 0;
+  margin: 0 0 15px 0;
+}
+
+.comments-area .comment-list .single-comment:not(:last-child) {
+  border-bottom: 1px solid #e2e9e1;
+}
+
+.comments-area .thumb {
+  margin-right: 20px;
+}
+
+.comments-area .thumb img {
+  width: 70px;
+  border-radius: 50%;
+}
+
+.comments-area .date {
+  font-size: 14px;
+  color: #999999;
+  margin-bottom: 0;
+  margin-left: 20px;
+}
+
+.comments-area .comment {
+  margin-bottom: 10px;
+  color: #777777;
+  font-size: 15px;
+}
+
+.comments-area .btn-reply {
+  background-color: transparent;
+  color: #888888;
+  padding: 5px 18px;
+  font-size: 14px;
+  display: block;
+  font-weight: 400;
+}
+
+.comments-area.style-2 {
+  border: 0;
+  margin-top: 0;
+  padding: 25px 0;
+}
+
+.comments-area h4 {
+  margin-bottom: 35px;
+  color: #2a2a2a;
+  font-size: 18px;
+}
+.comments-area .thumb {
+    min-width: 100px;
+}
+.product-rate {
+  background-image: url("/static/assets/imgs/theme/rating-stars.png");
+  background-position: 0 -12px;
+  background-repeat: repeat-x;
+  height: 12px;
+  width: 60px;
+  transition: all 0.5s ease-out 0s;
+  -webkit-transition: all 0.5s ease-out 0s;
+}
+
+.product-rating {
+  height: 12px;
+  background-repeat: repeat-x;
+  background-image: url("/static/assets/imgs/theme/rating-stars.png");
+  background-position: 0 0;
+}
+
+.w-20{
+    width: 20%;
+}
+.w-40{
+    width: 40%;
+}
+.w-60{
+    width: 60%;
+}
+.w-80{
+    width: 80%;
+}
+.w-100{
+    width: 100%;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% include 'admin_sidenav.html' %}
+    
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+    
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Order detail</h2>
+                    <p>Details for Order ID: {{ order_obj.cart_id }}</p>
+                </div>
+            </div>
+            <div class="card">
+                <header class="card-header">
+                    <div class="row align-order_objs-center">
+                        <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                            <span>
+                                <i class="material-icons md-calendar_today"></i> <b>{{ order_obj.update_at }}</b>
+                            </span> <br>
+                            <small class="text-muted">Order ID: {{ order_obj.cart_id }}</small>
+                        </div>
+                        <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                            <form method="post">
+                                {% csrf_token %}
+                                <select onchange="changeStatus(this, '{{order_obj.cart_id}}')" name="priority" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                    <option value="{{order_obj.status}}" selected>{{order_obj.get_status_display}}</option>
+                                    {% for value, label in status %}
+                                        <option value="{{value}}" >{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                            <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
+                        </div>
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="row mb-50 mt-20 order-info-wrap">
+                        <div class="col-md-4">
+                            <article class="icontext align-order_objs-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-person"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Customer</h6>
+                                    <p class="mb-1">
+                                        {{order_obj.order_customer.customer.username}} <br> {{order_obj.order_customer.customer.email}} <br> {{order_obj.order_customer.customer.phone_number}}
+                                    </p>
+                                    <a href="#">View profile</a>
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                        <div class="col-md-4">
+                            <article class="icontext align-order_objs-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-local_shipping"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Order info</h6>
+                                    <p class="mb-1">
+                                        Shipping: Fargo express <br> Pay method: {{order_obj.order_payment.payment_mode}} <br> Status: {{order_obj.get_status_display}}
+                                    </p>
+                                    <a href="#">Download info</a>
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                        <div class="col-md-4">
+                            <article class="icontext align-order_objs-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-place"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Deliver to</h6>
+                                    <p class="mb-1">
+                                        {{order_obj.order_address.state}}/{{order_obj.order_address.city}} <br>{{order_obj.order_address.building_name}}<br> {{order_obj.order_address.address_type}}
+                                    </p>
+                                    <a href="#">View profile</a>
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                    </div> <!-- row // -->
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th width="40%">Product</th>
+                                            <th width="20%">Unit Price</th>
+                                            <th width="20%">Quantity</th>
+                                            <th width="20%" class="text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>
+                                                <a class="order_objside" href="{% url 'admin_product_app:list_variant' id=order_obj.product_id %}">
+                                                    <div class="left">
+                                                        <img src="{{order_obj.product.thumbnail.url}}" width="40" height="40" class="img-xs" alt="Item">
+                                                    </div>
+                                                    <div class="info fw-bold"> {{order_obj.product.product_name}}, {{order_obj.color.color_name}} <br> {{order_obj.storage.rom}}/{{order_obj.storage.ram}} </div>
+                                                </a>
+                                            </td>
+                                            <td class="fw-bold">{% unit_price order_obj %}</td>
+                                            <td class="fw-bold"> {{order_obj.quantity}} </td>
+                                            <td class="text-end fw-bold"><p>{% total_price order_obj %}</p></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td colspan="4">
+                                                <article class="float-end">
+                                                    <dl class="dlist">
+                                                        <dt>Subtotal:</dt>
+                                                        <dd>${% total_price order_obj %}</dd>
+                                                    </dl>
+                                                    <dl class="dlist">
+                                                        <dt>Shipping cost:</dt>
+                                                        <dd>$0.00</dd>
+                                                    </dl>
+                                                    <dl class="dlist">
+                                                        <dt>Grand total:</dt>
+                                                        <dd> <b class="h5">${% total_price order_obj %}</b> </dd>
+                                                    </dl>
+                                                    <dl class="dlist">
+                                                        <dt class="text-muted">Status:</dt>
+                                                        <dd>
+                                                            {% if order_obj.order_payment.payment_status %}
+                                                                <span class="badge rounded-pill alert-success text-success">Payment done</span>
+                                                            {% else %}
+                                                                <span class="badge rounded-pill alert-warning text-warning">Payment pending</span>
+                                                            {% endif %}
+                                                        </dd>
+                                                    </dl>
+                                                </article>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div> <!-- table-responsive// -->
+                        </div> <!-- col// -->
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-4">
+                            <!-- <div class="box shadow-sm bg-light">
+                                <h6 class="mb-15">Payment info</h6>
+                                <p>
+                                    <img src="assets/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br>
+                                    Business name: Grand Market LLC <br>
+                                    Phone: +1 (800) 555-154-52
+                                </p>
+                            </div> -->
+                            <div class="comments-area style-2">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <h4 class="mb-30">Customer reviews</h4>
+                                        <div class="comment-list">
+                                            {% for item in review_data %}
+                                            <div class="single-comment justify-content-between d-flex">
+                                                <div class="user justify-content-between d-flex">
+                                                    <div class="thumb text-center">
+                                                        <img style="width: 50px; height: 50px;" src="{{item.customer.profile.url}}" alt="">
+                                                        <h6><a href="#">{{item.customer.username}}</a></h6>
+                                                        <!-- <p class="font-xxs">Since 2012</p> -->
+                                                    </div>
+                                                    <div class="desc">
+                                                        <div class="product-rate d-inline-block">
+                                                            <div class="product-rating w-{% star_percentage item %}">
+                                                            </div>
+                                                        </div>
+                                                        <p>{{item.comment}}</p>
+                                                        <div class="d-flex justify-content-between">
+                                                            <div class="d-flex align-items-center">
+                                                                <p class="font-xs mr-30">{{ item.created_at }}</p>
+                                                                <!-- <a href="#" class="text-brand btn-reply">Reply <i class="fi-rs-arrow-right"></i> </a> -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                        </div> <!-- col// -->
+                    </div>
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script data-cfasync="false" src="../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+   </main>
+
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+   <script>
+       const changeStatus = (selectedElement, id) => {
+           const csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+           fetch(`http://127.0.0.1:8000/admin/order/update_status/`,{
+               method: 'POST',
+               headers:{
+                   'Content-Type': 'application/json',
+                   'X-CSRFToken': csrf_token
+               },
+               body: JSON.stringify({
+                   id:id,
+                   value:selectedElement.value
+               })
+           })
+           .then(response => response.json())
+           .then(data => {
+               if(data.status == true){
+                   console.log('its working', data.title)
+                   Swal.fire({
+                       toast: true,
+                       title: data.title,
+                       icon: "success",
+                       showCancelButton: false,
+                       showConfirmButton: false,
+                       allowOutsideClick: true, 
+                       timerProgressBar: true,
+                       position: 'top-end',
+                       timer: 2000,
+                       didOpen: (toast) => {
+                           toast.onmouseenter = Swal.stopTimer;
+                           toast.onmouseleave = Swal.resumeTimer;
+                       }
+                   })
+               }else{
+                   Swal.fire({
+                   title: data.title,
+                   icon: "warning",
+                   showCancelButton: false,
+                   position: 'top-end',
+                   timer: 2000 
+               })
+               }
+           })
+       }
+   </script>
+   {% endblock %}

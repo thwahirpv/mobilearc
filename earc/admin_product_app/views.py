@@ -24,6 +24,9 @@ class category_management:
     # category lising and add new category
     @never_cache
     def category(request):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         if request.method == 'POST':
             name = request.POST.get('name')
             discription = request.POST.get('discription')
@@ -77,6 +80,8 @@ class category_management:
     # category update
     @never_cache
     def update_category(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
         category_obj = get_object_or_404(category, category_id=id)
         reverse_url = reverse('admin_product_app:update_category', kwargs={'id':id})
 
@@ -126,6 +131,8 @@ class category_management:
     # category block and unblock
     
     def block_and_unblock(request, action, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
         category_obj = get_object_or_404(category, category_id=id)
 
         if action == 'get_name':
@@ -178,6 +185,8 @@ class category_management:
 class brand_management:
     # list all brands
     def brands(request):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
         name = request.GET.get('category', None)
         status = request.GET.get('status', None)
         brands_data = brands.objects.all() 
@@ -207,6 +216,8 @@ class brand_management:
     # add new brand
     @never_cache
     def add_brand(request):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
         if request.method == 'POST':   
             name = request.POST.get('name')
             brand_image = request.FILES.get('brand_image')
@@ -266,6 +277,8 @@ class brand_management:
     # Edit brand
     @never_cache
     def update_brand(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
         categories = category.objects.all()
         brand = get_object_or_404(brands, brand_id=id)
         if request.method == 'POST':
@@ -316,6 +329,8 @@ class brand_management:
     # Brand block and unblock
    
     def block_and_unblock(request, action, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
         brand_obj = get_object_or_404(brands, brand_id=id)
         if action == 'get_name':
             name = brand_obj.brand_name
@@ -370,6 +385,8 @@ class brand_management:
     # delete brand
     @never_cache
     def delete_brand(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
         brand_obj = get_object_or_404(brands, brand_id=id)
         brand_obj.delete()
         return redirect('admin_product_app:list_brands')
@@ -385,6 +402,8 @@ class product_management:
 
     # show all prosucts 
     def list_products(request):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
         
         product_data = products.objects.all()
         name = request.GET.get('brand', None)
@@ -419,6 +438,9 @@ class product_management:
 
     # add new product  
     def add_product(request):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         if request.method == 'POST':
             thumbnail = request.FILES.get('thumbnail')
             product_name = request.POST.get('product_name')
@@ -472,6 +494,8 @@ class product_management:
     # update product
     @cache_control(no_cache=True, must_revalidate=True, max_age=0)
     def update_product(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
         product_obj = get_object_or_404(products, product_id=id)
         brands_data = brands.objects.all()
         if request.method == 'POST':
@@ -531,6 +555,8 @@ class product_management:
     # product block and unblock 
 
     def block_and_unblock(request, action, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
         product_obj = get_object_or_404(products, product_id=id)
         brand_obj = product_obj.pro_brand
 
@@ -580,6 +606,9 @@ class product_management:
         return redirect('admin_product_app:list_products')
     
     def stock_view(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         stock_obj = products.objects.filter(product_id=id).prefetch_related(
             Prefetch('colors', queryset=Colors.objects.order_by('-color_id').prefetch_related(
                 Prefetch('storage', queryset=Storage.objects.order_by('-size_id'), to_attr='storages')
@@ -599,6 +628,9 @@ class variant_management:
 
     # list variant
     def list_variant(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         product_obj = get_object_or_404(products, product_id=id)
         color_variant = Colors.objects.filter(product=product_obj)
         context={'color_variant':color_variant, 'product_obj':product_obj}
@@ -608,6 +640,9 @@ class variant_management:
     # Add variant
    
     def add_color_variant(request, id=None):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         product_obj = get_object_or_404(products, product_id=id)
         url = reverse('admin_product_app:add_variant', kwargs={'id':id})
         if request.method == 'POST':
@@ -642,6 +677,9 @@ class variant_management:
         return render(request, 'admin_template/page-add-variant.html')
     
     def variant_detailed_view(request, id=None):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         color_obj = get_object_or_404(Colors, color_id=id)
         product_id = color_obj.product.product_id
         product_obj = get_object_or_404(products, product_id=product_id)
@@ -649,6 +687,9 @@ class variant_management:
         return render(request, 'admin_template/variant_detailed_view.html', context)
 
     def add_variant_image(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         color_obj = get_object_or_404(Colors, color_id=id)
         priority = color_obj.images.count()+1
         fail_url = reverse('admin_product_app:add_varient_image', kwargs={'id':id})
@@ -676,12 +717,18 @@ class variant_management:
         return render(request, 'admin_template/change_varinat_image.html')
     
     def delete_image(request, image_id=None, id=None):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         image=get_object_or_404(Images, image_id=image_id)
         image.delete()
         return redirect(reverse('admin_product_app:variant_detailed_view', kwargs={'id':id}))
     
     
     def change_image(request, image_id=None, id=None):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         target_image = get_object_or_404(Images, image_id=image_id)
         failer_url = reverse('admin_product_app:change_image', kwargs={'image_id':image_id, 'id':id})
         success_url = reverse('admin_product_app:variant_detailed_view', kwargs={'id':id})
@@ -715,6 +762,9 @@ class variant_management:
         
     
     def add_storage_variant(request, product_id=None, id=None):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         url = reverse('admin_product_app:add_storage_variant', kwargs={'product_id':product_id,'id':id})
         color_obj = get_object_or_404(Colors, color_id=id)
 
@@ -744,11 +794,17 @@ class variant_management:
     
 
     def delete_color(request, product_id, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         color_obj = get_object_or_404(Colors, color_id=id)
         color_obj.delete()
         return redirect(reverse('admin_product_app:list_variant', kwargs={'id':product_id}))
 
     def get_color_name(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         print('i reach this function')
         print(id)
         color_obj = get_object_or_404(Colors, color_id=id)
@@ -770,6 +826,9 @@ class variant_management:
                 return JsonResponse(context, safe=True)
             
     def update_storage(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         storage_obj = get_object_or_404(Storage, size_id=id)
         color_id = storage_obj.color.color_id
         if request.method == 'POST':
@@ -796,6 +855,9 @@ class variant_management:
    
 
     def delete_storage(request, id, action):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         storage_obj = get_object_or_404(Storage, size_id=id)
         context = {}
         if action == 'get_name':
@@ -822,6 +884,9 @@ class variant_management:
 
 # fetch brand based on category
 def get_category(request, brand_name, id=None):
+    if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+    
     brand_obj = get_object_or_404(brands, brand_name=brand_name)
     category_name = brand_obj.brand_category.category_name
     context = {'category_name':category_name}
@@ -829,6 +894,9 @@ def get_category(request, brand_name, id=None):
 
 # fetch category and brnad based on product
 def get_brand_and_category(request, product_name, id=None):
+    if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+    
     product_obj = get_object_or_404(products, product_name=product_name)
     category_name = product_obj.pro_category.category_name
     brand_name = product_obj.pro_brand.brand_name 

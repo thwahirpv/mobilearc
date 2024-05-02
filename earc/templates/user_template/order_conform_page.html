@@ -1,0 +1,28 @@
+{% extends "user_base.html" %}
+{% load static %}
+{% block title %}
+Order conform
+{% endblock %}
+{% block content %}
+<main class="main">
+    {% include 'user_nav.html' %}
+    <div id="order_conform_section" style="width: 100%; height: 100vh; background-color: #088178;">
+        <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <div>
+                <h3 class="text-white">Thanks for order {{username}}</h3>
+            </div>
+            <div class="mt-4">
+                <img src="{% static 'assets/imgs/shop/order_placed_animation-ezgif.com-speed.gif' %}" alt="">
+            </div>
+            <div>
+                <h4 class="text-white fw-bold">Your oder Succesfully placed</h4>
+            </div>
+            <div class="gap-3 mt-4" style="display: flex;">
+                <a style="background: white; color: #088178;" href="{% url 'checkout_app:order_history' %}" class="btn btn-sm">Check order</a>
+                <a style="background: white; color: #088178;" href="{% url 'user_product_app:list_products' %}" class="btn btn-sm">Continue Shoping</a>
+            </div>
+        </div>
+    </div>
+    
+</main>
+{% endblock %}

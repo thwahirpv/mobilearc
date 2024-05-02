@@ -1,0 +1,191 @@
+{% extends "user_base.html" %}
+{% load static %}
+{% load order_tags %}
+{% block title %}
+Home
+{% endblock %}
+{% block styling %}
+<style>
+    .card {
+        z-index: 0;
+        background-color: #ECEFF1;
+        margin-top: 40px;
+    }
+
+    .top {
+        padding-top: 40px;
+        padding-left: 13% !important;
+        padding-right: 13% !important;
+    }
+
+    /*Icon progressbar*/
+    #progressbar {
+        overflow: hidden;
+        color: #455A64;
+        padding-left: 0px;
+        /* margin-top: 30px;   */
+    }
+
+    #progressbar li {
+        list-style-type: none;
+        font-size: 13px;
+        float: left;
+        position: relative;
+        font-weight: 400;
+    }
+
+    #progressbar .step0:before {
+        font-family: FontAwesome;
+        content: "\f10c";
+        color: #fff;
+    }
+
+    #progressbar li:before {
+        width: 40px;
+        height: 40px;
+        line-height: 45px;
+        display: block;
+        font-size: 20px;
+        background: #C5CAE9;
+        border-radius: 50%;
+        margin: auto;
+        padding: 0px;
+    }
+
+    /*ProgressBar connectors*/
+    #progressbar li:after {
+        content: '';
+        width: 100%;
+        height: 12px;
+        background: #C5CAE9;
+        position: absolute;
+        left: 0;
+        top: 16px;
+        z-index: -1;
+    }
+
+    #progressbar li:last-child:after {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        position: absolute;
+        left: -50%;
+    }
+
+    #progressbar li:nth-child(2):after,
+    #progressbar li:nth-child(3):after {
+        left: -50%;
+    }
+
+    #progressbar li:first-child:after {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        position: absolute;
+        left: 50%;
+    }
+
+    #progressbar li:last-child:after {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    #progressbar li:first-child:after {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+
+    /*Color number of the step and the connector before it*/
+    #progressbar li.active:before,
+    #progressbar li.active:after {
+        background: #088178;
+    }
+
+    #progressbar li.active:before {
+        font-family: FontAwesome;
+        content: "\f00c";
+    }
+
+    .icon {
+        width: 60px;
+        height: 60px;
+        margin-right: 15px;
+    }
+
+    .icon-content {
+        padding-bottom: 20px;
+    }
+
+    @media screen and (max-width: 992px) {
+        .icon-content {
+            width: 50%;
+        }
+    }
+</style>
+{% endblock %}
+{% block content %}
+<main>
+    {% include 'user_nav.html' %}
+    <section class="" style="width: 100%; height: fit-content;">
+      <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 50px;">
+        {% if order_data %}
+        {% for item in order_data %}
+        <div style="width: 90%;" class="card shadow-0 border">
+          <div class="w-100" style="padding: 0px 30px;">
+            <div class="row" style="padding-top: 30px;">
+              <div class="col-md-2">
+                <a href="{% url 'checkout_app:order_details' id=item.cart_id %}">
+                  <img style="width: 110px;" src="{{item.product.thumbnail.url}}" class="" alt="Phone">
+                </a>
+              </div>
+              <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                <p class="text-muted mb-0">{{ item.product.product_name }}</p>
+              </div>
+              <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                <p class="text-muted mb-0 small">{{ item.color.color_name }}</p>
+              </div>
+              <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                <p class="text-muted mb-0 small">{{ item.storage.rom }}/{{ item.storage.ram }}</p>
+              </div>
+              <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                <p class="text-muted mb-0 small">{{ item.quantity }}</p>
+              </div>
+              <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                <p class="text-muted mb-0 small">{% product_sub_total item %}</p>
+              </div>
+            </div>
+            <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+            <div class="row d-flex align-items-center justify-content-center">
+              <div class="col-md-10">
+                <div class="w-100">
+                  <div class="row w-100 d-flex justify-content-center">
+                      <div class="col-12 mb-3">
+                          <ul id="progressbar" class="text-center row">
+                              <li class="{% if 1 <= item.status %} active {% endif %} step0 col">Placed</li>
+                              {% if item.status == 5 %}
+                                <li class="{% if 5 <= item.status %} active text-danger {% endif %} step0 col">Cancelled</li>
+                              {% else %}
+                              <li class="{% if 2 <= item.status %} active {% endif %} step0 col">Shipped</li>
+                              <li class="{% if 3 <= item.status %} active {% endif %} step0 col">Out of Delivery</li>
+                              <li class="{% if 4 <= item.status %} active {% endif %} step0 col">Deliveried</li>
+                              {% endif %}
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
+          <div style="display: flex; justify-content: center;">
+            <img style="width: 30%;" src="{% static 'assets/imgs/shop/no-order.jpg' %}" alt="">
+          </div>
+        {% endif %}  
+      </div>
+    </section>
+  </main>
+{% endblock %}
+
+
+
+

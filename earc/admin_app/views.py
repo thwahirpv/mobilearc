@@ -51,6 +51,9 @@ def admin_dashboard(request):
 
 class user_crud_view(View):
     def load_table(request):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         user = UserDetails.objects.all
         if request.method == 'POST':
             search_text = request.GET.get('search_text')
@@ -61,6 +64,9 @@ class user_crud_view(View):
         return render(request, 'admin_template/page-tables.html', context)
     
     def blocked_users(request):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         user = UserDetails.objects.filter(is_active=False)
         if request.method == 'POST':
             search_text = request.GET.get('search_text')
@@ -72,6 +78,9 @@ class user_crud_view(View):
 
     
     def create_user(request):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         if request.method == 'POST':
             profile = request.FILES.get('profile_photo')
             username = request.POST.get('username')
@@ -88,6 +97,9 @@ class user_crud_view(View):
         return render(request, 'admin_template/page-createuser.html')
 
     def update_user(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         user = get_object_or_404(UserDetails, user_id=id)    
         if request.method == 'POST':
             user.profile = request.FILES.get('profile')
@@ -99,6 +111,9 @@ class user_crud_view(View):
         return render(request, 'admin_template/page-updateuser.html', {'user':user})
     
     def block_user(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         url = request.META.get('HTTP_REFERER')
         user = get_object_or_404(UserDetails, user_id=id)
         user.is_active = False
@@ -109,6 +124,9 @@ class user_crud_view(View):
             return redirect('admin_app:load_table')
     
     def unblock_user(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         url = request.META.get('HTTP_REFERER')
         user = get_object_or_404(UserDetails, user_id=id)
         user.is_active = True
@@ -119,6 +137,9 @@ class user_crud_view(View):
             return redirect('admin_app:load_table')
     
     def delete(request, id):
+        if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+        
         user = get_object_or_404(UserDetails, user_id=id)
         user.delete()
         context = {'opration':'success'}
@@ -144,12 +165,15 @@ def get_user(request):
 
 # settings
 def site_settings(request):
+    if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+    
     return render(request, 'admin_template/settings.html')
 
 # Logo
 def logo(request):
-    if not request.user.is_superuser:
-         return redirect('admin_app:admin_login')
+    if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
     
     logo_image = web_logo.objects.latest('created_at')
     if request.method == 'POST':

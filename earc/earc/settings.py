@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'humanize',
     'banner_app',
     'cart_app',
-    'checkout_app'
+    'checkout_app',
+    'admin_order_app'
 ]
 
 MIDDLEWARE = [
