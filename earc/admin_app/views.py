@@ -12,6 +12,14 @@ from .models import web_logo
 from django.contrib import messages
 from PIL import Image
 from io import BytesIO
+from django.http import HttpResponse
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from django.utils.translation import gettext as _
+import json
+from cart_app.models import Order
+from django.utils import timezone
 # from rest_framework.decorators import api_view
 
 
@@ -200,3 +208,28 @@ def logo(request):
         'logo_image':logo_image
     }
     return render(request, 'admin_template/logo.html', context)
+
+
+
+def sales_report(request):
+    if not request.user.is_authenticated or request.user.is_superuser is False:
+            return redirect('admin_app:admin_login')
+    
+    if request.method == 'POST':
+        start = request.POST.get('start-date', None)
+        end = request.POST.get('end-date', None)
+
+        if start and end:
+            sales_data = Order.objects.filter(status=4, update_at__range=[start, end])
+        elif start:
+            sales_data = Order.objects.filter(status=4, update_at__date=start)
+        elif end:
+            sales_data = Order.objects.filter(status=4, update_at__date=end)
+        else:
+            sales_data = Order.objects.filter(status=4).all()
+
+
+        context = {
+            'sales_data':sales_data
+        }
+        return render(request, 'admin_template/sales_report.html', context)

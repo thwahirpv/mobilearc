@@ -60,6 +60,14 @@
                         <a href="page-orders-detail.html">Order detail</a>
                     </div>
                 </li>
+                <li class="menu-item has-submenu {% if 'coupen' in request.path %} active {% endif %}">
+                    <a class="menu-link"> <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offers</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="{% url 'admin_coupen_app:list_coupens' %}" class="{% if request.path == '/admin/coupen/' %} active fw-bold {% endif %}">Coupens Offers</a>
+                    </div>
+                </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href=""> <i class="icon material-icons md-store"></i>
                         <span class="text">Sellers</span>

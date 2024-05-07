@@ -6,6 +6,7 @@ from django.http import JsonResponse
 import json
 from django.core.paginator import Paginator, Page, EmptyPage, PageNotAnInteger
 from checkout_app.models import review
+from admin_app.models import Wallet, wallet_history
 
 
 def order_list(request):
@@ -14,7 +15,6 @@ def order_list(request):
     
     order_data = Order.objects.all().exclude(status=0).order_by('-cart_id')
     page = request.GET.get('page', 1)
-    print(page)
 
     
     paginator_obj = Paginator(order_data, 10)
@@ -38,7 +38,7 @@ def update_status(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         id = data.get('id')
-        value = data.get('value')
+        value = int(data.get('value'))
 
         try:
             order_obj = Order.objects.get(cart_id=id)
@@ -48,10 +48,80 @@ def update_status(request):
                 'title': 'Update failed',
             }
             return JsonResponse(context, safe=True)
-
+        
+       
+        
         if order_obj:
-            order_obj.status = value
-            order_obj.save()
+            if value == 5:
+                if order_obj.is_delivered:
+                     order_obj.status = 4
+                     order_obj.save()
+                else:
+                     if order_obj.order_payment.payment_status:
+                        try:
+                            wallet_obj, created = Wallet.objects.get_or_create(
+                                user = request.user
+                            )
+                        except:
+                            wallet_obj = Wallet.objects.none()
+                        
+                        if wallet_obj:
+                            wallet_obj.balance += order_obj.total_price
+                            wallet_obj.save()
+                            wallet_history_obj = wallet_history.objects.create(
+                                wallet_owner=wallet_obj,
+                                order_item=order_obj,
+                                credit=order_obj.total_price
+                            )
+                        
+                     order_obj.status = value
+                     order_obj.save()
+            else:
+                if value == 4:
+                    order_obj.is_delivered = True
+                    order_obj.status = value
+                    order_obj.save()
+                elif value == 7:
+                    try:
+                        wallet_obj, created = Wallet.objects.get_or_create(
+                             user=order_obj.order_customer.customer
+                        )
+                    except:
+                        context = {
+                            'status': False,
+                            'title': 'Something problem!',
+                        }
+                        return JsonResponse(context, safe=True)
+                    
+                    if wallet_obj:
+                         try:
+                              wallet_history_obj = wallet_history.objects.create(
+                                   wallet_owner=wallet_obj,
+                                   order_item=order_obj,
+                                   credit=order_obj.total_price
+                              )
+                         except:
+                            context = {
+                            'status': False,
+                            'title': 'Something problem!',
+                            }
+                            return JsonResponse(context, safe=True)
+                              
+                         order_obj.status = value
+                         order_obj.is_delivered = False
+                         order_obj.save()
+                         wallet_obj.balance += order_obj.total_price
+                         wallet_obj.save()
+                    else:
+                        context = {
+                            'status': False,
+                            'title': 'Something problem!',
+                        }
+                        return JsonResponse(context, safe=True)
+                else:
+                     order_obj.status = value
+                     order_obj.save()
+                    
             context = {
                 'status': True,
                 'title': 'Successfully updated',
@@ -88,8 +158,3 @@ def order_details(request, id):
     }
 
     return render(request, 'admin_template/order_details.html', context)
-
-
-
-        
-    

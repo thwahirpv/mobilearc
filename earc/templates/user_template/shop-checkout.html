@@ -21,17 +21,24 @@ Checkout
                 <div class="row justify-content-center">
                     <div class="col-lg-6">
                         <div class="toggle_info">
-                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
+                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a >Click here to enter your code</a></span>
                         </div>
-                        <div class="panel-collapse collapse coupon_form " id="coupon">
+                        <div class="panel-collapse coupon_form" id="">
+                            {% if messages %}
+                            {% for message in messages %}
+                            <p class="fw-bold text-{{message.extra_tags}} mt-4">{{message}}</p>
+                            {% endfor %}
+                            {% endif %}
                             <div class="panel-body">
                                 <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
                                 <form method="post">
+                                    {% csrf_token %}
                                     <div class="form-group">
-                                        <input type="text" placeholder="Enter Coupon Code...">
+                                        <input type="text" placeholder="Enter Coupon Code..." name="coupen_code">
                                     </div>
-                                    <div class="form-group">
-                                        <button class="btn  btn-md" name="login">Apply Coupon</button>
+                                    <div class="form-group d-flex justify-content-between">
+                                        <button type="submit" class="btn btn-md">Apply Coupon</button>
+                                        <a href="{% url 'checkout_app:remove_coupon' %}" class="btn btn-sm btn-primary">Remove</a>
                                     </div>
                                 </form>
                             </div>
@@ -127,7 +134,7 @@ Checkout
                                         </tr>
                                         <tr>
                                             <th>Total</th>
-                                            <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900">{% sub_total order_data %}</span></td>
+                                            <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900">{% sub_total order_data owner_obj %}</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -314,18 +321,21 @@ Checkout
         }
 
         const set_place_order_btn = (id) => {
-            console.log(id)
             if(id == 'online_payment'){
                 document.querySelectorAll('.place_order_btn').forEach(function(element){
                     element.style.display = 'none'
                 })
                 document.getElementById('rzp-button1').style.display = 'block'
+                document.querySelector('input[name="payment_method"]').value = 'online_payment'
+                console.log(document.querySelector('input[name="payment_method"]').value)
             }
             else if (id == 'cod') {
                 document.querySelectorAll('.place_order_btn').forEach(function(element){
                     element.style.display = 'none'
                 })
                 document.getElementById('cod-button').style.display = 'block'
+                document.querySelector('input[name="payment_method"]').value = 'cod'
+                console.log(document.querySelector('input[name="payment_method"]').value)
             }
         }
         
@@ -393,6 +403,7 @@ Checkout
             "select_address" : document.querySelector('input[name="select_address"]').value,
             "payment_id":payment_id
         } 
+        
         fetch('http://127.0.0.1:8000/checkout/place_order/', {
                 method: 'POST',
                 headers: {

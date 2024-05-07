@@ -161,7 +161,15 @@ Home
                           <ul id="progressbar" class="text-center row">
                               <li class="{% if 1 <= item.status %} active {% endif %} step0 col">Placed</li>
                               {% if item.status == 5 %}
-                                <li class="{% if 5 <= item.status %} active text-danger {% endif %} step0 col">Cancelled</li>
+                                <li class="{% if 5 == item.status %} active text-danger {% endif %} step0 col">Cancelled</li>
+                              {% elif item.status == 6 %}
+                                <li class="{% if 6 == item.status %} active  {% endif %} step0 col">Replace</li>
+                                <li class="step0 col">Out of Delivery</li>
+                                <li class="step0 col">Deliveried</li>
+                              {% elif item.status == 7 %}
+                                <li class="{% if 4 <= item.status %} active {% endif %} step0 col">Deliveried</li>
+                                <li class="{% if 7 == item.status %} active {% endif %} step0 col">Return</li>
+                                <li class="{% if 7 == item.status %} active {% endif %} step0 col">Refund</li>
                               {% else %}
                               <li class="{% if 2 <= item.status %} active {% endif %} step0 col">Shipped</li>
                               <li class="{% if 3 <= item.status %} active {% endif %} step0 col">Out of Delivery</li>

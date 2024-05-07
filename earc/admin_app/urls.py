@@ -25,6 +25,7 @@ urlpatterns = [
     path('user/<int:id>/update', user_crud_view.update_user, name='update_user'),
     path('user/<int:id>/block', user_crud_view.block_user, name='block_user'),
     path('user/<int:id>/unblock', user_crud_view.unblock_user, name='unblock_user'),
+    path('sales_report/', sales_report, name='sales_report'),
     # ==============Crud oprations=======================
 
     #===============Settings===========================

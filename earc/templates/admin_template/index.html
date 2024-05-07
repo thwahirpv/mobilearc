@@ -1,5 +1,8 @@
 {% extends "base_page.html" %}
+
 {% load static %}
+{% load home_tags %}
+
 
 {% block title %}
 Home
@@ -19,8 +22,21 @@ Home
                     <h2 class="content-title card-title">Dashboard</h2>
                     <p>Whole data about your business here</p>
                 </div>
-                <div>
-                    <a href="#" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create report</a>
+                <div class="d-flex flex-column gap-2">
+                    <form action="{% url 'admin_app:sales_report' %}" method="post">
+                        {% csrf_token %}
+                        <div class="d-flex gap-2">
+                            <div class="d-flex flex-column form-group">
+                                <label for="start-date">Start</label>
+                                <input type="date" class="form-control" id="start-date" name="start-date">
+                            </div>
+                            <div class="d-flex flex-column form-group">
+                                <label for="start-date">End</label>
+                                <input type="date" class="form-control" id="end-date" name="end-date">
+                            </div>
+                        </div>
+                        <button id="sales-report-submit" class="btn btn-primary w-100 mt-3"><i class="text-muted material-icons md-post_add"></i>Sales report</button>
+                    </form>
                 </div>
             </div>
             <div class="row">
@@ -30,7 +46,7 @@ Home
                             <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                             <div class="text">
                                 <h6 class="mb-1 card-title">Revenue</h6>
-                                <span>$13,456.5</span>
+                                <span>${% total_revenue %}</span>
                                 <span class="text-sm">
                                     Shipping fees are not included
                                 </span>
@@ -43,7 +59,7 @@ Home
                         <article class="icontext">
                             <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
                             <div class="text">
-                                <h6 class="mb-1 card-title">Orders</h6> <span>53.668</span>
+                                <h6 class="mb-1 card-title">Orders</h6> <span>{% total_order %}</span>
                                 <span class="text-sm">
                                     Excluding orders in transit
                                 </span>
@@ -496,6 +512,13 @@ Home
         </footer>
     </main>
     
+    <Script>
+        document.getElementById('sales-report-submit').addEventListener('submit', function(event){
+            event.preventDefault();
+
+        
+        })
+    </Script>
 {% endblock content %}
 
 

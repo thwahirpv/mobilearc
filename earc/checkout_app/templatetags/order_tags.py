@@ -23,12 +23,15 @@ def cart_image(item):
     return image.product_image.url
 
 @register.simple_tag(name='sub_total')
-def sub_total(order_data):
+def sub_total(order_data, owner_obj=None):
     total = 0
     for item in order_data:
         price = item.product.price - item.product.discount_price
         total_price = price + int(item.storage.price_of_size)
-        total += total_price * item.quantity
+        total += total_price * item.quantity 
+    if owner_obj is not None:   
+        if owner_obj.coupon_percentage is not None:
+            total = total - owner_obj.coupon_percentage/100 * total
     return total
 
 @register.simple_tag(name='total_purchase_price')

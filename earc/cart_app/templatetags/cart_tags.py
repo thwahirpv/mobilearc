@@ -45,6 +45,3 @@ def latest_two_items(user):
     owner_obj = Owner.objects.get(customer=user)
     cart_data = Order.objects.filter(order_customer=owner_obj, status=0).order_by('-cart_id')[:2]
     return cart_data
-
-
-    

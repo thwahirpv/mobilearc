@@ -23,6 +23,7 @@ urlpatterns = [
     path('details/<int:id>/', update_details, name='update_details'),
     path('address/', add_address, name='add_address'),
     path('address/<int:id>/', update_address, name='update_address'),
-    path('delete_address/<int:id>/', delete_address, name='delete_address')
+    path('delete_address/<int:id>/', delete_address, name='delete_address'),
+    path('wallet/', wallet_view, name='wallet_view')
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

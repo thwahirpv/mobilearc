@@ -7,6 +7,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 
+
 class custom_manager(BaseUserManager):
     def _create_user(self, email, phone_number, password, **extra_fields):
         email = self.normalize_email(email)
@@ -77,4 +78,19 @@ class Address(models.Model):
     pincode = models.CharField(null=False, max_length=10)
     address = models.CharField(null=False, max_length=1000)
     user = models.ForeignKey(UserDetails, on_delete=models.CASCADE, related_name='user_address')
+    address_active = models.BooleanField(default=True)
+
+
+class Wallet(models.Model):
+    wallet_id = models.BigAutoField(primary_key=True, null=False, unique=True)
+    user = models.OneToOneField(UserDetails, on_delete=models.CASCADE, related_name='user_wallet')
+    balance = models.IntegerField(null=True, blank=True, default=0)
+
+class wallet_history(models.Model): 
+    from cart_app.models import Order
+    history_id = models.BigAutoField(primary_key=True, null=False, unique=True)
+    wallet_owner = models.ForeignKey(Wallet, on_delete=models.CASCADE, related_name='wallet_history')
+    order_item = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='order_item_wallet')
+    credit = models.IntegerField(null=True, unique=False, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
 

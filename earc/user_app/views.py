@@ -24,6 +24,7 @@ from django.db.models import Max, Prefetch
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from admin_app.models import Wallet, wallet_history
                                                                                        
 @never_cache
 def fournoterror(request):
@@ -549,6 +550,8 @@ def update_address(request, id):
 
 
 def delete_address(request, id):
+    if not request.user.is_authenticated or request.user.is_active is False:
+        return redirect('user_app:user_login')
     try:
         address_obj = Address.objects.get(address_id=id)
         if address_obj:
@@ -570,3 +573,26 @@ def delete_address(request, id):
             'text':'Address not found!'
         }
         return JsonResponse(context, safe=True)
+    
+
+
+def wallet_view(request):
+    if not request.user.is_authenticated or request.user.is_active is False:
+        return redirect('user_app:user_login')
+    
+    try:
+        wallet_obj = Wallet.objects.get(user=request.user.user_id)
+    except:
+        wallet_obj = Wallet.objects.none()
+
+    try:
+        wallet_history_obj = wallet_history.objects.filter(wallet_owner=wallet_obj)
+    except:
+        wallet_history_obj = wallet_history.objects.none()
+
+    context = {
+        'wallet_obj':wallet_obj,
+        'wallet_history_obj':wallet_history_obj
+    }
+
+    return render(request, 'user_template/wallet.html', context)

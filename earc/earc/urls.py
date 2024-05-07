@@ -36,6 +36,8 @@ urlpatterns = [
     # ==============Direction to admin_order_app================
     path('admin/order/', include('admin_order_app.urls', namespace='admin_order_app')),
 
+    # ===================Direction to admin_coupen_app=========================
+    path('admin/coupen/', include('admin_coupen_app.urls', namespace='admin_coupen_app')),
 
     #===========Direction to user_app=================
     path('', include('user_app.urls', namespace='user_app')),

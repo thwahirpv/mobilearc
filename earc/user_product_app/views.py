@@ -16,6 +16,7 @@ from django.db.models import Q
 import uuid
 import json
 from checkout_app.models import review
+from django.db.models import Prefetch
 
 
 def product_list(request):
@@ -129,8 +130,6 @@ def quantity_check(request):
         data = json.loads(request.body)
         storage_id = data.get('storage_id')
         quantity = int(data.get('quantity'))
-        print('------------------------')
-        print(storage_id, quantity)
 
         try:
             storage_obj = Storage.objects.get(size_id=storage_id)
@@ -199,11 +198,16 @@ class wishlist_management:
     def add_wishlist_item(request, id):
         context = {}
         product_obj = get_object_or_404(products, product_id=id)
+        color_obj = Colors.objects.filter(product=product_obj)[:1]
+        storage_obj = Storage.objects.filter(color=color_obj)[:1]
+        
         try:
             if request.user.is_authenticated:
                 wishlist_item, created = Wishlist.objects.get_or_create(
                     user=request.user,
-                    product=product_obj
+                    product=product_obj,
+                    color=color_obj[0],
+                    storage=storage_obj[0]
                 )
                 context = {
                     'status': True

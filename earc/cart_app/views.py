@@ -17,7 +17,9 @@ class cart_management:
             return redirect('user_app:user_login')
         
 
-        owner_obj = Owner.objects.get(customer=request.user)
+        owner_obj, created = Owner.objects.get_or_create(customer=request.user)
+        owner_obj.coupon = None
+        owner_obj.save()
         
         
         if owner_obj:
@@ -138,6 +140,7 @@ class cart_management:
                         product_price = product_price + int(cart_obj.storage.price_of_size)
                         total = product_price * cart_obj.quantity
                         cart_obj.total_price = total
+                        cart_obj.save()
                         
                         context = {
                             'status':True,
@@ -179,7 +182,6 @@ class cart_management:
                 }
                 return JsonResponse(context)
         except Exception as e:
-            print(e)
             context = {
                     'status': True,
                     'text': 'Items not found in the cart list'
@@ -196,6 +198,8 @@ class cart_management:
                     product_total = item.product.price - item.product.discount_price
                     product_total = product_total + int(item.storage.price_of_size)
                     total += product_total * item.quantity
+                    item.total_price = total
+                    item.save()
                 context = {
                     'status': True,
                     'total': total
@@ -208,7 +212,3 @@ class cart_management:
                 return JsonResponse(context, safe=True)
 
 
-
-                
-
-        

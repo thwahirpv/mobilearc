@@ -29,6 +29,12 @@ Home
                                             aria-selected="true"><i class="fi-rs-user mr-10"></i>Account details</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'user_app:wallet_view' %}">
+                                            <i class="fi-rs-shopping-bag mr-10"></i>
+                                            wallet
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link" href="{% url 'checkout_app:order_history' %}">
                                             <i class="fi-rs-shopping-bag mr-10"></i>
                                             Orders

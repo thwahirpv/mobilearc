@@ -6,6 +6,12 @@ Wishlist
 {% block content %}
     <main class="main">
         {% include 'user_nav.html' %}
+        <div id="message_div" class="position-fixed alert justify-content-center align-items-center" role="alert" 
+            style="top: -15%; left: 50%; right: 50%; z-index: 1; display: flex; background-color: rgba(51, 51, 51, 0.604); height: 52px; width: 52px; animation: ease-in-out;">
+            <div>
+                <a id="message_icon_container" class="" style="color: rgb(234, 233, 233); font-size: 36px;"></a>
+            </div>
+        </div>
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="d-flex breadcrumb">
@@ -28,7 +34,6 @@ Wishlist
                                     <tr class="main-heading">
                                         <th scope="col" colspan="2">Product</th>
                                         <th scope="col">Price</th>
-                                        <th scope="col">Stock Status</th>
                                         <th scope="col">Action</th>
                                         <th scope="col">Remove</th>
                                     </tr>
@@ -45,11 +50,14 @@ Wishlist
                                             </p>
                                         </td>
                                         <td class="price" data-title="Price"><span>{{item.product.price}}</span></td>
-                                        <td class="text-center" data-title="Stock">
-                                            <span class="color3 font-weight-bold">In Stock</span>
-                                        </td>
                                         <td class="text-right" data-title="Cart">
-                                            <button class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
+                                            <form class="d-flex" id="cart_form" method="post" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="color_id" value="{{item.color.color_id}}" id="colorId_input">
+                                                <input type="hidden" name="storage_id" value="{{item.storage.size_id}}" id="storageId_input">
+                                                <input type="hidden" id="quantity" name="quantity" value="1">
+                                                <button type="submit" class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
+                                            </form>
                                         </td>
                                         <td class="action" onclick="remove_wishlist_item('{{ item.wishlist_id }}')"><a><i class="fi-rs-trash"></i></a></td>
                                     </tr>
@@ -65,11 +73,9 @@ Wishlist
                                             </p>
                                         </td>
                                         <td class="price" data-title="Price"><span>{{ value.price }}</span></td>
-                                        <td class="text-center" data-title="Stock">
-                                            <span class="color3 font-weight-bold">In Stock</span>
-                                        </td>
+                                    
                                         <td class="text-right" data-title="Cart">
-                                            <button class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
+                                            <a href="{% url 'cart_app:add_item_to_cart' %}" class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</a>
                                         </td>
                                         <td class="action" data-title="Remove">
                                             <a onclick="remove_wishlist_item('{{value.id}}')">
@@ -223,6 +229,9 @@ Wishlist
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
     <script>
+        const messageIconContainer = document.getElementById('message_icon_container')
+        const messageDiv = document.getElementById('message_div')
+
         const remove_wishlist_item = (id) =>{
             const url = `http://127.0.0.1:8000/products/remove_wishlist_item/${id}/`
             fetch(url)
@@ -247,5 +256,46 @@ Wishlist
                 }
             })
         }
+
+
+        const moniterTopStyle = () => {
+        const topValue = messageDiv.style.top
+        console.log(topValue);
+        if(topValue === '15%'){
+
+            setTimeout( () => {
+                messageDiv.style.top = '-15%'
+            },2000)
+        }
+    }
+
+        document.getElementById('cart_form').addEventListener('submit', function(event){
+        event.preventDefault();
+
+        const formData = new FormData(event.target)
+        fetch('http://127.0.0.1:8000/cart/add/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status){
+                messageIconContainer.innerHTML = ''
+                const tickTag = document.createElement('i')
+                tickTag.classList.add('fa-regular', 'fa-circle-check')
+                messageIconContainer.appendChild(tickTag)
+                messageDiv.style.top = '15%'
+                moniterTopStyle()
+            }else{
+                messageIconContainer.innerHTML = ''
+                const crossTag = document.createElement('i')
+                crossTag.classList.add('fa-regular', 'fa-circle-xmark')
+                messageIconContainer.appendChild(crossTag)
+                messageDiv.style.top = '15%'
+                moniterTopStyle()
+            }
+        })
+    })
+
     </script>
 {% endblock %}

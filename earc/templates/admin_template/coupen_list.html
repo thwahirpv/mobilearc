@@ -1,0 +1,213 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+Oders
+{% endblock %}
+
+
+{% block content %}
+
+{% include 'admin_sidenav.html' %}
+    
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+        
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Coupen List </h2>
+                </div>
+                <div>
+                    <a href="{% url 'admin_coupen_app:add_coupen' %}" class="btn btn-sm btn-primary fw-semibold">New Coupen</a>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row gx-3">
+                        <div class="col-lg-4 col-md-6 me-auto">
+                            <input type="text" placeholder="Search..." class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <select class="form-select">
+                                <option>Status</option>
+                                <option>Active</option>
+                                <option>Disabled</option>
+                                <option>Show all</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <select class="form-select">
+                                <option>Show 20</option>
+                                <option>Show 30</option>
+                                <option>Show 40</option>
+                            </select>
+                        </div>
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Code</th>
+                                    <th scope="col">Discount percentage</th>
+                                    <th scope="col">Condition</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Expire</th>
+                                    <th scope="col" class="text-end"> Details </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                                {% for item in coupen_data %}
+                                <tr>
+
+                                    <!-- name -->
+                                    <td>
+                                        <b class="fw-bold" style="font-size: 14px;">{{item.coupen_name}}</b>
+                                    </td>
+
+                                    <!-- code -->
+                                    <td>
+                                        <p class="fw-bold" style="font-size: 14px;">{{item.coupen_code}}</p>
+                                    </td>
+
+                                    <!-- price -->
+                                    <td>
+                                        <p class="fw-bold" style="font-size: 14px;">{{item.coupen_percentage}}%</p>
+                                    </td>
+
+                                    <!-- condition -->
+                                    <td>
+                                        <p class="fw-bold" style="font-size: 14px;">{{item.max_amount}}</p>
+                                    </td>
+
+                                    <!-- status -->
+                                    <td class="">
+                                        <a href="{% url 'admin_coupen_app:block_unblock' id=item.coupen_id %}" class="fw-bold badge rounded-pill {% if item.is_active %} alert-success {% else %} alert-danger {% endif %}">
+                                            {% if item.is_active %}
+                                            Active
+                                            {% else %}
+                                            Block
+                                            {% endif %}
+                                        </a>
+                                    </td>
+
+                                    <!-- Expire status -->
+                                    <td class="">
+                                        <a href="{% url 'admin_coupen_app:expire_coupen' id=item.coupen_id %}" class="fw-bold badge rounded-pill {% if item.is_expire %} alert-danger {% else %} alert-success {% endif %}">
+                                            {% if item.is_expire %}
+                                            Expired
+                                            {% else %}
+                                            Active
+                                            {% endif %}
+                                        </a>
+                                    </td>
+
+                                    <!-- Details button -->
+                                    <td class="text-end">
+                                        <a href="{% url 'admin_coupen_app:coupen_details' id=item.coupen_id %}" class="btn btn-md rounded font-sm me-2">Detail</a>
+                                        <a href="{% url 'admin_coupen_app:update_coupen' id=item.coupen_id %}" class="btn btn-md rounded font-sm me-2">Update</a>
+                                        <a href="{% url 'admin_coupen_app:delete_coupen' id=item.coupen_id %}" class=""><i class="fa-solid fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                              {% endfor %}
+                            </tbody>
+                        </table>
+                    </div> <!-- table-responsive //end -->
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            <div class="pagination-area mt-15 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        <!-- {% if order_data.has_previous %} -->
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{order_data.previous_page_number}}">
+                                <i class="fi-rs-angle-double-small-left"> << </i>
+                            </a>
+                        </li>
+                        <!-- {% endif %} -->
+
+                        <!-- {% for num in order_data.paginator.page_range %} -->
+                        <li class="page-item active" id="page_{{num}}">
+                            <a class="page-link" href="?page={{num}}">{{num}}</a>
+                        </li>
+                        <!-- {% endfor %} -->
+
+                        <!-- {% if order_data.has_next %} -->
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{order_data.next_page_number}}">
+                                <i class="fi-rs-angle-double-small-right"> >> </i> 
+                            </a>
+                        </li>
+                        <!-- {% endif %} -->
+                    </ul>
+                </nav>
+            </div>
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script data-cfasync="false" src="../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+    <script>
+        const changeStatus = (selectedElement, id) => {
+            const csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+            fetch(`http://127.0.0.1:8000/admin/order/update_status/`,{
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrf_token
+                },
+                body: JSON.stringify({
+                    id:id,
+                    value:selectedElement.value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status == true){
+                    console.log('its working', data.title)
+                    Swal.fire({
+                        toast: true,
+                        title: data.title,
+                        icon: "success",
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        allowOutsideClick: true, 
+                        timerProgressBar: true,
+                        position: 'top-end',
+                        timer: 10000,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    })
+                }else{
+                    Swal.fire({
+                    title: data.title,
+                    icon: "warning",
+                    showCancelButton: false,
+                    position: 'top-end',
+                    timer: 2000 
+                })
+                }
+            })
+        }
+    </script>
+  {% endblock %}
