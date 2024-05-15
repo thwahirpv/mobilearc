@@ -14,6 +14,7 @@ urlpatterns = [
 
     # ==============Dashboard=====================
     path('dashboard/', admin_dashboard, name='admin_dashboard'),
+    path('get_chart_data/', get_chart_data, name='get_chart_data'),
     # =============Dashboard=======================
 
     # ==============Crud oprations=======================

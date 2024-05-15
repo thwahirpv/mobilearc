@@ -17,6 +17,7 @@ import uuid
 import json
 from checkout_app.models import review
 from django.db.models import Prefetch
+from cart_app.models import Owner, Order
 
 
 def product_list(request):
@@ -133,7 +134,6 @@ def quantity_check(request):
 
         try:
             storage_obj = Storage.objects.get(size_id=storage_id)
-            print(storage_obj.stock)
         except Exception as e:
             pass
 
@@ -279,6 +279,44 @@ class wishlist_management:
                         'text': f'{product_obj.product_name} is removed'
                     }
                 return JsonResponse(context, safe=True)
+    
+    def move_to_cart(request):
+        if not request.user.is_authenticated or request.user.is_active is False:
+            return redirect('user_app:user_login')
+        wishlist_id = request.POST.get('wishlist_id')
+        try:
+            wishlist_obj = Wishlist.objects.get(wishlist_id=wishlist_id)
+        except:
+            context = {
+                'status':False
+            }
+            JsonResponse(context, safe=True)
+            
+        try:
+            owner_obj, owner_created = Owner.objects.get_or_create(
+                customer=request.user
+            )
+
+            order_Obj, cart_created = Order.objects.get_or_create(
+                order_customer = owner_obj,
+                product = wishlist_obj.product,
+                color = wishlist_obj.color, 
+                storage = wishlist_obj.storage,
+                status = 0
+            )
+            wishlist_obj.delete()
+            context = {
+                'status': True
+            }
+            return JsonResponse(context, safe=True)
+        except:
+            context = {
+                'status':False
+            }
+            return JsonResponse(context, safe=True)
+
+
+
             
 # ===========Wishlist End=========================
 

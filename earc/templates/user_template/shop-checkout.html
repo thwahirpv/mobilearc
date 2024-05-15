@@ -7,147 +7,160 @@ Checkout
 {% block content %}
 <main class="main">
     {% include 'user_nav.html' %}
-        <div class="page-header breadcrumb-wrap">
-            <div class="container">
-                <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
-                    <span></span> Shop
-                    <span></span> Checkout
-                </div>
+    <div class="page-header breadcrumb-wrap">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html" rel="nofollow">Home</a>
+                <span></span> Shop
+                <span></span> Checkout
             </div>
         </div>
-        <section class="mt-50 mb-50">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-6">
-                        <div class="toggle_info">
-                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a >Click here to enter your code</a></span>
-                        </div>
-                        <div class="panel-collapse coupon_form" id="">
-                            {% if messages %}
-                            {% for message in messages %}
-                            <p class="fw-bold text-{{message.extra_tags}} mt-4">{{message}}</p>
-                            {% endfor %}
-                            {% endif %}
-                            <div class="panel-body">
-                                <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
-                                <form method="post">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Enter Coupon Code..." name="coupen_code">
-                                    </div>
-                                    <div class="form-group d-flex justify-content-between">
-                                        <button type="submit" class="btn btn-md">Apply Coupon</button>
-                                        <a href="{% url 'checkout_app:remove_coupon' %}" class="btn btn-sm btn-primary">Remove</a>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+    </div>
+    <section class="mt-50 mb-50">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="toggle_info">
+                        <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a>Click
+                                here to enter your code</a></span>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="divider mt-50 mb-50"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6" >
-                        <div class="row">
-                            {% if address_data %}
-                            {% for item in address_data %}
-
-                            <div class="col-lg-12" style="padding: 0px 20px;">
-                                <div class="row {% if forloop.counter > 1 %} mt-3 {% endif %}" style="background: whitesmoke; border-radius: 8px; padding: 10px 15px;">
-                                    <div class="col-1 col-1 d-flex align-items-center">
-                                        <input onclick="set_address('{{item.address_id}}')" style="width: 20px;" type="radio" name="address_id" id="address{{forloop.counter}}" value="{{item.address_id}}" {% if forloop.counter is 1 %} checked {% endif %}>
-                                    </div>
-                                    <div class="col-10 col-1 d-flex flex-column justify-content-center">
-                                        <div style="display: flex;" class="gap-3">
-                                            <p style="font-size: 14px;" class="fw-bold">{{ item.name }}, {{ item.phone }}, {{item.address_type}}</p>
-                                        </div>
-                                        <div>
-                                            <p style="font-size: 12px;">{{item.address}}</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-1 d-flex align-items-center">
-                                        <a style="float: right;" href="{% url 'user_app:update_address' id=item.address_id %}?next={{request.path}}" class="btn-small">Edit</a>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                            <div class="mt-3">
-                                <a href="{% url 'user_app:add_address' %}?next={{request.path}}" class="" >+ Add Address</a>
-                            </div>
-                            {% else %}
-                            <div class="w-100">
-                                <div>
-                                    <a href="{% url 'user_app:add_address' %}?next={{request.path}}" class="btn btn-sm btn-primary" >+ Add Address</a>
-                                </div>
-                            </div>
-                            <div class="w-100 d-flex justify-content-center align-items-center" style="margin: 60px;">
-                                <img src="{% static 'assets/imgs/page/empty_address.png' %}" style="width: 200px;" class="mt-3" alt="">
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="order_review">
-                            <div class="mb-20">
-                                <h4>Your Orders</h4>
-                            </div>
-                            <div class="table-responsive order_table text-center">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th colspan="2">Product</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        {% for item in order_data %}
-                                        <tr>
-                                            <td class="image product-thumbnail">
-                                                <img src="{{item.product.thumbnail.url}}" alt="#">
-                                            </td>
-                                            <td>
-                                                <h5>
-                                                    <a href="shop-product-full.html">{{ item.product.product_name }}</a>
-                                                </h5> 
-                                                <div>
-                                                    <p class="" style="font-size: 13px;">{{item.color.color_name}}</p>
-                                                </div>
-                                                <span class="product-qty">x {{item.quantity}}</span>
-                                            </td>
-                                            <td>{% product_sub_total item %}</td>
-                                        </tr>
-                                        {% endfor %}
-                                        
-                                        <tr>
-                                            <th>SubTotal</th>
-                                            <td class="product-subtotal" colspan="2">{% sub_total order_data %}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Shipping</th>
-                                            <td colspan="2"><em>Free Shipping</em></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Total</th>
-                                            <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900">{% sub_total order_data owner_obj %}</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                            <form method="post" id="order_place_form" enctype="multipart/form-data" action="">
+                    <div class="panel-collapse coupon_form" id="">
+                        {% if messages %}
+                        {% for message in messages %}
+                        <p class="fw-bold text-{{message.extra_tags}} mt-4">{{message}}</p>
+                        {% endfor %}
+                        {% endif %}
+                        <div class="panel-body">
+                            <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
+                            <form method="post">
                                 {% csrf_token %}
-                                <div class="payment_method">
-                                    <div class="mb-25">
-                                        <h5>Payment</h5>
+                                <div class="form-group">
+                                    <input type="text" placeholder="Enter Coupon Code..." name="coupen_code">
+                                </div>
+                                <div class="form-group d-flex justify-content-between">
+                                    <button type="submit" class="btn btn-md">Apply Coupon</button>
+                                    <a href="{% url 'checkout_app:remove_coupon' %}"
+                                        class="btn btn-sm btn-primary">Remove</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="divider mt-50 mb-50"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        {% if address_data %}
+                        {% for item in address_data %}
+
+                        <div class="col-lg-12" style="padding: 0px 20px;">
+                            <div class="row {% if forloop.counter > 1 %} mt-3 {% endif %}"
+                                style="background: whitesmoke; border-radius: 8px; padding: 10px 15px;">
+                                <div class="col-1 col-1 d-flex align-items-center">
+                                    <input onclick="set_address('{{item.address_id}}')" style="width: 20px;"
+                                        type="radio" name="address_id" id="address{{forloop.counter}}"
+                                        value="{{item.address_id}}" {% if forloop.counter is 1 %} checked {% endif %}>
+                                </div>
+                                <div class="col-10 col-1 d-flex flex-column justify-content-center">
+                                    <div style="display: flex;" class="gap-3">
+                                        <p style="font-size: 14px;" class="fw-bold">{{ item.name }}, {{ item.phone }},
+                                            {{item.address_type}}</p>
                                     </div>
-                                    <div class="payment_option d-flex flex-column gap-1">
-                                        <!-- <div class="d-flex align-items-center gap-3">
+                                    <div>
+                                        <p style="font-size: 12px;">{{item.address}}</p>
+                                    </div>
+                                </div>
+                                <div class="col-1 d-flex align-items-center">
+                                    <a style="float: right;"
+                                        href="{% url 'user_app:update_address' id=item.address_id %}?next={{request.path}}"
+                                        class="btn-small">Edit</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="mt-3">
+                            <a href="{% url 'user_app:add_address' %}?next={{request.path}}" class="">+ Add Address</a>
+                        </div>
+                        {% else %}
+                        <div class="w-100">
+                            <div>
+                                <a href="{% url 'user_app:add_address' %}?next={{request.path}}"
+                                    class="btn btn-sm btn-primary">+ Add Address</a>
+                            </div>
+                        </div>
+                        <div class="w-100 d-flex justify-content-center align-items-center" style="margin: 60px;">
+                            <img src="{% static 'assets/imgs/page/empty_address.png' %}" style="width: 200px;"
+                                class="mt-3" alt="">
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="order_review">
+                        <div class="mb-20">
+                            <h4>Your Orders</h4>
+                        </div>
+                        <div class="table-responsive order_table text-center">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Product</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for item in order_data %}
+                                    <tr>
+                                        <td class="image product-thumbnail">
+                                            <img src="{{item.product.thumbnail.url}}" alt="#">
+                                        </td>
+                                        <td>
+                                            <h5>
+                                                <a href="shop-product-full.html">{{ item.product.product_name }}</a>
+                                            </h5>
+                                            <div>
+                                                <p class="" style="font-size: 13px;">{{item.color.color_name}}</p>
+                                            </div>
+                                            <span class="product-qty">x {{item.quantity}}</span>
+                                        </td>
+                                        <td>{% product_sub_total item %}</td>
+                                    </tr>
+                                    {% endfor %}
+
+                                    <tr>
+                                        <th>SubTotal</th>
+                                        <td class="product-subtotal" colspan="2">{% sub_total order_data %}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Shipping</th>
+                                        <td colspan="2"><em>Free Shipping</em></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total</th>
+                                        <td colspan="2" class="product-subtotal"><span
+                                                class="font-xl text-brand fw-900">{% sub_total order_data owner_obj %}</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="bt-1 border-color-1 mt-30 mb-30">
+                            <p class="text-danger fw-bold" style="font-size: 14px;" id="error_msg"></p>
+                        </div>
+                        <form method="post" id="order_place_form" enctype="multipart/form-data" action="">
+                            {% csrf_token %}
+                            <div class="payment_method">
+                                <div class="mb-25">
+                                    <h5>Payment</h5>
+                                </div>
+                                <div class="payment_option d-flex flex-column gap-1">
+                                    <!-- <div class="d-flex align-items-center gap-3">
                                             <input style="width: 16px;" type="radio" id="upi" name="payment_method" value="upi">
                                             <label for="upi">UPI</label>
                                         </div>
@@ -155,271 +168,357 @@ Checkout
                                             <input style="width: 16px;" type="radio" id="googlepay" name="payment_method" value="googlepay">
                                             <label for="googlepay">Google Pay</label>
                                         </div> -->
-                                        <div class="d-flex align-items-center gap-3">
-                                            <input onclick="set_place_order_btn('online_payment')" style="width: 16px;" type="radio" id="online_payment" name="payment_method" value="online_payment">
-                                            <label for="phonepay">Online payment</label>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <input onclick="set_place_order_btn('cod')" style="width: 16px;" type="radio" id="cod" name="payment_method" value="cod">
-                                            <label for="cod">Cash on delivery</label>
-                                        </div>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <input onclick="set_place_order_btn('online_payment')" style="width: 16px;"
+                                            type="radio" id="online_payment" name="payment_method"
+                                            value="online_payment">
+                                        <label for="phonepay">Online payment</label>
                                     </div>
-
-                                    {% if order_data %}
-                                        <input type="hidden" name="order_type" value="multiple">
-                                    {% endif %}
-                                    <input type="hidden" name="select_address" id="select_address" value="{{address_data.first.address_id}}">
-                                    
-                                
-
-                                    <button id="rzp-button1" type="button"  style="display: none;" class="place_order_btn btn btn-sm btn-fill-out btn-block mt-30 fw-bold">Place Order</button>
-                                    <button id="cod-button" type="button" style="display: none;" class="place_order_btn btn btn-sm btn-fill-out btn-block mt-30 fw-bold">Place Order</button>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <input onclick="set_place_order_btn('cod')" style="width: 16px;" type="radio"
+                                            id="cod" name="payment_method" value="cod">
+                                        <label for="cod">Cash on delivery</label>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <input onclick="set_place_order_btn('wallet')" style="width: 16px;" type="radio"
+                                            id="wallet" name="payment_method" value="wallet">
+                                        <label for="cod">Wallet</label>
+                                    </div>
                                 </div>
+
+                                {% if order_data %}
+                                <input type="hidden" name="order_type" value="multiple">
+                                {% endif %}
+                                <input type="hidden" name="select_address" id="select_address"
+                                    value="{{address_data.first.address_id}}">
+
+
+
+                                <button id="rzp-button1" type="button" style="display: none;"
+                                    class="place_order_btn btn btn-sm btn-fill-out btn-block mt-30 fw-bold">Place
+                                    Order</button>
+                                <button id="cod-button" type="button" style="display: none;"
+                                    class="place_order_btn btn btn-sm btn-fill-out btn-block mt-30 fw-bold">Place
+                                    Order</button>
+                                <button id="wallet-button" type="button" style="display: none;"
+                                    class="place_order_btn btn btn-sm btn-fill-out btn-block mt-30 fw-bold">Place
+                                    Order</button>
+                            </div>
                         </form>
-                        </div>
                     </div>
-                </div>
-            </div>
-        </section>
-    </main>
-    <footer class="main">
-        <section class="newsletter p-30 text-white wow fadeIn animated">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-7 mb-md-3 mb-lg-0">
-                        <div class="row align-items-center">
-                            <div class="col flex-horizontal-center">
-                                <img class="icon-email" src="assets/imgs/theme/icons/icon-email.svg" alt="">
-                                <h4 class="font-size-20 mb-0 ml-3">Sign up to Newsletter</h4>
-                            </div>
-                            <div class="col my-4 my-md-0 des">
-                                <h5 class="font-size-15 ml-4 mb-0">...and receive <strong>$25 coupon for first shopping.</strong></h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5">
-                        <!-- Subscribe Form -->
-                        <form class="form-subcriber d-flex wow fadeIn animated">
-                            <input type="email" class="form-control bg-white font-small" placeholder="Enter your email">
-                            <button class="btn bg-dark text-white" type="submit">Subscribe</button>
-                        </form>
-                        <!-- End Subscribe Form -->
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="section-padding footer-mid">
-            <div class="container pt-15 pb-20">
-                <div class="row">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="widget-about font-md mb-md-5 mb-lg-0">
-                            <div class="logo logo-width-1 wow fadeIn animated">
-                                <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo"></a>
-                            </div>
-                            <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
-                            <p class="wow fadeIn animated">
-                                <strong>Address: </strong>562 Wellington Road, Street 32, San Francisco
-                            </p>
-                            <p class="wow fadeIn animated">
-                                <strong>Phone: </strong>+01 2222 365 /(+91) 01 2345 6789
-                            </p>
-                            <p class="wow fadeIn animated">
-                                <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
-                            </p>
-                            <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
-                            <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
-                                <a href="#"><img src="assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                                <a href="#"><img src="assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                                <a href="#"><img src="assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                                <a href="#"><img src="assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                                <a href="#"><img src="assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-3">
-                        <h5 class="widget-title wow fadeIn animated">About</h5>
-                        <ul class="footer-list wow fadeIn animated mb-sm-5 mb-md-0">
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Delivery Information</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms &amp; Conditions</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Support Center</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-2  col-md-3">
-                        <h5 class="widget-title wow fadeIn animated">My Account</h5>
-                        <ul class="footer-list wow fadeIn animated">
-                            <li><a href="#">Sign In</a></li>
-                            <li><a href="#">View Cart</a></li>
-                            <li><a href="#">My Wishlist</a></li>
-                            <li><a href="#">Track My Order</a></li>
-                            <li><a href="#">Help</a></li>
-                            <li><a href="#">Order</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-4">
-                        <h5 class="widget-title wow fadeIn animated">Install App</h5>
-                        <div class="row">
-                            <div class="col-md-8 col-lg-12">
-                                <p class="wow fadeIn animated">From App Store or Google Play</p>
-                                <div class="download-app wow fadeIn animated">
-                                    <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active" src="assets/imgs/theme/app-store.jpg" alt=""></a>
-                                    <a href="#" class="hover-up"><img src="assets/imgs/theme/google-play.jpg" alt=""></a>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
-                                <p class="mb-20 wow fadeIn animated">Secured Payment Gateways</p>
-                                <img class="wow fadeIn animated" src="assets/imgs/theme/payment-method.png" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <div class="container pb-20 wow fadeIn animated">
-            <div class="row">
-                <div class="col-12 mb-20">
-                    <div class="footer-bottom"></div>
-                </div>
-                <div class="col-lg-6">
-                    <p class="float-md-left font-sm text-muted mb-0">&copy; 2021, <strong class="text-brand">Evara</strong> - HTML Ecommerce Template </p>
-                </div>
-                <div class="col-lg-6">
-                    <p class="text-lg-end text-start font-sm text-muted mb-0">
-                        Designed by <a href="http://alithemes.com/" target="_blank">Alithemes.com</a>. All rights reserved
-                    </p>
                 </div>
             </div>
         </div>
-    </footer>
-    <!-- Preloader Start -->
-    <div id="preloader-active">
-        <div class="preloader d-flex align-items-center justify-content-center">
-            <div class="preloader-inner position-relative">
-                <div class="text-center">
-                    <h5 class="mb-5">Now Loading</h5>
-                    <div class="loader">
-                        <div class="bar bar1"></div>
-                        <div class="bar bar2"></div>
-                        <div class="bar bar3"></div>
+    </section>
+</main>
+<footer class="main">
+    <section class="newsletter p-30 text-white wow fadeIn animated">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 mb-md-3 mb-lg-0">
+                    <div class="row align-items-center">
+                        <div class="col flex-horizontal-center">
+                            <img class="icon-email" src="assets/imgs/theme/icons/icon-email.svg" alt="">
+                            <h4 class="font-size-20 mb-0 ml-3">Sign up to Newsletter</h4>
+                        </div>
+                        <div class="col my-4 my-md-0 des">
+                            <h5 class="font-size-15 ml-4 mb-0">...and receive <strong>$25 coupon for first
+                                    shopping.</strong></h5>
+                        </div>
                     </div>
+                </div>
+                <div class="col-lg-5">
+                    <!-- Subscribe Form -->
+                    <form class="form-subcriber d-flex wow fadeIn animated">
+                        <input type="email" class="form-control bg-white font-small" placeholder="Enter your email">
+                        <button class="btn bg-dark text-white" type="submit">Subscribe</button>
+                    </form>
+                    <!-- End Subscribe Form -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section-padding footer-mid">
+        <div class="container pt-15 pb-20">
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="widget-about font-md mb-md-5 mb-lg-0">
+                        <div class="logo logo-width-1 wow fadeIn animated">
+                            <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo"></a>
+                        </div>
+                        <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
+                        <p class="wow fadeIn animated">
+                            <strong>Address: </strong>562 Wellington Road, Street 32, San Francisco
+                        </p>
+                        <p class="wow fadeIn animated">
+                            <strong>Phone: </strong>+01 2222 365 /(+91) 01 2345 6789
+                        </p>
+                        <p class="wow fadeIn animated">
+                            <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
+                        </p>
+                        <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
+                        <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
+                            <a href="#"><img src="assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
+                            <a href="#"><img src="assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
+                            <a href="#"><img src="assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
+                            <a href="#"><img src="assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
+                            <a href="#"><img src="assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3">
+                    <h5 class="widget-title wow fadeIn animated">About</h5>
+                    <ul class="footer-list wow fadeIn animated mb-sm-5 mb-md-0">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Delivery Information</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms &amp; Conditions</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Support Center</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2  col-md-3">
+                    <h5 class="widget-title wow fadeIn animated">My Account</h5>
+                    <ul class="footer-list wow fadeIn animated">
+                        <li><a href="#">Sign In</a></li>
+                        <li><a href="#">View Cart</a></li>
+                        <li><a href="#">My Wishlist</a></li>
+                        <li><a href="#">Track My Order</a></li>
+                        <li><a href="#">Help</a></li>
+                        <li><a href="#">Order</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="widget-title wow fadeIn animated">Install App</h5>
+                    <div class="row">
+                        <div class="col-md-8 col-lg-12">
+                            <p class="wow fadeIn animated">From App Store or Google Play</p>
+                            <div class="download-app wow fadeIn animated">
+                                <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active"
+                                        src="assets/imgs/theme/app-store.jpg" alt=""></a>
+                                <a href="#" class="hover-up"><img src="assets/imgs/theme/google-play.jpg" alt=""></a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
+                            <p class="mb-20 wow fadeIn animated">Secured Payment Gateways</p>
+                            <img class="wow fadeIn animated" src="assets/imgs/theme/payment-method.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="container pb-20 wow fadeIn animated">
+        <div class="row">
+            <div class="col-12 mb-20">
+                <div class="footer-bottom"></div>
+            </div>
+            <div class="col-lg-6">
+                <p class="float-md-left font-sm text-muted mb-0">&copy; 2021, <strong class="text-brand">Evara</strong>
+                    - HTML Ecommerce Template </p>
+            </div>
+            <div class="col-lg-6">
+                <p class="text-lg-end text-start font-sm text-muted mb-0">
+                    Designed by <a href="http://alithemes.com/" target="_blank">Alithemes.com</a>. All rights reserved
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Preloader Start -->
+<div id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+            <div class="text-center">
+                <h5 class="mb-5">Now Loading</h5>
+                <div class="loader">
+                    <div class="bar bar1"></div>
+                    <div class="bar bar2"></div>
+                    <div class="bar bar3"></div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    function getRandomTenDigit() {
+        return Math.floor(Math.random() * (9999999999 - 1000000000 + 1)) + 1000000000;
+    }
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script>
-        function getRandomTenDigit() {
-            return Math.floor(Math.random() * (9999999999 - 1000000000 + 1)) + 1000000000;
+    const set_address = (id) => {
+        document.getElementById('select_address').value = id
+    }
+
+    const set_place_order_btn = (id) => {
+        if (id == 'online_payment') {
+            document.querySelectorAll('.place_order_btn').forEach(function (element) {
+                element.style.display = 'none'
+            })
+            document.getElementById('rzp-button1').style.display = 'block'
+            document.querySelector('input[name="payment_method"]').value = 'online_payment'
+            console.log(document.querySelector('input[name="payment_method"]').value)
         }
-
-        const set_address = (id) => {
-            document.getElementById('select_address').value = id
+        else if (id == 'cod') {
+            document.querySelectorAll('.place_order_btn').forEach(function (element) {
+                element.style.display = 'none'
+            })
+            document.getElementById('cod-button').style.display = 'block'
+            document.querySelector('input[name="payment_method"]').value = 'cod'
         }
+        else if (id == 'wallet') {
+            document.querySelectorAll('.place_order_btn').forEach(function (element) {
+                element.style.display = 'none'
+            })
 
-        const set_place_order_btn = (id) => {
-            if(id == 'online_payment'){
-                document.querySelectorAll('.place_order_btn').forEach(function(element){
-                    element.style.display = 'none'
-                })
-                document.getElementById('rzp-button1').style.display = 'block'
-                document.querySelector('input[name="payment_method"]').value = 'online_payment'
-                console.log(document.querySelector('input[name="payment_method"]').value)
-            }
-            else if (id == 'cod') {
-                document.querySelectorAll('.place_order_btn').forEach(function(element){
-                    element.style.display = 'none'
-                })
-                document.getElementById('cod-button').style.display = 'block'
-                document.querySelector('input[name="payment_method"]').value = 'cod'
-                console.log(document.querySelector('input[name="payment_method"]').value)
-            }
+            document.getElementById('wallet-button').style.display = 'block'
+            document.querySelector('input[name="payment_method"]').value = 'wallet'
         }
-        
-        
+    }
+
+
     // Rozer pay
-    document.getElementById('rzp-button1').onclick = function(e){
+    document.getElementById('rzp-button1').onclick = function (e) {
         const csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
-        
-        var options = {
-        "key": "rzp_test_zTjq1emOpDd6gc", 
-        "amount": 100, 
-        "name": "MobileArc", 
-        "description": "Test Transaction",
-        "image": "{{ user.profile.url }}",
-        // "order_id": "order_9A33XWu170gUtm", 
-        "handler": function (response){
-            const formData = {
-                "payment_method" : document.querySelector('input[name="payment_method"]').value,
-                "order_type": document.querySelector('input[name="order_type"]').value,
-                "select_address" : document.querySelector('input[name="select_address"]').value,
-                "payment_id": response.razorpay_payment_id
-            } 
-            fetch('http://127.0.0.1:8000/checkout/place_order/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrf_token
-                },
-                body: JSON.stringify(formData)
-            })
+        fetch('http://127.0.0.1:8000/checkout/payment_authorization/')
             .then(response => response.json())
             .then(data => {
-                if(data.status == true){
-                    window.location.href = 'http://127.0.0.1:8000/checkout/placed/'
-                }else{
-                    window.location.reload()
+                if (data.status == true) {
+                    Swal.fire({
+                        title: 'Are you sure to oder?',
+                        text: "Order and Enjoy",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: 'Yes, it'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var options = {
+                                "key": data.key, 
+                                "amount": data.amount, 
+                                "currency": data.currency,
+                                "name": "mobileArc",
+                                "description": "Test Transaction",
+                                "image": "{{user.profile.url}}",
+                                "order_id": data.order_id,
+                                "handler": function (response) {
+                                    // alert(response.razorpay_payment_id);
+                                    // alert(response.razorpay_order_id);
+                                    // alert(response.razorpay_signature)
+                                    const formData = {
+                                        "payment_method": document.querySelector('input[name="payment_method"]').value,
+                                        "order_type": document.querySelector('input[name="order_type"]').value,
+                                        "select_address": document.querySelector('input[name="select_address"]').value,
+                                        "payment_id": response.razorpay_payment_id
+                                    }
+                                    fetch('http://127.0.0.1:8000/checkout/place_order/', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRFToken': csrf_token
+                                        },
+                                        body: JSON.stringify(formData)
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.status == true) {
+                                                window.location.href = 'http://127.0.0.1:8000/checkout/placed/'
+                                            } else {
+                                                document.getElementById('error_msg').innerHTML = data.text
+                                            }
+                                        })
+                                },
+                                "prefill": {
+                                    "name": "{{user.username}}",
+                                    "email": "{{user.email}}",
+                                    "contact": "{{user.phone_number}}"
+                                },
+                                "notes": {
+                                    "address": "mobileArc Office"
+                                },
+                                "theme": {
+                                    "color": "#3399cc"
+                                }
+                            };
+                            var rzp1 = new Razorpay(options);
+                            rzp1.on('payment.failed', function (response) {
+                                document.getElementById('error_msg').innerHTML = "Payment failed try again!"
+                            });
+                            rzp1.open();
+                        } else {
+                            document.getElementById('error_msg').innerHTML = data.text
+                        }
+                    });
+                } else {
+                    document.getElementById('error_msg').innerHTML = data.text
                 }
+
             })
-            
-        },
-        "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
-            "name": "{{ user.username }}", //your customer's name
-            "email": "{{ user.email }}", 
-            "contact": "{{ user.phone_number }}"  //Provide the customer's phone number for better conversion rates 
-        },
-        "theme": {
-            "color": "#3399cc"
-        }
-    };
-    var rzp1 = new Razorpay(options);
-    
-        rzp1.open();
-        e.preventDefault();
     }
 
 
     // Cash on Delivery
-    document.getElementById('cod-button').onclick = function(e){
+    document.getElementById('cod-button').onclick = function (e) {
         const payment_id = getRandomTenDigit()
         const csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
         const formData = {
-            "payment_method" : document.querySelector('input[name="payment_method"]').value,
+            "payment_method": document.querySelector('input[name="payment_method"]').value,
             "order_type": document.querySelector('input[name="order_type"]').value,
-            "select_address" : document.querySelector('input[name="select_address"]').value,
-            "payment_id":payment_id
-        } 
-        
+            "select_address": document.querySelector('input[name="select_address"]').value,
+            "payment_id": payment_id
+        }
+
         fetch('http://127.0.0.1:8000/checkout/place_order/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrf_token
-                },
-                body: JSON.stringify(formData)
-            })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrf_token
+            },
+            body: JSON.stringify(formData)
+        })
             .then(response => response.json())
             .then(data => {
-                if(data.status == true){
+                if (data.status == true) {
                     window.location.href = 'http://127.0.0.1:8000/checkout/placed/'
-                }else{
-                    window.location.reload()
+                } else {
+                    document.getElementById('error_msg').innerHTML = data.text
                 }
             })
     }
-    </script>
+
+
+    // wallet payment 
+    document.getElementById('wallet-button').onclick = function (e) {
+        e.preventDefault();
+        const payment_id = getRandomTenDigit()
+        const csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+        const formData = {
+            "payment_method": document.querySelector('input[name="payment_method"]').value,
+            "order_type": document.querySelector('input[name="order_type"]').value,
+            "select_address": document.querySelector('input[name="select_address"]').value,
+            "payment_id": payment_id
+        }
+
+        fetch('http://127.0.0.1:8000/checkout/place_order/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrf_token
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status == true) {
+                    window.location.href = 'http://127.0.0.1:8000/checkout/placed/'
+                } else {
+                    document.getElementById('error_msg').innerHTML = status.text
+                }
+            })
+    }
+</script>
 {% endblock %}

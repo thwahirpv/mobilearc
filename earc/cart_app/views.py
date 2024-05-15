@@ -42,6 +42,7 @@ class cart_management:
             color_id = request.POST.get('color_id')
             storage_id = request.POST.get('storage_id')
             quantity = int(request.POST.get('quantity'))
+            print(color_id, storage_id, quantity)
             
             color_obj = Colors.objects.get(color_id=color_id)
             product_obj = color_obj.product

@@ -253,12 +253,16 @@ Details
                                                         <dd> <b class="h5">${% total_price order_obj %}</b> </dd>
                                                     </dl>
                                                     <dl class="dlist">
-                                                        <dt class="text-muted">Status:</dt>
+                                                        <dt class="text-muted">Payment status:</dt>
                                                         <dd>
-                                                            {% if order_obj.order_payment.payment_status %}
-                                                                <span class="badge rounded-pill alert-success text-success">Payment done</span>
+                                                            {% if order_obj.status == 5 %}
+                                                                <span class="badge rounded-pill alert-danger text-danger">Cancel</span>
+                                                            {% elif order_obj.status == 7 %}
+                                                                <span class="badge rounded-pill alert-danger text-danger">Refund</span>
+                                                            {% elif order_obj.order_payment.payment_status %}
+                                                                <span class="badge rounded-pill alert-success text-success">Paid</span>
                                                             {% else %}
-                                                                <span class="badge rounded-pill alert-warning text-warning">Payment pending</span>
+                                                                <span class="badge rounded-pill alert-warning text-warning">pending</span>
                                                             {% endif %}
                                                         </dd>
                                                     </dl>

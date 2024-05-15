@@ -306,6 +306,9 @@ Home
                             <p class="" style="font-weight: bolder; font-size: 16px;">Storage:</p>
                             <p style="font-weight: 600; font-size: 16px;">{{order_obj.storage.rom}}/{{order_obj.storage.ram}}</p>
                         </div>
+                        <div>
+                            <a style="float: right; margin-top: 40px; font-size: 16px; font-weight: bold;" href="{% url 'checkout_app:invoice_details' id=order_obj.cart_id %}">Invoice</a>
+                        </div>
                     </div>
                 </div>
             </div>

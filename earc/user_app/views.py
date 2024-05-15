@@ -218,14 +218,17 @@ def user_home(request):
         ), to_attr='color')
     )
     category_data = category.objects.filter(category_active=True)
-    brands_data = brands.objects.filter(brand_active=True)
+    brands_data = brands.objects.filter(brand_active=True).order_by('-sold_out')
+    best_selling_prodects = products.objects.filter(product_active=True).order_by('-sold_out')
+    
 
     context = {
         'first_banner':first_banner,
         'secondary_banner':secondary_banner,
         'latest_products':latest_products,
         'brands_data':brands_data,
-        'category_data':category_data
+        'category_data':category_data,
+        'best_selling_prodects':best_selling_prodects
         }
     if request.user.is_authenticated and request.user.is_active is True:
         user = request.user
@@ -586,7 +589,7 @@ def wallet_view(request):
         wallet_obj = Wallet.objects.none()
 
     try:
-        wallet_history_obj = wallet_history.objects.filter(wallet_owner=wallet_obj)
+        wallet_history_obj = wallet_history.objects.filter(wallet_owner=wallet_obj).order_by('-history_id')
     except:
         wallet_history_obj = wallet_history.objects.none()
 

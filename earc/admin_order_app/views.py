@@ -71,16 +71,28 @@ def update_status(request):
                             wallet_history_obj = wallet_history.objects.create(
                                 wallet_owner=wallet_obj,
                                 order_item=order_obj,
-                                credit=order_obj.total_price
+                                amount=order_obj.total_price,
+                                status='Credit'
                             )
+                            order_obj.order_payment.payment_status = False
+                            order_obj.order_payment.save()
                         
                      order_obj.status = value
+                     order_obj.is_delivered = False
                      order_obj.save()
+                     order_obj.storage.stock = order_obj.storage.stock + order_obj.quantity
+                     order_obj.storage.save()
+                     order_obj.product.sold_out -= order_obj.quantity
+                     order_obj.product.save()
+                     order_obj.product.pro_brand.sold_out -= order_obj.quantity
+                     order_obj.product.pro_brand.save()
             else:
                 if value == 4:
                     order_obj.is_delivered = True
                     order_obj.status = value
                     order_obj.save()
+                    order_obj.order_payment.payment_status = True
+                    order_obj.order_payment.save()
                 elif value == 7:
                     try:
                         wallet_obj, created = Wallet.objects.get_or_create(
@@ -98,7 +110,8 @@ def update_status(request):
                               wallet_history_obj = wallet_history.objects.create(
                                    wallet_owner=wallet_obj,
                                    order_item=order_obj,
-                                   credit=order_obj.total_price
+                                   amount=order_obj.total_price,
+                                   status='Credit'
                               )
                          except:
                             context = {
@@ -110,6 +123,14 @@ def update_status(request):
                          order_obj.status = value
                          order_obj.is_delivered = False
                          order_obj.save()
+                         order_obj.order_payment.payment_status = False
+                         order_obj.order_payment.save()
+                         order_obj.product.sold_out -= order_obj.quantity
+                         order_obj.product.save()
+                         order_obj.product.pro_brand.sold_out -= order_obj.quantity
+                         order_obj.product.pro_brand.save()
+                         order_obj.storage.stock += order_obj.quantity
+                         order_obj.storage.save()
                          wallet_obj.balance += order_obj.total_price
                          wallet_obj.save()
                     else:
@@ -120,6 +141,7 @@ def update_status(request):
                         return JsonResponse(context, safe=True)
                 else:
                      order_obj.status = value
+                     order_obj.is_delivered = False
                      order_obj.save()
                     
             context = {

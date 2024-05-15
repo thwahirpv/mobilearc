@@ -20,6 +20,9 @@ from django.utils.translation import gettext as _
 import json
 from cart_app.models import Order
 from django.utils import timezone
+from django.db.models import Count
+from django.db.models.functions import TruncMonth, TruncYear
+from admin_product_app.models import Sales
 # from rest_framework.decorators import api_view
 
 
@@ -233,3 +236,22 @@ def sales_report(request):
             'sales_data':sales_data
         }
         return render(request, 'admin_template/sales_report.html', context)
+    
+
+
+def get_chart_data(request):
+    monthly_sales = Sales.objects.annotate(month=TruncMonth('sale_date')).values('month').annotate(total_sale=Count('sale_id'))
+    yearly_sales = Order.objects.filter(status=4).annotate(year=TruncYear('created_at')).values('year').annotate(total_sales=Count('cart_id'))
+    product_sales = Order.objects.filter(status=4).annotate(month=TruncMonth('created_at')).values('month').annotate(total_sales=Count('cart_id'))
+
+    monthly_sales_data = [{'month': item['month'].strftime('%B'), 'total_sales':item['total_sale']} for item in monthly_sales]
+    yearly_sales_data = [{'year': item['year'].year, 'total_sales': item['total_sales']} for item in yearly_sales]
+    product_monthly_sales = [{'month': item['month'].strftime('%B'), 'total_sales':item['total_sales']} for item in product_sales]
+
+    
+    context = {
+        'monthly_sales_data':monthly_sales_data,
+        'yearly_sales_data':yearly_sales_data,
+        'product_monthly_sales':product_monthly_sales
+    }
+    return JsonResponse(context,safe=True)

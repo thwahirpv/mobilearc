@@ -51,11 +51,9 @@ Wishlist
                                         </td>
                                         <td class="price" data-title="Price"><span>{{item.product.price}}</span></td>
                                         <td class="text-right" data-title="Cart">
-                                            <form class="d-flex" id="cart_form" method="post" enctype="multipart/form-data">
+                                            <form onsubmit="wishlistToCart(event)" class="d-flex" id="cart_form" method="post" enctype="multipart/form-data">
                                                 {% csrf_token %}
-                                                <input type="hidden" name="color_id" value="{{item.color.color_id}}" id="colorId_input">
-                                                <input type="hidden" name="storage_id" value="{{item.storage.size_id}}" id="storageId_input">
-                                                <input type="hidden" id="quantity" name="quantity" value="1">
+                                                <input type="hidden" id="quantity" name="wishlist_id" value="{{item.wishlist_id}}">
                                                 <button type="submit" class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
                                             </form>
                                         </td>
@@ -265,15 +263,16 @@ Wishlist
 
             setTimeout( () => {
                 messageDiv.style.top = '-15%'
-            },2000)
+                window.location.reload()
+            },500)
         }
     }
 
-        document.getElementById('cart_form').addEventListener('submit', function(event){
+        function wishlistToCart(event){
         event.preventDefault();
-
+        console.log('hello iaam here')
         const formData = new FormData(event.target)
-        fetch('http://127.0.0.1:8000/cart/add/', {
+        fetch('http://127.0.0.1:8000/products/movetocart/', {
             method: 'POST',
             body: formData
         })
@@ -295,7 +294,7 @@ Wishlist
                 moniterTopStyle()
             }
         })
-    })
+    }
 
     </script>
 {% endblock %}

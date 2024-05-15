@@ -90,7 +90,8 @@ class wallet_history(models.Model):
     from cart_app.models import Order
     history_id = models.BigAutoField(primary_key=True, null=False, unique=True)
     wallet_owner = models.ForeignKey(Wallet, on_delete=models.CASCADE, related_name='wallet_history')
-    order_item = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='order_item_wallet')
-    credit = models.IntegerField(null=True, unique=False, default=0)
+    order_item = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_item_wallet')
+    amount = models.IntegerField(null=True, unique=False, default=0)
+    status = models.CharField(null=True, blank=False, default='Credit')
     created_at = models.DateTimeField(auto_now_add=True)
 

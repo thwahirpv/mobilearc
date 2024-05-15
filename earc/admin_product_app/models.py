@@ -15,6 +15,7 @@ class brands(models.Model):
     brand_name = models.CharField(max_length=100, null=False)
     brand_image = models.ImageField(upload_to='brands/', default='brands/brand_default_logo.png')
     brand_active = models.BooleanField(default=True)
+    sold_out = models.IntegerField(null=True, blank=True, default=0)
     brand_category = models.ForeignKey(category, on_delete=models.CASCADE, related_name='brands')
 
 class products(models.Model):
@@ -24,6 +25,7 @@ class products(models.Model):
     thumbnail = models.ImageField(upload_to='product_thumbnail/', default='product_thumbnail/default_product_thumbnail.webp')
     price = models.PositiveIntegerField(null=False)
     discount_price = models.PositiveIntegerField(null=False)
+    sold_out = models.IntegerField(null=True, blank=True, default=0)
     pro_category = models.ForeignKey(category, on_delete=models.CASCADE, related_name='product')
     pro_brand = models.ForeignKey(brands, on_delete=models.CASCADE, related_name='pro_brand_re')
     product_active = models.BooleanField(default=True)
@@ -66,6 +68,12 @@ class Wishlist(models.Model):
     product = models.ForeignKey(products, on_delete=models.CASCADE, related_name='product')
     color = models.ForeignKey(Colors, null=True, on_delete=models.CASCADE, related_name='color', default=None)
     storage = models.ForeignKey(Storage,null=True, on_delete=models.CASCADE, related_name='storage', default=None)
+
+
+class Sales(models.Model):
+    sale_id = models.BigAutoField(primary_key=True, unique=True)
+    saled_product = models.ForeignKey(products, on_delete=models.DO_NOTHING, related_name='sales')
+    sale_date = models.DateTimeField(auto_now_add=True)
 
     
 

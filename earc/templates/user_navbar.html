@@ -81,19 +81,6 @@
                     <div class="search-style-2">
                         <form action="{% url 'user_product_app:list_products' %}" method="get">
                             {% csrf_token %}
-                            <select class="select-active">
-                                <option>All Categories</option>
-                                <option>Women's</option>
-                                <option>Men's</option>
-                                <option>Cellphones</option>
-                                <option>Computer</option>
-                                <option>Electronics</option>
-                                <option> Accessories</option>
-                                <option>Home & Garden</option>
-                                <option>Luggage</option>
-                                <option>Shoes</option>
-                                <option>Mother & Kids</option>
-                            </select>
                             <input type="text" name="search_text" placeholder="Search for items...">
                             <button type="submit" class="btn btn-sm btn-primary me-4 text-white" style="background: #088178;">search</button>
                         </form>
@@ -322,7 +309,7 @@
                                     <a class="active" href="{% url 'user_app:user_home' %}">Home <i class="fi-rs-angle-down"></i></a>
                                 </li>
                                 <li>
-                                    <a href="page-about.html">About</a>
+                                    <a href="#">About</a>
                                 </li>
                                 <li><a href="{% url 'user_product_app:list_products' %}">Shop</a>
                                 </li>

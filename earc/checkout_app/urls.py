@@ -16,6 +16,8 @@ urlpatterns = [
     path('placed/', order_placed, name='order_placed'),
     path('remove_coupon/', remove_coupon, name='remove_coupon'),
     path('replace/<int:id>/', order_replacement, name='order_replacement'),
-    path('return/<int:id>/', return_and_refund, name='return_and_refund')
+    path('return/<int:id>/', return_and_refund, name='return_and_refund'),
+    path('payment_authorization/', razorpay_order, name='razorpay_order' ),
+    path('invoice/<int:id>/', invoice_details, name='invoice_details')
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

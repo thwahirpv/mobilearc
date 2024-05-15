@@ -23,7 +23,11 @@ Home
                             <p style="font-size: 13px; color: rgb(91, 91, 91);" class="fw-bold">{{item.created_at|date:"d/m/y g:i A"}}</p>
                         </div>
                         <div class="col-2 d-flex align-items-center" >
-                            <p class="text-success fw-bold">+{{item.credit}}</p>
+                            {% if item.status == 'Credit' %}
+                            <p class=" text-success fw-bold">+{{item.amount}}</p>
+                            {% else %}
+                            <p class=" text-danger fw-bold">-{{item.amount}}</p>
+                            {% endif %} 
                         </div>
                     </div>
                     {% endfor %}
