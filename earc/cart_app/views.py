@@ -80,6 +80,7 @@ class cart_management:
                 }
                 return JsonResponse(context, safe=True)
             except Exception as e:
+                print(e)
                 context = {
                     'status':False
                 }
