@@ -1,5 +1,8 @@
 from django.db import models
 from admin_app.models import UserDetails
+from django.utils import timezone
+
+
 
 # Create your models here.
 
@@ -9,6 +12,8 @@ class category(models.Model):
     category_active = models.BooleanField(default=True)
     category_disc = models.CharField(max_length=200, null=True)
     category_image = models.ImageField(upload_to='category/', default='category/default.jpg')
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
 
 class brands(models.Model):
     brand_id = models.BigAutoField(primary_key=True, unique=True)
@@ -17,6 +22,9 @@ class brands(models.Model):
     brand_active = models.BooleanField(default=True)
     sold_out = models.IntegerField(null=True, blank=True, default=0)
     brand_category = models.ForeignKey(category, on_delete=models.CASCADE, related_name='brands')
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+    
 
 class products(models.Model):
     product_id = models.BigAutoField(primary_key=True, unique=True)
@@ -29,6 +37,8 @@ class products(models.Model):
     pro_category = models.ForeignKey(category, on_delete=models.CASCADE, related_name='product')
     pro_brand = models.ForeignKey(brands, on_delete=models.CASCADE, related_name='pro_brand_re')
     product_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
 
     def get_discount_percentage(self, size_Price):
         selling_price = self.discount_price / (self.price +  int(size_Price)) * 100
@@ -39,6 +49,9 @@ class Colors(models.Model):
     color_id = models.BigAutoField(primary_key=True, unique=True)
     color_name = models.CharField(null=True)
     product = models.ForeignKey(products, on_delete=models.CASCADE, related_name='colors')
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
     
 
 class Images(models.Model):
@@ -46,6 +59,8 @@ class Images(models.Model):
     product_image = models.ImageField(upload_to='products/')
     priority = models.IntegerField(null=True, blank=True)
     color = models.ForeignKey(Colors, on_delete=models.CASCADE, related_name='images')
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
 
     class meta:
         ordering = ['priority']
@@ -57,6 +72,8 @@ class Storage(models.Model):
     price_of_size = models.CharField(null=False)
     stock = models.IntegerField(default=0)
     color = models.ForeignKey(Colors, on_delete=models.CASCADE, related_name='storage')
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
         
     class Meta:
         ordering=['ram','rom']   
@@ -68,12 +85,10 @@ class Wishlist(models.Model):
     product = models.ForeignKey(products, on_delete=models.CASCADE, related_name='product')
     color = models.ForeignKey(Colors, null=True, on_delete=models.CASCADE, related_name='color', default=None)
     storage = models.ForeignKey(Storage,null=True, on_delete=models.CASCADE, related_name='storage', default=None)
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
 
 
-class Sales(models.Model):
-    sale_id = models.BigAutoField(primary_key=True, unique=True)
-    saled_product = models.ForeignKey(products, on_delete=models.DO_NOTHING, related_name='sales')
-    sale_date = models.DateTimeField(auto_now_add=True)
 
     
 

@@ -1,7 +1,8 @@
 from django.db import models
 from admin_app.models import UserDetails, Address
-from admin_product_app.models import *
+from admin_product_app.models import products, Colors, Storage
 from admin_coupen_app.models import Coupen
+from django.apps import apps
 
 # # Create your models here.
 
@@ -26,6 +27,7 @@ class Payment(models.Model):
 
 
 class Order(models.Model):
+    
     ORDER_STATUS = [
         (0, 'Cart'),
         (1, 'Processing'),
@@ -50,3 +52,13 @@ class Order(models.Model):
     coupon_amount = models.IntegerField(null=True, blank=True, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
+
+
+
+
+
+class Sales(models.Model):
+    sale_id = models.BigAutoField(primary_key=True, unique=True)
+    order_instance = models.ForeignKey(Order, null=True, on_delete=models.DO_NOTHING, related_name='order_sale')
+    sale_date = models.DateTimeField(auto_now_add=True)
+

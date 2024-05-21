@@ -36,4 +36,6 @@ def category_count():
 def product_count():
     all_products = products.objects.all()
     return all_products.count()
+
+    
     

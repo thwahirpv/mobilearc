@@ -42,6 +42,14 @@ def count_of_cart_items(user):
 
 @register.simple_tag(name='latest_two_items')
 def latest_two_items(user):
-    owner_obj = Owner.objects.get(customer=user)
-    cart_data = Order.objects.filter(order_customer=owner_obj, status=0).order_by('-cart_id')[:2]
+    cart_data = None
+    try:
+        owner_obj = Owner.objects.get(customer=user)
+    except:
+        owner_obj = Owner.objects.none()
+    if owner_obj:
+        try:
+            cart_data = Order.objects.filter(order_customer=owner_obj, status=0).order_by('-created_at')[:2]
+        except:
+            cart_data = Order.objects.none()
     return cart_data

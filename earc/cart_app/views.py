@@ -36,7 +36,10 @@ class cart_management:
 
     def add_cart(request):
         if not request.user.is_authenticated or request.user.is_active is False: 
-            return redirect('user_app:user_login')
+            context = {
+                'status': 'login'
+            }
+            return JsonResponse(context, safe=True)
         
         if request.method == 'POST':
             color_id = request.POST.get('color_id')
@@ -80,6 +83,8 @@ class cart_management:
                 }
                 return JsonResponse(context, safe=True)
             except Exception as e:
+                print('=============')
+                print(e)
                 context = {
                     'status':False
                 }

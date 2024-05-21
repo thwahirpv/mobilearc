@@ -39,6 +39,14 @@ Add coupen
                     <div class="row mt-3">
                         <div class="col-sm-12">
                             <div class="form-group">
+                                <input class="form-control" type="text" placeholder="Discription" value="{% if coupen_obj.discription %}{{coupen_obj.discription}}{% endif %}" name="discription"> 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <div class="form-group">
                                 <input class="form-control" type="text" placeholder="code" value="{% if coupen_obj.coupen_code %}{{coupen_obj.coupen_code}}{% endif %}" name="coupen_code"> 
                             </div>
                         </div>

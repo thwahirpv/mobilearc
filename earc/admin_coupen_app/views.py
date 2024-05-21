@@ -43,6 +43,7 @@ def add_coupen(request):
     
     if request.method == 'POST':
         coupen_name = request.POST.get('coupen_name', None)
+        discription = request.POST.get('discription', None)
         coupen_code = request.POST.get('coupen_code', None)
         coupen_percentage = request.POST.get('coupen_percentage', None)
         max_amount = request.POST.get('max_amount', None)
@@ -54,6 +55,8 @@ def add_coupen(request):
             messages.warning(request, 'Enter valid name!')
         elif Coupen.objects.filter(coupen_name__icontains=coupen_name).exists():
             messages.warning(request, 'name is already exist!')
+        elif discription is None or discription == '' or discription.isdigit():
+            messages.warning(request, 'Enter valid discription!')
         elif coupen_code is None or coupen_code == '':
             messages.warning(request, 'Enter vaild coupen!')
         elif Coupen.objects.filter(coupen_code__icontains=coupen_code).exists():
@@ -70,6 +73,7 @@ def add_coupen(request):
         try:
             Coupen.objects.create(
                 coupen_name=coupen_name, 
+                discription=discription,
                 coupen_code=coupen_code, 
                 coupen_percentage=coupen_percentage, 
                 max_amount=max_amount, 
@@ -130,6 +134,7 @@ def update_coupen(request, id):
     
     if request.method == 'POST':
         coupen_name = request.POST.get('coupen_name', coupen_obj.coupen_name)
+        discription = request.POST.get('discription', coupen_obj.discription)
         coupen_code = request.POST.get('coupen_code', coupen_obj.coupen_code)
         coupen_percentage = request.POST.get('coupen_percentage', coupen_obj.coupen_percentage)
         max_amount = request.POST.get('max_amount', coupen_obj.max_amount)
@@ -141,6 +146,8 @@ def update_coupen(request, id):
             messages.warning(request, 'Enter valid name!')
         elif Coupen.objects.filter(coupen_name__icontains=coupen_name).exists():
             messages.warning(request, 'name is already exist!')
+        elif discription is None or discription == '' or discription.isdigit():
+            messages.warning(request, 'Enter valid discription!')
         elif coupen_code is None or coupen_code == '':
             messages.warning(request, 'Enter vaild coupen!')
         elif Coupen.objects.filter(coupen_code__icontains=coupen_code).exists():
@@ -155,6 +162,7 @@ def update_coupen(request, id):
 
         try:
             coupen_obj.coupen_name = coupen_name
+            coupen_obj.discription = discription
             coupen_obj.coupen_code = coupen_code
             coupen_obj.coupen_percentage = coupen_percentage
             coupen_obj.max_amount = max_amount
