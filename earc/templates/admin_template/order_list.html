@@ -1,6 +1,6 @@
 {% extends "base_page.html" %}
 {% load static %}
-
+{% load admin_order_tags %}
 {% block title %}
 Oders
 {% endblock %}
@@ -68,12 +68,12 @@ Oders
                                         <p class="fw-bold">{{item.order_customer.customer.username}}</p>
                                         <p class="" style="font-size: 12px;">{{item.order_customer.customer.email}}</p>
                                     </td>
-                                    <td class="fw-bold">${{item.total_price}}</td>
+                                    <td class="fw-bold">${% grand_total item %}</td>
                                     <td>
                                         <form method="post">
                                             {% csrf_token %}
                                             <select onchange="changeStatus(this, '{{item.cart_id}}')" name="priority" class="badge rounded-pill 
-                                            {% if item.status <= 3 %} alert-warning {% elif item.status == 4 %} alert-success {% elif item.status == 5 %} alert-danger {% endif %}">
+                                            {% if item.status <= 3 %} alert-warning {% elif item.status == 4 %} alert-success {% elif item.status >= 5 %} alert-danger {% endif %}">
                                                 <option value="{{item.status}}" selected>{{item.get_status_display}}</option>
                                                 {% for value, label in status %}
                                                     <option value="{{value}}" >{{ label }}</option>
@@ -166,11 +166,13 @@ Oders
                         allowOutsideClick: true, 
                         timerProgressBar: true,
                         position: 'top-end',
-                        timer: 10000,
+                        timer: 1000,
                         didOpen: (toast) => {
                             toast.onmouseenter = Swal.stopTimer;
                             toast.onmouseleave = Swal.resumeTimer;
                         }
+                    }).then(()=> {
+                        window.location.reload()
                     })
                 }else{
                     Swal.fire({
@@ -178,7 +180,7 @@ Oders
                     icon: "warning",
                     showCancelButton: false,
                     position: 'top-end',
-                    timer: 2000 
+                    timer: 3000 
                 })
                 }
             })

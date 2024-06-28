@@ -60,14 +60,23 @@
                         <a href="page-orders-detail.html">Order detail</a>
                     </div>
                 </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href=""> <i class="icon material-icons md-store"></i>
-                        <span class="text">Sellers</span>
+                <li class="menu-item has-submenu {% if 'coupen' in request.path %} active {% elif 'offers' in request.path %} active {% endif %}">
+                    <a class="menu-link"> <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offers</span>
                     </a>
                     <div class="submenu">
-                        <a href="page-sellers-cards.html">Sellers cards</a>
-                        <a href="page-sellers-list.html">Sellers list</a>
-                        <a href="page-seller-detail.html">Seller profile</a>
+                        <a href="{% url 'admin_coupen_app:list_coupens' %}" class="{% if request.path == '/admin/coupen/' %} active fw-bold {% endif %}">Coupens Offers</a>
+                        <a href="{% url 'admin_offer_app:list_category' %}" class="{% if request.path == '/admin/offers/category/' or '/admin/offers/category/add/' %} active fw-bold {% endif %}">Category offers</a>
+                    </div>
+                </li>
+                <li class="menu-item has-submenu {% if 'top_sellings' in request.path %} active {% endif %}">
+                    <a class="menu-link" href=""> <i class="icon material-icons md-store"></i>
+                        <span class="text">Top sellings</span>
+                    </a>
+                    <div class="submenu">
+                        <a class="{% if 'category' in request.path %} active fw-bold {% endif %}" href="{% url 'admin_app:top_sellings' %}?item='category' ">Category</a>
+                        <a class="{% if request.path in 'brand' %} active fw-bold {% endif %}" href="{% url 'admin_app:top_sellings' %}?item='brand' ">Brand</a>
+                        <a class="{% if request.path in 'product' %} active fw-bold {% endif %}" href="{% url 'admin_app:top_sellings' %}?item='product' ">Product</a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu">

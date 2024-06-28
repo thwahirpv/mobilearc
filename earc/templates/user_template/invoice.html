@@ -1,0 +1,122 @@
+{% extends "user_base.html" %}
+{% load static %}
+{% load order_tags %}
+{% block title %}
+Invoice
+{% endblock %}
+
+{% block content %}
+<main style="width: 100%; padding: 100px 50px;" class="d-flex flex-column align-order_objs-center">
+    <div style="width: 90%; height: fit-content; display: flex; justify-content: space-around; padding-bottom: 150px;">
+        <div style="width: 50%; display: flex; flex-direction: column; align-items: center;">
+            <div>
+                <h1 class="fw-bold" style="color: #088178;">mobileArc</h1>
+            </div>
+            <div class="">
+                <p class="fw-bold" style="font-size: 13px;">Kannur, Kerala, India</p>
+            </div>
+        </div>
+        <div style="width: 50%; display: flex; flex-direction: column; align-items: center;">
+            <h4>Invoice
+                    {% if order_obj.order_payment.payment_status %}
+                    <span class="badge bg-success">Paid</span>
+                    {% elif order_obj.status == 5 %}
+                    <span class="badge bg-danger">Cancel</span>
+                    {% elif order_obj.status == 7 %}
+                    <span class="badge bg-danger">Return & Refund</span>
+                    {% else %}
+                    <span class="badge bg-warning">Pending</span>
+                    {% endif %}
+            </h4>
+            <p class="fw-bold">{{order_obj.order_payment.payment_mode}}</p>
+
+        </div>
+    </div>
+    <div
+        style="width: 90%; height: fit-content; display: flex; justify-content: space-around; padding-bottom: 50px; border-bottom: solid gray 1px;">
+        <div style="width: 50%; display: flex; flex-direction: column; align-items: center;">
+            <div>
+                <h3 class="fw-bold">Billed to:</h3>
+                <br>
+                <p class="fw-bold">{{order_obj.order_customer.customer.username}}</p>
+                <br>
+                <p class="fw-bold">{{order_obj.order_address.building_name}}, {{order_obj.order_address.address}}</p>
+                <p class="fw-bold">{{order_obj.order_address.city}}, {{order_obj.order_address.state}}, {{order_obj.order_address.pincode}}</p>
+            </div>
+        </div>
+        <div style="width: 50%; display: flex; justify-content: center;">
+            <div>
+                <h4>Invoice date: <span style="font-size: 15px; margin-left: 10px;">{{order_obj.update_at}}</span></h4>
+                <br>
+                <h4>Order no: <span style="font-size: 15px; margin-left: 10px;">{{order_obj.cart_id}}</span></h4>
+            </div>
+        </div>
+    </div>
+
+    <div style="width: 90%; height: fit-content; display: flex; justify-content: space-around; padding-bottom: 50px;">
+        <div style="width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 50px;">
+            <h3 class="fw-bold">Order summary</h3>
+            <div style="width: 70%; margin-top: 40px; display: flex; justify-content: center;">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="fw-bold">Price</td>
+                        <td>{{order_obj.product.price}}</td>
+                        <td>{{order_obj.quantity}}</td>
+                        <td>{% product_price order_obj %} <span class="text-success fw-bold">+</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Storage</td>
+                        <td>{{order_obj.storage.price_of_size}}</td>
+                        <td>{{order_obj.quantity}}</td>
+                        <td>{% storage_price order_obj %} <span class="text-success fw-bold">+</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Discount</td>
+                        <td>{{order_obj.product.discount_price}}</td>
+                        <td>{{ order_obj.quantity }}</td>
+                        <td>{% discount_price order_obj %} <span class="text-danger fw-bold">-</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Coupon</td>
+                        <td>{{order_obj.coupon_amount}}</td>
+                        <td>1</td>
+                        <td>{{order_obj.coupon_amount}} <span class="text-danger fw-bold">-</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Shiping</td>
+                        <td>{{order_obj.delivery_charge}}</td>
+                        <td>1</td>
+                        <td>{{order_obj.delivery_charge}} <span class="text-success fw-bold">+</span></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="fw-bold">Grand total</td>
+                        <td>{% grand_total order_obj %}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <a href="javascript:window.print()" class="btn btn-success me-1"><i class="fa fa-print"></i></a>
+    </div>
+
+
+
+
+
+
+</main>
+{% endblock %}

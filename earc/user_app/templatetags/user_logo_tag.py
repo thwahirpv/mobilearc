@@ -10,3 +10,9 @@ def get_logo_url():
     if logo_obj:
         return logo_obj.logo.url
     return "" 
+
+
+@register.simple_tag(name='product_price')
+def product_price(item):
+    price = item.price - item.discount_price
+    return price

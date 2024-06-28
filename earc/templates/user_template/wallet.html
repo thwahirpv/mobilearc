@@ -1,0 +1,39 @@
+{% extends "user_base.html" %}
+{% load static %}
+{% block title %}
+Home
+{% endblock %}
+{% block content %}
+<main class="main">
+    {% include 'user_nav.html' %}
+    <div style="width: 100%; height: fit-content; display: flex; justify-content: center; padding: 30px 0px;">
+        <div style="width: 80%; display: flex; flex-direction: column; align-items: center;">
+            <div style="padding: 20px;">
+                <h2 class="fw-bold text-success"><span class="me-2"><i class="fa-solid fa-indian-rupee-sign"></i></span>{{wallet_obj.balance}}</h2>
+            </div>
+            <div style="padding: 50px;">
+                <a class="btn btn-lg btn-primary">Sent to bank</a>
+            </div>
+            <div style="width: 100%; display: flex; justify-content: center;">
+                <div style="width: 50%;">
+                    {% for item in wallet_history_obj %}
+                    <div class="row" style="padding: 10px 15px; border-top: solid black 1px; border-bottom: solid black 1px;">
+                        <div class="col-10 gap-1" style="padding: 7px; display: flex; flex-direction: column;">
+                            <h5 class="fw-bold">{{item.order_item.product.product_name}}</h5>
+                            <p style="font-size: 13px; color: rgb(91, 91, 91);" class="fw-bold">{{item.created_at|date:"d/m/y g:i A"}}</p>
+                        </div>
+                        <div class="col-2 d-flex align-items-center" >
+                            {% if item.status == 'Credit' %}
+                            <p class=" text-success fw-bold">+{{item.amount}}</p>
+                            {% else %}
+                            <p class=" text-danger fw-bold">-{{item.amount}}</p>
+                            {% endif %} 
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

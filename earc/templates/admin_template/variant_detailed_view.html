@@ -62,7 +62,7 @@ ADD PRODUCT
                         {% for item in color_obj.storage.all %}
                         <div class="storage-item" style="cursor: pointer;" data-storage-id="{{ item.id }}">
                             <div class="storage-details" style="display: flex; justify-content: center; align-items: center; background: #f8f9fa; padding: 7px 8px; border-radius: 8px;">
-                                <p style="font-size: 14px; font-weight: bold; color: black;">{{ item.ram }} / {{ item.rom }}</p>
+                                <p style="font-size: 14px; font-weight: bold; color: black;">{{ item.ram }}GB / {{ item.rom }}GB</p>
                                 <div style="background: white; border-radius: 100%; padding: 2px 7px; margin-left: 8px;">
                                     <p style="color: black; font-size: 13px; font-weight: bolder; text-align: center;">
                                         {{ item.stock }}

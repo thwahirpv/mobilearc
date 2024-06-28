@@ -81,19 +81,6 @@
                     <div class="search-style-2">
                         <form action="{% url 'user_product_app:list_products' %}" method="get">
                             {% csrf_token %}
-                            <select class="select-active">
-                                <option>All Categories</option>
-                                <option>Women's</option>
-                                <option>Men's</option>
-                                <option>Cellphones</option>
-                                <option>Computer</option>
-                                <option>Electronics</option>
-                                <option> Accessories</option>
-                                <option>Home & Garden</option>
-                                <option>Luggage</option>
-                                <option>Shoes</option>
-                                <option>Mother & Kids</option>
-                            </select>
                             <input type="text" name="search_text" placeholder="Search for items...">
                             <button type="submit" class="btn btn-sm btn-primary me-4 text-white" style="background: #088178;">search</button>
                         </form>
@@ -110,16 +97,35 @@
                                 <a class="mini-cart-icon" href="{% url 'cart_app:view_cart' %}">
                                     <img alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-cart.svg' %}">
                                 </a>
+                                {% if request.user.is_authenticated %}
+                                {% latest_two_items request.user as latest_items %}
+                                {% if latest_items %}
+                                
                                 <div class="cart-dropdown-wrap cart-dropdown-hm2">
+                                    {% for item in latest_items %}
                                     <ul>
-                                        
+                                        <div class="mt-2" style="display: flex; justify-content: space-evenly; align-items: center;">
+                                            <div style="width: 33%; display: flex; justify-content: center; align-items: center;">
+                                                <img style="width: 40px;" src="{{ item.product.thumbnail.url }}" alt="">
+                                            </div>
+                                            <div style="width: 33%; display: flex; justify-content: center; align-items: center;">
+                                                <p class="fw-bold" style="font-size: 13px;">{{ item.product.product_name }}</p>
+                                            </div>
+                                            <div style="width: 33%; display: flex; justify-content: center; align-items: center;">
+                                                <p class="fw-bold">x{{item.quantity}}</p>
+                                            </div>
+                                        </div>
                                     </ul>
+                                    {% endfor %}
                                     <div class="shopping-cart-footer">
                                         <div class="shopping-cart-total">
                                             <h4>Total <span>${% sub_total latest_items %}</span></h4>
                                         </div>
                                     </div>
                                 </div>
+                               
+                                {% endif %}
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -322,7 +328,7 @@
                                     <a class="active" href="{% url 'user_app:user_home' %}">Home <i class="fi-rs-angle-down"></i></a>
                                 </li>
                                 <li>
-                                    <a href="page-about.html">About</a>
+                                    <a href="#">About</a>
                                 </li>
                                 <li><a href="{% url 'user_product_app:list_products' %}">Shop</a>
                                 </li>

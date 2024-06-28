@@ -24,6 +24,7 @@ from django.db.models import Max, Prefetch
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from admin_app.models import Wallet, wallet_history
                                                                                        
 @never_cache
 def fournoterror(request):
@@ -217,14 +218,17 @@ def user_home(request):
         ), to_attr='color')
     )
     category_data = category.objects.filter(category_active=True)
-    brands_data = brands.objects.filter(brand_active=True)
+    brands_data = brands.objects.filter(brand_active=True).order_by('-sold_out')
+    best_selling_prodects = products.objects.filter(product_active=True).order_by('-sold_out')
+    
 
     context = {
         'first_banner':first_banner,
         'secondary_banner':secondary_banner,
         'latest_products':latest_products,
         'brands_data':brands_data,
-        'category_data':category_data
+        'category_data':category_data,
+        'best_selling_prodects':best_selling_prodects
         }
     if request.user.is_authenticated and request.user.is_active is True:
         user = request.user
@@ -549,6 +553,8 @@ def update_address(request, id):
 
 
 def delete_address(request, id):
+    if not request.user.is_authenticated or request.user.is_active is False:
+        return redirect('user_app:user_login')
     try:
         address_obj = Address.objects.get(address_id=id)
         if address_obj:
@@ -570,3 +576,26 @@ def delete_address(request, id):
             'text':'Address not found!'
         }
         return JsonResponse(context, safe=True)
+    
+
+
+def wallet_view(request):
+    if not request.user.is_authenticated or request.user.is_active is False:
+        return redirect('user_app:user_login')
+    
+    try:
+        wallet_obj = Wallet.objects.get(user=request.user.user_id)
+    except:
+        wallet_obj = Wallet.objects.none()
+
+    try:
+        wallet_history_obj = wallet_history.objects.filter(wallet_owner=wallet_obj).order_by('-history_id')
+    except:
+        wallet_history_obj = wallet_history.objects.none()
+
+    context = {
+        'wallet_obj':wallet_obj,
+        'wallet_history_obj':wallet_history_obj
+    }
+
+    return render(request, 'user_template/wallet.html', context)

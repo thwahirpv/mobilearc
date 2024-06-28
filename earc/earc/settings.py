@@ -48,9 +48,12 @@ INSTALLED_APPS = [
     'mathfilters',
     'humanize',
     'banner_app',
-    'cart_app',
     'checkout_app',
-    'admin_order_app'
+    'admin_order_app',
+    'cart_app',
+    'admin_coupen_app',
+    'razorpay',
+    'offer_app'
 ]
 
 MIDDLEWARE = [
@@ -155,6 +158,8 @@ AUTH_USER_MODEL = 'admin_app.UserDetails'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+RAZORPAY_KEY_ID = 'rzp_test_3drg4zXz2qH7Kr'
+RAZORPAY_SECRET_KEY = 'NwlUSrPRAu95qjQfUYd3CDmH'
 
 
 ACCOUNT_SID = 'AC61e70061b3137b30b9d0f841ffb09736'

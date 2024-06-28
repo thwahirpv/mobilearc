@@ -16,6 +16,8 @@ from django.db.models import Q
 import uuid
 import json
 from checkout_app.models import review
+from django.db.models import Prefetch
+from cart_app.models import Owner, Order
 
 
 def product_list(request):
@@ -114,7 +116,7 @@ def collect_image(request, colorId=None, id=None):
          'rom':storage.rom, 
          'stock':storage.stock, 
          'size_price':storage.price_of_size, 
-         'price':product_obj.price+int(storage.price_of_size),
+         'price':(product_obj.price+int(storage.price_of_size)) - product_obj.discount_price,
          'percentage':product_obj.get_discount_percentage(size_Price=storage.price_of_size)
          } for storage in storages]
     cart_details = {
@@ -129,12 +131,9 @@ def quantity_check(request):
         data = json.loads(request.body)
         storage_id = data.get('storage_id')
         quantity = int(data.get('quantity'))
-        print('------------------------')
-        print(storage_id, quantity)
 
         try:
             storage_obj = Storage.objects.get(size_id=storage_id)
-            print(storage_obj.stock)
         except Exception as e:
             pass
 
@@ -199,11 +198,16 @@ class wishlist_management:
     def add_wishlist_item(request, id):
         context = {}
         product_obj = get_object_or_404(products, product_id=id)
+        color_obj = Colors.objects.filter(product=product_obj)[:1]
+        storage_obj = Storage.objects.filter(color=color_obj)[:1]
+        
         try:
             if request.user.is_authenticated:
                 wishlist_item, created = Wishlist.objects.get_or_create(
                     user=request.user,
-                    product=product_obj
+                    product=product_obj,
+                    color=color_obj[0],
+                    storage=storage_obj[0]
                 )
                 context = {
                     'status': True
@@ -275,6 +279,44 @@ class wishlist_management:
                         'text': f'{product_obj.product_name} is removed'
                     }
                 return JsonResponse(context, safe=True)
+    
+    def move_to_cart(request):
+        if not request.user.is_authenticated or request.user.is_active is False:
+            return redirect('user_app:user_login')
+        wishlist_id = request.POST.get('wishlist_id')
+        try:
+            wishlist_obj = Wishlist.objects.get(wishlist_id=wishlist_id)
+        except:
+            context = {
+                'status':False
+            }
+            JsonResponse(context, safe=True)
+            
+        try:
+            owner_obj, owner_created = Owner.objects.get_or_create(
+                customer=request.user
+            )
+
+            order_Obj, cart_created = Order.objects.get_or_create(
+                order_customer = owner_obj,
+                product = wishlist_obj.product,
+                color = wishlist_obj.color, 
+                storage = wishlist_obj.storage,
+                status = 0
+            )
+            wishlist_obj.delete()
+            context = {
+                'status': True
+            }
+            return JsonResponse(context, safe=True)
+        except:
+            context = {
+                'status':False
+            }
+            return JsonResponse(context, safe=True)
+
+
+
             
 # ===========Wishlist End=========================
 

@@ -1,0 +1,122 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+Details
+{% endblock %}
+
+{% block styling %}
+
+{% endblock %}
+
+{% block content %}
+
+{% include 'admin_sidenav.html' %}
+    
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+    
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Coupen detail</h2>
+                    <p>Details for Coupen ID: {{coupen_obj.coupen_id}}</p>
+                </div>
+            </div>
+            <div class="card">
+                <header class="card-header">
+                    <div class="row align-order_objs-center">
+                        <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                            <span>
+                                <i class="material-icons md-calendar_today"></i> <b></b>
+                            </span> <br>
+                            <small class="text-muted">Coupne ID: {{coupen_obj.created_at}}</small>
+                        </div>
+                        <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                            
+                        </div>
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="row mb-50 mt-20 order-info-wrap">
+                        <div class="col-md-4">
+                            <article class="icontext align-order_objs-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="fa-solid fa-ticket"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Coupen</h6>
+                                    <p class="mb-1" style="font-size: 15px; font-weight: bolder;">
+                                        {{coupen_obj.coupen_name}}
+                                    </p>
+                                    <p class="mb-1 fw-bold">
+                                       Code: {{coupen_obj.coupen_code}}
+                                    </p>
+                                    <p class="mb-1 fw-bold">
+                                        Stock: {{coupen_obj.coupen_stock}}
+                                     </p>
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                        
+                        <div class="col-md-4">
+                            <article class="icontext align-order_objs-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-place"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Price</h6>
+                                    <p class="mb-1 fw-bold">
+                                        Discount: {{coupen_obj.coupen_percentage}}%
+                                    </p>
+                                    <p class="mb-1 fw-bold">
+                                        Purchase above: ${{coupen_obj.max_amount}}
+                                    </p>
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                        <div class="col-md-4">
+                            <article class="icontext align-order_objs-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Expiry</h6>
+                                    <p class="mb-1 fw-bold">
+                                        Created: {{coupen_obj.created_at}} <br> Expire: {{coupen_obj.expiration_date}} 
+                                    </p>
+                                    <p class="mb-1">
+                                        Status: <span class="badge rounded-pill text-sm fw-bold {% if coupen_obj.is_active %} alert-success text-success {% else %} alert-danger text-danger {% endif %}"> {% if coupen_obj.is_active %} Active {% else %} Blocked {% endif %}</span>
+                                    </p>
+                                    <br>
+                                    <p class="mb-1">
+                                        Expiry status: <span class="badge rounded-pill text-sm fw-bold {% if coupen_obj.is_expire %} alert-danger text-danger {% else %} alert-success text-success {% endif %}">{% if coupen_obj.is_expire %} Expired {% else %} Active {% endif %}</span>
+                                    </p>
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                    </div> <!-- row // -->
+                    <div class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-4">
+                        
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script data-cfasync="false" src="../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+   </main>
+   {% endblock %}

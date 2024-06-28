@@ -14,6 +14,7 @@ urlpatterns = [
 
     # ==============Dashboard=====================
     path('dashboard/', admin_dashboard, name='admin_dashboard'),
+    path('get_chart_data/', get_chart_data, name='get_chart_data'),
     # =============Dashboard=======================
 
     # ==============Crud oprations=======================
@@ -25,11 +26,14 @@ urlpatterns = [
     path('user/<int:id>/update', user_crud_view.update_user, name='update_user'),
     path('user/<int:id>/block', user_crud_view.block_user, name='block_user'),
     path('user/<int:id>/unblock', user_crud_view.unblock_user, name='unblock_user'),
+    path('sales_report/', sales_report, name='sales_report'),
     # ==============Crud oprations=======================
 
     #===============Settings===========================
     path('settings/', site_settings, name='site_settings'),
-    path('logo/', logo, name='logo')
+    path('logo/', logo, name='logo'),
+
+    path('top_sellings/', top_sellings, name='top_sellings')
     
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

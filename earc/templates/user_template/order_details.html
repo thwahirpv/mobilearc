@@ -288,12 +288,12 @@ Home
     <div style="width: 100%; height: fit-content; padding: 80px;">
         <div class="row" style="padding: 15px; border-bottom: solid 1px gray;">
             <div class="col-6" style="padding-bottom: 40px;">
-                <div style="display: flex; justify-content: center; align-order_objs: center;">
+                <div style="display: flex; justify-content: center; align-items: center;">
                     <img style="width: 300px;" class="img-fluid" src="{{ order_obj.product.thumbnail.url }}">
                 </div>
             </div>
             <div class="col-6" style="margin-top: 30px; padding-bottom: 40px;">
-                <div style="width: 100%; display: flex; flex-direction: column; align-order_objs: center; padding: 0px 50px;">
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 0px 50px;">
                     <div>
                         <h3>{{order_obj.product.product_name}}</h3>
                     </div>
@@ -306,39 +306,65 @@ Home
                             <p class="" style="font-weight: bolder; font-size: 16px;">Storage:</p>
                             <p style="font-weight: 600; font-size: 16px;">{{order_obj.storage.rom}}/{{order_obj.storage.ram}}</p>
                         </div>
+                        <div>
+                            <a style="float: right; margin-top: 40px; font-size: 16px; font-weight: bold;" href="{% url 'checkout_app:invoice_details' id=order_obj.cart_id %}">Invoice</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div style="width: 100%; display: flex; justify-content: center; align-order_objs: center; padding: 80px; border-bottom: solid 1px gray;">
-            <div class="gap-3" style="width: 55%; display: flex; flex-direction: column; justify-content: center; align-order_objs: center;">
-                <div style="width: 50%; display: flex; justify-content: space-between;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Price:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">{{order_obj.product.price}} <span class="text-success">+</span></p>
-                </div>
-                <div style="width: 50%; display: flex; justify-content: space-between;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Storage price:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">{{order_obj.storage.price_of_size}} <span class="text-success">+</span></p>
-                </div>
-                <div style="width: 50%; display: flex; justify-content: space-between;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Discount price:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">{{order_obj.product.discount_price}} <span class="text-danger">-</span></p>
-                </div>
-                <div style="width: 50%; display: flex; justify-content: space-between;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Coupen:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">0 <span class="text-danger">-</span></p>
-                </div>
-                <div style="width: 50%; display: flex; justify-content: space-between;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Shipping:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">0 <span class="text-success">+</span></p>
-                </div>
-                <div
-                    style="width: 50%; display: flex; justify-content: space-between; border-top: solid 1px gray; padding-top: 12px;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Total:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">{% total_purchase_price order_obj %}</p>
-                </div>
+        <div style="width: 100%; display: flex; justify-content: center; align-items: center; padding: 80px; border-bottom: solid 1px gray;">
+            <div class="gap-3" style="width: 55%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="fw-bold">Price</td>
+                        <td>{{order_obj.product.price}}</td>
+                        <td>{{order_obj.quantity}}</td>
+                        <td>{% product_price order_obj %} <span class="text-success fw-bold">+</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Storage</td>
+                        <td>{{order_obj.storage.price_of_size}}</td>
+                        <td>{{order_obj.quantity}}</td>
+                        <td>{% storage_price order_obj %} <span class="text-success fw-bold">+</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Discount</td>
+                        <td>{{order_obj.product.discount_price}}</td>
+                        <td>{{ order_obj.quantity }}</td>
+                        <td>{% discount_price order_obj %} <span class="text-danger fw-bold">-</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Coupon</td>
+                        <td>{{order_obj.coupon_amount}}</td>
+                        <td>1</td>
+                        <td>{{order_obj.coupon_amount}} <span class="text-danger fw-bold">-</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Shiping</td>
+                        <td>{{order_obj.delivery_charge}}</td>
+                        <td>1</td>
+                        <td>{{order_obj.delivery_charge}} <span class="text-success fw-bold">+</span></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="fw-bold">Grand total</td>
+                        <td>{% grand_total order_obj %}</td>
+                      </tr>
+                    </tbody>
+                  </table>
             </div>
-        </div>
+        </div>  
         <div style="width: 100%; border-bottom: solid 1px gray;">
             <div class="container px-1 px-md-4 py-5 mx-auto">
                 <div class="w-100">
@@ -347,7 +373,15 @@ Home
                             <ul id="progressbar" class="text-center row">
                                 <li class="{% if 1 <= order_obj.status %} active {% endif %} step0 col">Placed</li>
                                 {% if order_obj.status == 5 %}
-                                    <li class="{% if 5 <= order_obj.status %} active text-danger {% endif %} step0 col">Cancelled</li>
+                                    <li class="{% if 5 == order_obj.status %} active text-danger {% endif %} step0 col">Cancelled</li>
+                                {% elif order_obj.status == 6 %}
+                                    <li class="{% if 6 == order_obj.status %} active {% endif %} step0 col">Replace</li>
+                                    <li class="step0 col">Out of Delivery</li>
+                                    <li class="step0 col">Deliveried</li>
+                                {% elif order_obj.status == 7 %}
+                                    <li class="{% if 4 <= order_obj.status %} active {% endif %} step0 col">Deliveried</li>
+                                    <li class="{% if 7 == order_obj.status %} active {% endif %} step0 col">Return</li>
+                                    <li class="{% if 7 == order_obj.status %} active {% endif %} step0 col">Refund</li>
                                 {% else %}
                                 <li class="{% if 2 <= order_obj.status %} active {% endif %} step0 col">Shipped</li>
                                 <li class="{% if 3 <= order_obj.status %} active {% endif %} step0 col">Out of Delivery</li>
@@ -362,8 +396,15 @@ Home
                         {% else %}
                         <a onclick="cancelOrder('{{order_obj.cart_id}}')" class="btn btn-sm" style="background: rgb(174, 24, 24);">Order cancel</a>
                         {% endif %} -->
-                        {% if not order_obj.status >= 4 %}
+                        {% if order_obj.status < 4  or order_obj.status == 6 %}
                         <a onclick="cancelOrder('{{order_obj.cart_id}}')" class="btn btn-sm" style="background: rgb(174, 24, 24);">Order cancel</a>
+                        {% endif %}
+
+                        {% if order_obj.status == 4 %}
+                        <div class="d-flex gap-3">
+                            <a class="btn btn-sm btn-primary" href="{% url 'checkout_app:order_replacement' id=order_obj.cart_id %}">Replace</a>
+                            <a class="btn btn-sm btn-primary" onclick="return_and_refund('{{order_obj.cart_id}}')" >Return & Refund</a>
+                        </div>
                         {% endif %}
                     </div>  
                 </div>
@@ -479,6 +520,41 @@ Home
                 Swal.fire({
                     title: data.title,
                     icon: "warning"
+                })
+            }
+        })
+    }
+
+    const return_and_refund = (id) => {
+        Swal.fire({
+            title: 'Are you sure to Return this order?',
+            text: '{{order_obj.product.product_name}}',
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "",
+            confirmButtonColor: '#d33',
+            cancelButtonText: 'No',
+            confirmButtonText: 'Order cancel'
+        }).then((result)=>{
+            if(result.isConfirmed){
+                fetch(`http://127.0.0.1:8000/checkout/return/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if(data.status == true){
+                        Swal.fire({
+                            title: data.text,
+                            text: data.name,
+                            icon: "success"
+                        }).then(()=>{
+                            window.location.reload()
+                        })
+                    }else{
+                        Swal.fire({
+                            title: data.title,
+                            icon: "warning"
+                        })
+                    }
                 })
             }
         })
