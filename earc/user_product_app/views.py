@@ -116,7 +116,7 @@ def collect_image(request, colorId=None, id=None):
          'rom':storage.rom, 
          'stock':storage.stock, 
          'size_price':storage.price_of_size, 
-         'price':product_obj.price+int(storage.price_of_size),
+         'price':(product_obj.price+int(storage.price_of_size)) - product_obj.discount_price,
          'percentage':product_obj.get_discount_percentage(size_Price=storage.price_of_size)
          } for storage in storages]
     cart_details = {

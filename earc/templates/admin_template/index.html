@@ -105,10 +105,10 @@ Home
                 <div class="card mb-4">
                     <article class="card-body">
                         <div>
-                            <button class="btn btn-sm text-primary" onclick="loadData('daily')">Daily</button>
-                            <button class="btn btn-sm text-primary" onclick="loadData('weekly')">Weekly</button>
-                            <button class="btn btn-sm text-primary" onclick="loadData('monthly')">Monthly</button>
-                            <button class="btn btn-sm text-primary" onclick="loadData('yearly')">Yearly</button>
+                            <button class="btn btn-sm text-primary" id="daily" onclick="loadData('daily')">Daily</button>
+                            <button class="btn btn-sm text-primary" id="weekly" onclick="loadData('weekly')">Weekly</button>
+                            <button class="btn btn-sm text-primary" id="monthly" onclick="loadData('monthly')">Monthly</button>
+                            <button class="btn btn-sm text-primary" id="yearly" onclick="loadData('yearly')">Yearly</button>
                         </div>
                         <!-- <h5 class="card-title">Sale statistics based on month</h5> -->
                         <canvas id="myChart" height="120px"></canvas>
@@ -463,6 +463,11 @@ Home
 <Script>
 
     var reportChart = null
+    const periodButton = document.querySelectorAll('.btn')
+    const dailyBtn = document.getElementById('daily')
+    const weeklyBTn = document.getElementById('weekly')
+    const monthlyBtn = document.getElementById('monthly')
+    const yearlyBtn = document.getElementById('yearly')
 
     async function loadData(period){
         const response = await fetch(`http://127.0.0.1:8000/admin/get_chart_data/?period=${period}`)
@@ -470,30 +475,49 @@ Home
 
         let labels = []
         let data = []
+        let profit = []
 
         if(period === 'daily'){
-            labels = Object.keys(salesData)
-            data = Object.values(salesData)   
-
+            periodButton.forEach(function(element) {
+                element.classList.remove('text-success');
+                element.classList.add('text-primary') 
+            });
+            dailyBtn.classList.remove('text-primary');
+            dailyBtn.classList.add('text-success')
         }else if(period === 'weekly'){
-            labels = Object.keys(salesData)
-            data = Object.values(salesData)
-            
-        }else if(period == 'monthly'){
-            labels = Object.keys(salesData)
-            data = Object.values(salesData)
-            
+            periodButton.forEach(function(element) {
+                element.classList.remove('text-success');
+                element.classList.add('text-primary') 
+            });
+            weeklyBTn.classList.remove('text-primary');
+            weeklyBTn.classList.add('text-success')
+        }else if(period === 'monthly'){
+            periodButton.forEach(function(element) {
+                element.classList.remove('text-success');
+                element.classList.add('text-primary') 
+            });
+            monthlyBtn.classList.remove('text-primary');
+            monthlyBtn.classList.add('text-success')
         }else if(period === 'yearly'){
-            labels = Object.keys(salesData)
-            data = Object.values(salesData)
-            
+            periodButton.forEach(function(element) {
+                element.classList.remove('text-success');
+                element.classList.add('text-primary')   
+            });
+            yearlyBtn.classList.remove('text-primary');
+            yearlyBtn.classList.add('text-success')
         }
 
-        loadChart(labels, data, period)
+        salesData.sales_data.forEach(item => {
+            labels.push(item.label)
+            data.push(item.data.sales_count)
+            profit.push(item.data.total_profit)
+        })
+
+        loadChart(labels, data, profit, period)
     }
 
 
-    function loadChart(labels, data, period){
+    function loadChart(labels, data, profit, period){
         var ctx = document.getElementById('myChart').getContext('2d');
                 if(reportChart !== null){
                     reportChart.destroy()
@@ -502,14 +526,24 @@ Home
                     type: 'line',
                     data: {
                         labels: labels,
-                        datasets: [{
-                            label: `${period}`,
+                        datasets: [
+                        {
+                            label: 'Sales',
                             tension: 0.3,
                             fill: true,
-                            backgroundColor: 'rgba(44, 120, 220, 0.2)',
+                            // backgroundColor: 'rgba(44, 120, 220, 0.2)',
                             borderColor: 'rgba(44, 120, 220)',
                             data: data
-                        }]
+                        },
+                        {
+                            label: 'Profit',
+                            tension: 0.3,
+                            fill: true,
+                            // backgroundColor: 'rgba(0, 255, 0, 1)',
+                            borderColor: 'rgba(229, 156, 59, 0.8)',
+                            data: profit
+                        }
+                    ]
                     },
                     options: {
                         scales: {
@@ -528,144 +562,6 @@ Home
                 });
 
         }
-
-
         loadData('daily')
-
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     fetch('http://127.0.0.1:8000/admin/get_chart_data/')
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             const labels = [];
-    //             const counts = [];
-    //             const productCounts = []
-    //             const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    //             const monthlySalesData = data.monthly_sales_data
-    //             const productMonthlySales = data.product_monthly_sales
-    //             const yearLabel = data.yearly_product_sales_data.map(item => item.year)
-    //             const yearCount = data.yearly_product_sales_data.map(item => item.total_sales)
-    //             const yearSalesCount = data.yearly_sales_data.map(item =>item.total_sales)
-
-    //             allMonths.forEach(month => {
-    //                 const monthData = monthlySalesData.find(item => item.month === month)
-    //                 const productMonthData = productMonthlySales.find(item => item.month === month)
-    //                 if (monthData) {
-    //                     labels.push(month)
-    //                     counts.push(monthData.total_sales)
-    //                 } else {
-    //                     labels.push(month)
-    //                     counts.push(0)
-    //                 }
-
-    //                 if (productMonthData){
-    //                     productCounts.push(productMonthData.total_sales)
-    //                 }else{
-    //                     productCounts.push(0)
-    //                 }
-    //             })
-
-    //             var ctx = document.getElementById('myChart').getContext('2d');
-    //             var chart = new Chart(ctx, {
-
-    //                 type: 'line',
-
-    //                 data: {
-    //                     labels: labels,
-    //                     datasets: [{
-    //                         label: 'Sales',
-    //                         tension: 0.3,
-    //                         fill: true,
-    //                         backgroundColor: 'rgba(44, 120, 220, 0.2)',
-    //                         borderColor: 'rgba(44, 120, 220)',
-    //                         data: counts
-    //                     },
-    //                         // {
-    //                         //     label: 'Visitors',
-    //                         //     tension: 0.3,
-    //                         //     fill: true,
-    //                         //     backgroundColor: 'rgba(4, 209, 130, 0.2)',
-    //                         //     borderColor: 'rgb(4, 209, 130)',
-    //                         //     data: [40, 20, 17, 9, 23, 35, 39, 30, 34, 25, 27, 17]
-    //                         // },
-    //                         {
-    //                             label: 'Products',
-    //                             tension: 0.3,
-    //                             fill: true,
-    //                             backgroundColor: 'rgba(380, 200, 230, 0.2)',
-    //                             borderColor: 'rgb(380, 200, 230)',
-    //                             data: productCounts
-    //                         }
-
-    //                     ]
-    //                 },
-    //                 options: {
-    //                     plugins: {
-    //                         legend: {
-    //                             labels: {
-    //                                 usePointStyle: true,
-    //                             },
-    //                         }
-    //                     }
-    //                 }
-    //             });
-
-
-    //             var ctx = document.getElementById("myChart2");
-    //             var myChart = new Chart(ctx, {
-    //                 type: 'line',
-    //                 data: {
-    //                     labels: yearLabel,
-    //                     datasets: [
-    //                         {
-    //                             label: "Sales",
-    //                             backgroundColor: 'rgba(380, 200, 230, 0.2)',
-    //                             tension: 0.3,
-    //                             fill: true,
-    //                             barThickness: 10,
-    //                             borderColor: 'rgb(380, 200, 230)',
-    //                             data: yearSalesCount
-    //                         },
-    //                         {
-    //                             label: "Products",
-    //                             backgroundColor: "#5897fb",
-    //                             tension: 0.3,
-    //                             fill: true,
-    //                             barThickness: 10,
-    //                             borderColor: 'rgba(44, 120, 220)',
-    //                             data: yearCount
-    //                         },
-                            
-    //                             // {
-    //                             //     label: "Europe",
-    //                             //     backgroundColor: "#7bcf86",
-    //                             //     barThickness: 10,
-    //                             //     data: [408, 547, 675, 734]
-    //                             // },
-    //                             // {
-    //                             //     label: "Asian",
-    //                             //     backgroundColor: "#ff9076",
-    //                             //     barThickness: 10,
-    //                             //     data: [208, 447, 575, 634]
-    //                             // },
-    //                             // {
-    //                             //     label: "Africa",
-    //                             //     backgroundColor: "#d595e5",
-    //                             //     barThickness: 10,
-    //                             //     data: [123, 345, 122, 302]
-    //                             // },
-    //                     ]
-    //                 },
-    //                 options: {
-    //                     plugins: {
-    //                         legend: {
-    //                             labels: {
-    //                                 usePointStyle: true,
-    //                             },
-    //                         }
-    //                     },
-    //                 }
-    //             });
-    //         })
-    // })
 </Script>
 {% endblock content %}

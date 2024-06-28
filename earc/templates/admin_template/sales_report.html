@@ -1,5 +1,6 @@
 {% extends "base_page.html" %}
 {% load static %}
+{% load home_tags %}
 
 {% block title %}
 Homeettwe
@@ -51,10 +52,16 @@ Homeettwe
                             {% endfor %}
                         </tbody>
                     </table>
-                </div> <!-- table-responsive //end -->
-            </div> <!-- card-body end// -->
-            <button type="button" onclick="download_pdf()" class="btn btn-sm btn-primary" style="width: 200px; align-self: center; margin-top: 20px;">Download pdf</button>
-        </div> <!-- card end// -->
+                    <div style="float: right; margin-top: 10px;">
+                        <h5 class="fw-bold">Grand total: <span>${% grand_total sales_data %}</span></h5>
+                    </div>
+                </div> 
+            </div> 
+            <div  style="width: 200px; align-self: center; margin-top: 20px; margin-bottom: 30px;">
+                <button type="button" onclick="download_pdf()" class="btn btn-sm btn-primary">Download pdf</button>
+            </div>
+            
+        </div> 
         </div>
     </main>
 

@@ -49,6 +49,7 @@ class Order(models.Model):
     order_address = models.ForeignKey(Address, on_delete=models.DO_NOTHING, null=True, related_name='ordered_address', default=None)
     order_payment = models.OneToOneField(Payment, on_delete=models.DO_NOTHING, null=True, related_name='order_payment', default=None)
     total_price = models.IntegerField(null=True, default=0)
+    delivery_charge = models.IntegerField(null=True, default=20)
     coupon_amount = models.IntegerField(null=True, blank=True, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)

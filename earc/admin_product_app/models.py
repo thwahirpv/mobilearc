@@ -12,6 +12,7 @@ class category(models.Model):
     category_active = models.BooleanField(default=True)
     category_disc = models.CharField(max_length=200, null=True)
     category_image = models.ImageField(upload_to='category/', default='category/default.jpg')
+    sold_out = models.IntegerField(null=True, blank=True, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 

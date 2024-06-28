@@ -464,6 +464,14 @@ class product_management:
                 messages.error(request, 'Enter valid Discription!')
                 return redirect('admin_product_app:add_product')
             
+            elif  product_price < 1:
+                messages.error(request, 'Enter valid Price!')
+                return redirect('admin_product_app:add_product')
+
+            elif product_diacount_price == product_price or product_diacount_price < 1:
+                messages.error(request, 'Enter valid discount price')
+                return redirect('admin_product_app:add_product')
+            
             # product category validation
             elif product_category == 'Category':
                 messages.error(request, 'select category!!')
@@ -475,7 +483,7 @@ class product_management:
                 return redirect('admin_product_app:add_product')
             
             # check product is exits or not 
-            elif products.objects.filter(product_name=product_name).exists():
+            elif products.objects.filter(product_name__icontains=product_name).exists():
                 messages.error(request, f'{product_name} is alreay exists')
                 return redirect('admin_product_app:add_product')
 
@@ -499,11 +507,19 @@ class product_management:
         product_obj = get_object_or_404(products, product_id=id)
         brands_data = brands.objects.all()
         if request.method == 'POST':
-            name = request.POST.get('name')
-            discription = request.POST.get('discription')
-            product_image = request.FILES.get('image')
-            pro_category = request.POST.get('category')
-            pro_brand = request.POST.get('brand')
+            name = request.POST.get('name', product_obj.product_name)
+            discription = request.POST.get('discription', product_obj.product_disc)
+            product_image = request.FILES.get('image', product_obj.thumbnail)
+            pro_category = request.POST.get('category', product_obj.product_active)
+            pro_brand = request.POST.get('brand', product_obj.pro_brand)
+            try:
+                product_price = int(request.POST.get('price', product_obj.price))
+                product_diacount_price = int(request.POST.get('discount_price', product_obj.discount_price))
+            except:
+                messages.error(request, 'Enter correct price!')
+                return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
+            
+
 
             # image validation
             if product_image:
@@ -530,6 +546,14 @@ class product_management:
                 messages.error(request, 'Enter valid Discription!')
                 return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
             
+            elif  product_price < 1:
+                messages.error(request, 'Enter valid Discription!')
+                return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
+
+            elif product_diacount_price == product_price or product_diacount_price < 1:
+                messages.error(request, 'Enter valid Discription!')
+                return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
+            
             # product category validation
             elif pro_category == 'Category':
                 messages.error(request, 'select category!!')
@@ -540,9 +564,13 @@ class product_management:
                 messages.error(request, 'select Brand!')
                 return redirect(reverse('admin_product_app:update_product', kwargs={'id':id}))
             
+            
+            
             product_obj.product_name = name
             product_obj.variant_disc = discription
             product_obj.thumbnail = product_image
+            product_obj.price = product_price
+            product_obj.discount_price = product_diacount_price
             category_obj = get_object_or_404(category, category_name=pro_category)
             product_obj.pro_category = category_obj
             brand_obj = get_object_or_404(brands, brand_name=pro_brand)
@@ -775,16 +803,16 @@ class variant_management:
             ram = request.POST.get('ram')
             
 
-            if price_of_size == '' or price_of_size.isspace() or int(price_of_size) < 0:
+            if price_of_size == '' or price_of_size.isspace() or int(price_of_size) < 1:
                 messages.error(request, 'Invalid price!')
                 return redirect(url)
-            elif stock == '' or stock < 0:
+            elif stock == '' or stock.isspace() or stock < 0:
                 messages.error(request, 'Enter valid stock!')  
                 return redirect(url)
-            elif rom is None:
+            elif rom is None or rom.isspace() or rom < 2:
                 messages.error(request, 'Select one of the Rom!')
                 return redirect(url)
-            elif ram is None:
+            elif ram is None or ram.isspace() or ram < 2:
                 messages.error(request, 'Select one of the Ram!')
                 return redirect(url)
 
@@ -836,11 +864,22 @@ class variant_management:
             rom = request.POST.get('rom', storage_obj.rom)
             price = request.POST.get('price', storage_obj.price_of_size)
             stock = request.POST.get('stock', storage_obj.stock)
+
+
+            if price == '' or price.isspace() or int(price) < 1:
+                messages.error(request, 'Invalid price!')
+                return redirect(reverse('admin_product_app:edit_storage', kwargs={'id':id}))
+            elif stock == '' or stock.isspace() or int(stock) < 0:
+                messages.error(request, 'Enter valid stock!')  
+                return redirect(reverse('admin_product_app:edit_storage', kwargs={'id':id}))
+            elif rom is None or rom.isspace() or int(rom) < 2:
+                messages.error(request, 'Select one of the Rom!')
+                return redirect(reverse('admin_product_app:edit_storage', kwargs={'id':id}))
+            elif ram is None or ram.isspace() or int(ram) < 2:
+                messages.error(request, 'Select one of the Ram!')
+                return redirect(reverse('admin_product_app:edit_storage', kwargs={'id':id}))
             
-            if 'GB' not in ram:
-                ram = ram+'GB'
-            elif 'GB' not in rom:
-                rom = rom+'GB'
+            
 
             storage_obj.ram = ram
             storage_obj.rom = rom 

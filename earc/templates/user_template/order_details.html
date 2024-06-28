@@ -315,31 +315,54 @@ Home
         </div>
         <div style="width: 100%; display: flex; justify-content: center; align-items: center; padding: 80px; border-bottom: solid 1px gray;">
             <div class="gap-3" style="width: 55%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                <div style="width: 50%; display: flex; justify-content: space-between;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Price:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">{{order_obj.product.price}} <span class="text-success">+</span></p>
-                </div>
-                <div style="width: 50%; display: flex; justify-content: space-between;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Storage price:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">{{order_obj.storage.price_of_size}} <span class="text-success">+</span></p>
-                </div>
-                <div style="width: 50%; display: flex; justify-content: space-between;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Discount price:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">{{order_obj.product.discount_price}} <span class="text-danger">-</span></p>
-                </div>
-                <div style="width: 50%; display: flex; justify-content: space-between;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Coupen:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">{{order_obj.coupon_amount}}<span class="text-danger">-</span></p>
-                </div>
-                <div style="width: 50%; display: flex; justify-content: space-between;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Shipping:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">0 <span class="text-success">+</span></p>
-                </div>
-                <div
-                    style="width: 50%; display: flex; justify-content: space-between; border-top: solid 1px gray; padding-top: 12px;">
-                    <h5 style="font-size: 15px; font-weight: bolder;">Total:</h5>
-                    <p style="font-size: 15px; font-weight: bolder;">{% total_purchase_price order_obj %}</p>
-                </div>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="fw-bold">Price</td>
+                        <td>{{order_obj.product.price}}</td>
+                        <td>{{order_obj.quantity}}</td>
+                        <td>{% product_price order_obj %} <span class="text-success fw-bold">+</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Storage</td>
+                        <td>{{order_obj.storage.price_of_size}}</td>
+                        <td>{{order_obj.quantity}}</td>
+                        <td>{% storage_price order_obj %} <span class="text-success fw-bold">+</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Discount</td>
+                        <td>{{order_obj.product.discount_price}}</td>
+                        <td>{{ order_obj.quantity }}</td>
+                        <td>{% discount_price order_obj %} <span class="text-danger fw-bold">-</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Coupon</td>
+                        <td>{{order_obj.coupon_amount}}</td>
+                        <td>1</td>
+                        <td>{{order_obj.coupon_amount}} <span class="text-danger fw-bold">-</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Shiping</td>
+                        <td>{{order_obj.delivery_charge}}</td>
+                        <td>1</td>
+                        <td>{{order_obj.delivery_charge}} <span class="text-success fw-bold">+</span></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="fw-bold">Grand total</td>
+                        <td>{% grand_total order_obj %}</td>
+                      </tr>
+                    </tbody>
+                  </table>
             </div>
         </div>  
         <div style="width: 100%; border-bottom: solid 1px gray;">

@@ -17,6 +17,7 @@ from admin_app.models import Wallet, wallet_history
 import razorpay
 from earc.settings import RAZORPAY_KEY_ID, RAZORPAY_SECRET_KEY
 from cart_app.models import Sales
+from .templatetags.order_tags import product_sub_total  
 
 
 
@@ -246,11 +247,15 @@ def place_order(request):
                     item.order_address = address_obj
                     item.order_payment = payment_obj
                     item.coupon_amount = (owner_obj.coupon_percentage/100 * total / order_obj.count()) if owner_obj.coupon_percentage else 0
-                    item.save()
+                    item.total_price = product_sub_total(item) - (owner_obj.coupon_percentage/100 * total / order_obj.count()) if owner_obj.coupon_percentage else product_sub_total(item)
+                    item.delivery_charge = 20 
+                    item.save() 
                     item.product.sold_out += item.quantity
                     item.product.save()
                     item.product.pro_brand.sold_out += item.quantity
                     item.product.pro_brand.save()
+                    item.product.pro_category.sold_out += item.quantity
+                    item.product.pro_category.save()
                     item.storage.stock = item.storage.stock - item.quantity
                     item.storage.save()
                 
@@ -271,8 +276,6 @@ def place_order(request):
                 }
                 return JsonResponse(context, safe=True)
             except Exception as e:
-                print('============This is Error============')
-                print(e)
                 context = {
                     'status': False,
                     'text':'Try after few minutes!'
@@ -382,6 +385,8 @@ def cancel_order(request, action, id):
             order_obj.product.save()
             order_obj.product.pro_brand.sold_out -= order_obj.quantity
             order_obj.product.pro_brand.save()
+            order_obj.product.pro_category.sold_out -= order_obj.quantity
+            order_obj.product.pro_category.save()
             order_obj.storage.stock = order_obj.storage.stock + order_obj.quantity
             order_obj.storage.save()
             sale_item = Sales.objects.filter(saled_product=order_obj.product)
@@ -438,6 +443,9 @@ def return_and_refund(request, id):
         order_obj.product.save()
         order_obj.product.pro_brand.sold_out -= order_obj.quantity
         order_obj.product.pro_brand.save()
+        order_obj.product.pro_category.sold_out -= order_obj.quantity
+        order_obj.product.pro_category.save()
+        
         wallet_Obj.balance += order_obj.total_price
         wallet_Obj.save()
         context = {
@@ -498,9 +506,6 @@ def rate_review(request):
 
 
 def order_placed(request):
-    if not request.user.is_authenticated or request.user.is_active is False:
-        return redirect('user_app:user_login')
-    
     if not request.user.is_authenticated or request.user.is_active is False:
         return redirect('user_app:user_login')
 

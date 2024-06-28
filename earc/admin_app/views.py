@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.db.models import Count
 from django.utils.timezone import now, timedelta
 import calendar
+from django.db.models import Sum
 from django.views import View
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
@@ -26,7 +27,7 @@ from django.utils import timezone
 from django.db.models import Count
 from django.db.models.functions import TruncMonth, TruncYear
 from cart_app.models import Sales
-from admin_product_app.models import products
+from admin_product_app.models import products, brands, category
 # from rest_framework.decorators import api_view
 
 
@@ -262,39 +263,73 @@ def get_chart_data(request):
     period = request.GET.get('period', 'daily')
     today = now().date()
     sales_data = {}
-    print(period)
 
     if period == 'daily':
         start_date = today.replace(day=1)
         end_date = today.replace(day=calendar.monthrange(today.year, today.month)[1])
-        sales = Sales.objects.filter(sale_date__date__gte=start_date, sale_date__date__lte=end_date)
-        sales_data_list = sales.extra(select={'day':'EXTRACT(day FROM sale_date)'}).values('day').annotate(sales_count=Count('sale_id')).order_by('day')
-        sales_data = {str(item['day'].day): item['sales_count'] for item in sales_data_list}
-        sales_data = {f"{(start_date + timedelta(days=i)).day:02d}": sales_data.get(f"{(start_date + timedelta(days=i)).day}", 0) for i in range((end_date - start_date).days + 1)}
+        sales = Order.objects.filter(status=4).filter(created_at__date__gte=start_date, created_at__date__lte=end_date)
+        sales_data_list = sales.extra(select={'day':'EXTRACT(day FROM created_at)'}).values('day').annotate(sales_count=Count('cart_id'), total_profit=Sum('total_price')).order_by('day')
+        sales_data = {str(item['day']): {
+                'sales_count':item['sales_count'],
+                'total_profit':item['total_profit']
+            } for item in sales_data_list
+        }
+        sales_data = [
+            {
+                "label":f"{(start_date + timedelta(days=i)).day:02d}",
+                "data": sales_data.get(f"{(start_date + timedelta(days=i)).day}", {'sales_count':0, 'total_profit':0})
+            } 
+            for i in range((end_date - start_date).days + 1)
+        ]
     elif period == 'weekly':
         start_date = today.replace(day=1)
         end_date = today.replace(day=calendar.monthrange(today.year, today.month)[1])
-        sales = Sales.objects.filter(sale_date__date__gte=start_date, sale_date__date__lte=end_date)
-        sales_data_list = sales.extra(select={'week': 'EXTRACT(week FROM sale_date)'}).values('week').annotate(sales_count=Count('sale_id')).order_by('week')
-        sales_data = {f"week {item['week']}": item['sales_count'] for item in sales_data_list}
+        sales = Order.objects.filter(status=4).filter(created_at__date__gte=start_date, created_at__date__lte=end_date)
+        sales_data_list = sales.extra(select={'week': 'EXTRACT(week FROM created_at)'}).values('week').annotate(sales_count=Count('cart_id'), total_profit=Sum('total_price')).order_by('week')
+        sales_data = {f"week {i+1}": 
+                      {
+                          'sales_count':item['sales_count'],
+                          'total_profit':item['total_profit'],
+                      }
+                      for i, item in enumerate(sales_data_list)
+            }
         weeks = (end_date - start_date).days // 7 + 1         
-        sales_data = {f"week {i+1}": sales_data.get(f"week {i+1}", 0) for i in range(weeks)}
-        print(sales_data)
+        sales_data = [
+            {
+                'label':f"week {i+1}",
+                'data':sales_data.get(f"week {i+1}", {'sales_count': 0, 'total_profit':0})
+            }
+            for i in range(weeks)
+        ]
     elif period == 'monthly':
         start_date = today.replace(month=1, day=1)
         end_date = today.replace(month=12, day=31)
-        sales = Sales.objects.filter(sale_date__date__gte=start_date, sale_date__date__lte=end_date)
-        sales_data_list = sales.extra(select={'month': 'EXTRACT(month FROM sale_date)'}).values('month').annotate(sales_count=Count('sale_id')).order_by('month')
-        sales_data = {calendar.month_abbr[item['month']]: item['sales_count'] for item in sales_data_list}
-        sales_data = {calendar.month_abbr[i]:sales_data.get(calendar.month_abbr[i], 0) for i in range(1,13)}
-        print(sales_data)
+        sales = Order.objects.filter(status=4).filter(created_at__date__gte=start_date, created_at__date__lte=end_date)
+        sales_data_list = sales.extra(select={'month': 'EXTRACT(month FROM created_at)'}).values('month').annotate(sales_count=Count('cart_id'), total_profit=Sum('total_price')).order_by('month')
+        sales_data = {calendar.month_abbr[int(item['month'])]: 
+                      {
+                          'sales_count':item['sales_count'],
+                          'total_profit':item['total_profit']
+                      }
+                      for item in sales_data_list
+            }
+        sales_data = [
+            {
+                'label':calendar.month_abbr[i],
+                'data':sales_data.get(calendar.month_abbr[i], {'sales_count':0, 'total_profit':0}) 
+            }
+            for i in range(1,13)
+        ]
     elif period == 'yearly':
-        sales = Sales.objects.all()
-        sales_data_list = sales.extra(select={'year': 'EXTRACT(year FROM sale_date)'}).values('year').annotate(count=Count('sale_id')).order_by('year')
-        sales_data = {str(item['year']): item['count'] for item in sales_data_list}
-        print(sales_data)
-    
-
+        sales = Order.objects.filter(status=4).all()
+        sales_data_list = sales.extra(select={'year': 'EXTRACT(year FROM created_at)'}).values('year').annotate(sales_count=Count('cart_id'), total_profit=Sum('total_price')).order_by('year')
+        sales_data = [
+            {
+                'label':str(item['year']),
+                'data': {'sales_count': item['sales_count'], 'total_profit':item['total_profit']},
+            }
+            for item in sales_data_list
+        ]
     context = {
         'sales_data':sales_data
     }
@@ -302,44 +337,18 @@ def get_chart_data(request):
 
 
 
+def top_sellings(request):
+    selling_item = request.GET.get('item')
+    top_saled_items = None
+    if 'category' in selling_item:
+        top_saled_items = category.objects.filter(category_active=True).order_by('-sold_out')
+    elif 'brand' in selling_item:
+        top_saled_items = brands.objects.filter(brand_active=True).order_by('-sold_out')
+    elif 'product' in selling_item:
+        top_saled_items = products.objects.filter(product_active=True).order_by('-sold_out')[:10]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# if time_set == 'weekly':
-    #     pass
-    # elif time_set == 'monthly':
-    #     monthly_sales = Sales.objects.annotate(month=TruncMonth('sale_date')).values(
-    #         'month').annotate(total_sale=Count('sale_id'))
-    #     product_sales = Order.objects.filter(status=4).annotate(month=TruncMonth(
-    #         'created_at')).values('month').annotate(total_sales=Count('cart_id'))
-    #     sales_data = [{'month': item['month'].strftime(
-    #         '%B'), 'total_sales': item['total_sale']} for item in monthly_sales]
-    #     product_sales_data = [{'month': item['month'].strftime(
-    #         '%B'), 'total_sales': item['total_sales']} for item in product_sales]
-    # elif time_set == 'yearly':
-    #     yearly_product_sales = Order.objects.filter(status=4).annotate(year=TruncYear(
-    #         'created_at')).values('year').annotate(total_sales=Count('cart_id'))
-    #     yearly_sales = Sales.objects.annotate(year=TruncYear('sale_date')).values(
-    #         'year').annotate(total_sale=Count('sale_id'))
-    #     sales_data = [{'year': item['year'].year,
-    #                    'total_sales': item['total_sale']} for item in yearly_sales]
-    #     product_sales_data = [{'year': item['year'].year,
-    #                            'total_sales': item['total_sales']} for item in yearly_product_sales]
-
-    # context = {
-    #     'product_sales_data': product_sales_data,
-    #     'sales_data': sales_data,
-    # 
+    context = {
+        'top_saled_items':top_saled_items,
+        'selling_item':selling_item
+    }
+    return render(request,'admin_template/top_sellings.html', context)

@@ -1,0 +1,103 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}
+Add coupen
+{% endblock %}
+
+
+{% block content %}
+{% include "admin_sidenav.html"%}
+    
+    <main class="main-wrap">
+        {% include 'admin_nav.html' %}
+
+        <div class="container mt-5 mb-5 d-flex flex-column justify-content-center align-items-center" style="height: 100vh;">
+            <div class="mb-3">
+                {% if messages %}
+                    {% for message in messages %}
+                    <p class="text-danger fw-semibold fs-6">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <h5 class="card-title mb-2 fw-bold">
+                {% if request.path == '/admin/offers/category/add/' %}
+                    Add Category offers
+                {% elif request.path ==  '/admin/offers/brand/add/' %}
+                    Add Brand offers
+                {% elif request.path == '/admin/offers/product/add/' %}
+                    Add Product offer
+                {% endif %}
+            </h5>
+            <div class="card w-50 row justify-content-center align-items-center" style="height: 50%;">
+                
+                <form class="card-body" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <input class="form-control" type="text" placeholder="Discription" value="{% if offer_item.discription %}{{offer_item.discription}}{% endif %}" name="discription"> 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <input class="form-control" type="text" placeholder="Eligible price" value="{% if offer_item.eligible_price %}{{offer_item.eligible_price}}{% endif %}" name="eligible_price"> 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <input class="form-control" type="text" placeholder="Discount percentage" value="{% if offer_item.discount_percentage %}{{offer_item.discount_percentage}}{% endif %}" name="discount_percentage"> 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <input class="form-control" type="datetime-local" placeholder="Expiry date" value="{% if offer_item.expiration_date %}{{offer_item.expiration_date}}{% endif %}" name="expiration_date"> 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row col-6 mt-3">
+                        <div class="custom_select">
+                            {% if request.path == '/admin/offers/category/add/' %}
+                            <select name="offer_category" class="form-select select-nice">
+                                {% if offer_item %}
+                                    <option value="{{offer_item.offer_category.category_id}}" selected>{{offer_item.offer_category.category_name}}</option>
+                                {% else %}
+                                    <option value="" selected>Categories</option>
+                                {% endif %}
+                                {% for item in items %}
+                                    <option value="{{item.category_id}}">{{ item.category_name }}</option>
+                                {% endfor %}
+                            </select>
+                            {% elif request.path ==  '/admin/offers/brand/add/' %}
+                                
+                            {% elif request.path == '/admin/offers/product/add/' %}
+                                Add Product offer
+                            {% endif %}
+                            
+                        </div>
+                    </div>  
+
+                    <button type="submit" class="btn btn-primary btn-block confirm-button mt-3">Submit</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+
+    <script>
+        
+
+    </script>
+{% endblock %}

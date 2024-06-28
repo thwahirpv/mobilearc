@@ -162,12 +162,12 @@ Checkout
                                     </tr>
                                     <tr>
                                         <th>Shipping</th>
-                                        <td colspan="2"><em>Free Shipping</em></td>
+                                        <td colspan="2"><em>{% shipping_charge order_data %}</em></td>
                                     </tr>
                                     <tr>
                                         <th>Total</th>
                                         <td colspan="2" class="product-subtotal"><span
-                                                class="font-xl text-brand fw-900">{% sub_total order_data owner_obj %}</span></td>
+                                            class="font-xl text-brand fw-900">{% sub_total order_data owner_obj %}</span></td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -31,7 +31,9 @@ urlpatterns = [
 
     #===============Settings===========================
     path('settings/', site_settings, name='site_settings'),
-    path('logo/', logo, name='logo')
+    path('logo/', logo, name='logo'),
+
+    path('top_sellings/', top_sellings, name='top_sellings')
     
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -8,6 +8,9 @@ from django.urls import reverse
 from django.db.models import Q
 from .models import *
 import json
+from datetime import datetime
+from django.utils import timezone
+import pytz
 from django.core.paginator import Paginator, Page, EmptyPage, PageNotAnInteger
 
 
@@ -45,30 +48,46 @@ def add_coupen(request):
         coupen_name = request.POST.get('coupen_name', None)
         discription = request.POST.get('discription', None)
         coupen_code = request.POST.get('coupen_code', None)
-        coupen_percentage = request.POST.get('coupen_percentage', None)
-        max_amount = request.POST.get('max_amount', None)
         expire_date = request.POST.get('expire_date', None)
-        coupon_stock = request.POST.get('coupon_stock')
+        try:
+            coupen_percentage = int(request.POST.get('coupen_percentage', None))
+            max_amount = int(request.POST.get('max_amount', None))
+            coupon_stock = int(request.POST.get('coupon_stock', None))
+        except:
+            messages.warning(request, 'Enter valid number')
+            return redirect('admin_coupen_app:add_coupen')
+        
+        expiring = datetime.strptime(expire_date, '%Y-%m-%dT%H:%M')
+        expiring= timezone.make_aware(expiring, timezone.get_current_timezone())
 
         
         if coupen_name is None or coupen_name == '' or coupen_name.isdigit():
             messages.warning(request, 'Enter valid name!')
+            return redirect('admin_coupen_app:add_coupen')
         elif Coupen.objects.filter(coupen_name__icontains=coupen_name).exists():
             messages.warning(request, 'name is already exist!')
+            return redirect('admin_coupen_app:add_coupen')
         elif discription is None or discription == '' or discription.isdigit():
             messages.warning(request, 'Enter valid discription!')
+            return redirect('admin_coupen_app:add_coupen')
         elif coupen_code is None or coupen_code == '':
-            messages.warning(request, 'Enter vaild coupen!')
+            messages.warning(request, 'Enter vaild code!')
+            return redirect('admin_coupen_app:add_coupen')
         elif Coupen.objects.filter(coupen_code__icontains=coupen_code).exists():
             messages.warning(request, 'Code already exits!')
-        elif coupen_percentage is None or coupen_percentage == '' or coupen_percentage.isalpha():
-            messages.warning(request, 'Enter valid price!')
-        elif max_amount is None or max_amount == '' or max_amount.isalpha():
+            return redirect('admin_coupen_app:add_coupen')
+        elif coupen_percentage is None or coupen_percentage == '' or int(coupen_percentage) > 100 or int(coupen_percentage) < 1:
+            messages.warning(request, 'Enter valid Percentage!')
+            return redirect('admin_coupen_app:add_coupen')
+        elif max_amount is None or max_amount == '' or int(max_amount) < 1:
             messages.warning(request, 'Enter valid Condition amount!')
-        elif expire_date is None or expire_date == '':
+            return redirect('admin_coupen_app:add_coupen')
+        elif expire_date is None or expire_date == '' or expiring < datetime.utcnow().replace(tzinfo=pytz.utc):
             messages.warning(request, 'Enter valid date and time!')
-        elif int(coupon_stock) < 0 or coupon_stock == '' or coupon_stock.isalpha():
+            return redirect('admin_coupen_app:add_coupen')
+        elif int(coupon_stock) < 0 or coupon_stock == '':
             messages.warning(request, 'Enter valid stock!')
+            return redirect('admin_coupen_app:add_coupen')
 
         try:
             Coupen.objects.create(
@@ -81,7 +100,7 @@ def add_coupen(request):
                 coupen_stock=coupon_stock
             )
         except Exception as e:
-            messages.warning(request, e)
+            # messages.warning(request, e)
             return redirect('admin_coupen_app:add_coupen')
         return redirect('admin_coupen_app:list_coupens')
     return render(request, 'admin_template/add_coupen.html')
@@ -140,24 +159,33 @@ def update_coupen(request, id):
         max_amount = request.POST.get('max_amount', coupen_obj.max_amount)
         expire_date = request.POST.get('expire_date', None)
         coupon_stock = request.POST.get('coupon_stock', coupen_obj.coupen_stock)
+        expiring = None
+        if expire_date:
+            expiring = datetime.strptime(expire_date, '%Y-%m-%dT%H:%M')
+            expiring= timezone.make_aware(expiring, timezone.get_current_timezone())
 
-        
         if coupen_name is None or coupen_name == '' or coupen_name.isdigit():
             messages.warning(request, 'Enter valid name!')
-        elif Coupen.objects.filter(coupen_name__icontains=coupen_name).exists():
-            messages.warning(request, 'name is already exist!')
+            return redirect('admin_coupen_app:add_coupen')
         elif discription is None or discription == '' or discription.isdigit():
             messages.warning(request, 'Enter valid discription!')
+            return redirect('admin_coupen_app:add_coupen')
         elif coupen_code is None or coupen_code == '':
-            messages.warning(request, 'Enter vaild coupen!')
-        elif Coupen.objects.filter(coupen_code__icontains=coupen_code).exists():
-            messages.warning(request, 'Code already exits!')
-        elif coupen_percentage is None or coupen_percentage == '' or coupen_percentage.isalpha():
-            messages.warning(request, 'Enter valid price!')
-        elif max_amount is None or max_amount == '' or max_amount.isalpha():
+            messages.warning(request, 'Enter vaild code!')
+            return redirect('admin_coupen_app:add_coupen')
+        elif coupen_percentage is None or coupen_percentage == '' or int(coupen_percentage) > 100 or int(coupen_percentage) < 1:
+            messages.warning(request, 'Enter valid Percentage!')
+            return redirect('admin_coupen_app:add_coupen')
+        elif max_amount is None or max_amount == '' or int(max_amount) < 1:
             messages.warning(request, 'Enter valid Condition amount!')
-        elif coupon_stock < 0 or coupon_stock == '' or coupon_stock.isalpha():
+            return redirect('admin_coupen_app:add_coupen')
+        elif expiring:
+            if expiring < datetime.utcnow().replace(tzinfo=pytz.utc):
+                messages.warning(request, 'Enter valid date and time!')
+                return redirect('admin_coupen_app:add_coupen')
+        elif int(coupon_stock) < 0 or coupon_stock == '':
             messages.warning(request, 'Enter valid stock!')
+            return redirect('admin_coupen_app:add_coupen')
         
 
         try:

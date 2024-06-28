@@ -1,6 +1,6 @@
 {% extends "base_page.html" %}
 {% load static %}
-
+{% load admin_order_tags %}
 {% block title %}
 Oders
 {% endblock %}
@@ -68,7 +68,7 @@ Oders
                                         <p class="fw-bold">{{item.order_customer.customer.username}}</p>
                                         <p class="" style="font-size: 12px;">{{item.order_customer.customer.email}}</p>
                                     </td>
-                                    <td class="fw-bold">${{item.total_price}}</td>
+                                    <td class="fw-bold">${% grand_total item %}</td>
                                     <td>
                                         <form method="post">
                                             {% csrf_token %}
