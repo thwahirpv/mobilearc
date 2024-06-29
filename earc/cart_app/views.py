@@ -83,10 +83,7 @@ class cart_management:
                 }
                 return JsonResponse(context, safe=True)
             except Exception as e:
-<<<<<<< HEAD
-=======
                 print('=============')
->>>>>>> master
                 print(e)
                 context = {
                     'status':False
