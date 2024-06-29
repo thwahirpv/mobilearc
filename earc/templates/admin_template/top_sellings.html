@@ -1,0 +1,79 @@
+{% extends "base_page.html" %}
+{% load static %}
+{% block title %}
+Top sellings
+{% endblock %}
+{% block content %}
+
+
+{% include 'admin_sidenav.html' %}
+
+<main class="main-wrap" style="">
+    {% include 'admin_nav.html' %}
+    <section style="padding: 30px;">
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">
+                {% if 'product' in selling_item %}
+                Best selling Products
+                {% elif 'brand' in selling_item %}
+                Best selling Brands
+                {% elif 'category' in selling_item %}
+                Best selling Category
+                {% endif %}
+            </h5>
+
+            {% if 'product' in selling_item %}
+            <div class="row mt-3">
+                {% for item in top_saled_items %}
+                <div class="col-xl-2 col-lg-3 col-md-6">
+                    <div class="card card-product-grid" style="height: 210px;">
+                        <a href="#" class="img-wrap"> <img style="width: 100px;" src="{{ item.thumbnail.url }}" alt="Product"> </a>
+                        <div class="info-wrap">
+                            <a href="#" class="title">{{ item.product_name }}</a>
+                            <div class="price mt-1">Sold out:{{ item.sold_out }}</div> <!-- price-wrap.// -->
+                        </div>
+                    </div> <!-- card-product  end// -->
+                </div> <!-- col.// -->
+                {% endfor %}
+            </div>
+            {% elif 'brand' in selling_item %}
+            <div class="row mt-3">
+                {% for item in top_saled_items %}
+                <div class="col-xl-2 col-lg-3 col-md-6">
+                    <div class="card card-product-grid" style="height: 190px;">
+                        <a href="#" class="img-wrap"> <img style="width: 100px;" src="{{ item.brand_image.url }}" alt="Product"> </a>
+                        <div class="info-wrap">
+                            <a href="#" class="title">{{ item.brand_name }}</a>
+                            <div class="price mt-1">Sold out:{{ item.sold_out }}</div> <!-- price-wrap.// -->
+                        </div>
+                    </div> <!-- card-product  end// -->
+                </div> <!-- col.// -->
+                {% endfor %}
+            </div>
+            {% elif 'category' in selling_item %}
+            <div class="row mt-3">
+                {% for item in top_saled_items %}
+                <div class="col-xl-2 col-lg-3 col-md-6">
+                    <div class="card card-product-grid" style="height: 190px;">
+                        <a href="#" class="img-wrap"> <img style="width: 100px;" src="{{ item.category_image.url }}" alt="Product"> </a>
+                        <div class="info-wrap">
+                            <a href="#" class="title">{{ item.category_name }}</a>
+                            <div class="price mt-1">Sold out:{{ item.sold_out }}</div> <!-- price-wrap.// -->
+                        </div>
+                    </div> <!-- card-product  end// -->
+                </div> <!-- col.// -->
+                {% endfor %}
+            </div>
+            {% endif %}
+
+        </div> <!-- card-product  end// -->
+    </div> <!-- col.// -->
+    </div> <!-- row.// -->
+    </div> <!--  card-body.// -->
+    </div> <!--  card.// -->
+
+    </section> <!-- content-main end// -->
+
+</main>
+{% endblock content %}

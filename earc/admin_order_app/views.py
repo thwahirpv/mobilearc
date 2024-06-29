@@ -86,6 +86,8 @@ def update_status(request):
                      order_obj.product.save()
                      order_obj.product.pro_brand.sold_out -= order_obj.quantity
                      order_obj.product.pro_brand.save()
+                     order_obj.product.pro_category.sold_out -= order_obj.quantity
+                     order_obj.product.pro_category.save()
             else:
                 if value == 4:
                     order_obj.is_delivered = True
@@ -129,6 +131,8 @@ def update_status(request):
                          order_obj.product.save()
                          order_obj.product.pro_brand.sold_out -= order_obj.quantity
                          order_obj.product.pro_brand.save()
+                         order_obj.product.pro_category.sold_out -= order_obj.quantity
+                         order_obj.product.pro_category.save()
                          order_obj.storage.stock += order_obj.quantity
                          order_obj.storage.save()
                          wallet_obj.balance += order_obj.total_price

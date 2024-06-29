@@ -22,7 +22,7 @@ Add coupen
             </div>
             
 
-            <div class="card w-50 row justify-content-center align-items-center" style="height: 63%;">
+            <div class="card w-50 row justify-content-center align-items-center" style="padding: 20px 0;">
                 
                 <form class="card-body" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -31,6 +31,7 @@ Add coupen
                     <div class="row mt-3">
                         <div class="col-sm-12">
                             <div class="form-group">
+                                <label for="">Name</label>
                                 <input class="form-control" type="text" placeholder="Name" value="{% if coupen_obj.coupen_name %}{{coupen_obj.coupen_name}}{% endif %}" name="coupen_name"> 
                             </div>
                         </div>
@@ -39,6 +40,16 @@ Add coupen
                     <div class="row mt-3">
                         <div class="col-sm-12">
                             <div class="form-group">
+                                <label for="">Discription</label>
+                                <input class="form-control" type="text" placeholder="Discription" value="{% if coupen_obj.discription %}{{coupen_obj.discription}}{% endif %}" name="discription"> 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="">Coupon code</label>
                                 <input class="form-control" type="text" placeholder="code" value="{% if coupen_obj.coupen_code %}{{coupen_obj.coupen_code}}{% endif %}" name="coupen_code"> 
                             </div>
                         </div>
@@ -47,6 +58,7 @@ Add coupen
                     <div class="row mt-3">
                         <div class="col-sm-12">
                             <div class="form-group">
+                                <label for="">Stock</label>
                                 <input class="form-control" type="text" placeholder="Stock" value="{% if coupen_obj.coupen_stock %}{{coupen_obj.coupen_stock}}{% endif %}" name="coupon_stock"> 
                             </div>
                         </div>
@@ -55,7 +67,8 @@ Add coupen
                     <div class="row mt-3">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <input class="form-control" type="text" placeholder="Coupen price" value="{% if coupen_obj.coupen_percentage %}{{coupen_obj.coupen_percentage}}{% endif %}" name="coupen_percentage"> 
+                                <label for="">Discount percentage</label>
+                                <input class="form-control" type="text" placeholder="Discount percentage" value="{% if coupen_obj.coupen_percentage %}{{coupen_obj.coupen_percentage}}{% endif %}" name="coupen_percentage"> 
                             </div>
                         </div>
                     </div>
@@ -63,7 +76,8 @@ Add coupen
                     <div class="row mt-3">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <input class="form-control" type="text" placeholder="Condition amount" value="{% if coupen_obj.max_amount %}{{coupen_obj.max_amount}}{% endif %}" name="max_amount"> 
+                                <label for="">Eligible amount</label>
+                                <input class="form-control" type="text" placeholder="Eligible amount" value="{% if coupen_obj.max_amount %}{{coupen_obj.max_amount}}{% endif %}" name="max_amount"> 
                             </div>
                         </div>
                     </div>
@@ -71,7 +85,8 @@ Add coupen
                     <div class="row mt-3">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <input class="form-control" type="datetime-local" placeholder="Expire date" value="{% if coupen_obj.expiration_date %}{{coupen_obj.expiration_date}}{% endif %}" name="expire_date"> 
+                                <label for="">Expiry date</label>
+                                <input class="form-control" type="datetime-local" placeholder="Expirywhat date" value="{% if coupen_obj.expiration_date %}{{coupen_obj.expiration_date}}{% endif %}" name="expire_date"> 
                             </div>
                         </div>
                     </div>
@@ -84,18 +99,7 @@ Add coupen
 
 
     <script>
-        const upload_image = document.getElementById('upload_image')
-        const brand_image = document.getElementById('brand_image')
-
-        upload_image.addEventListener('change', function(){
-            if(upload_image.files[0]){
-                const reader = new FileReader()
-                reader.onload = function(e){
-                    brand_image.src = e.target.result;
-                }
-                reader.readAsDataURL(upload_image.files[0])
-            }
-        })
+        
 
     </script>
 {% endblock %}

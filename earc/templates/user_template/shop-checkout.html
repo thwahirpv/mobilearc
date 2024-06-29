@@ -19,30 +19,52 @@ Checkout
     <section class="mt-50 mb-50">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <div class="toggle_info">
-                        <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a>Click
-                                here to enter your code</a></span>
+                <div class="col-lg-12 d-flex">
+                    <div class="w-50" style="height: 300px; overflow: scroll;">
+                        <div class="row gap-2 justify-content-center">
+                            {% for item in coupons_data %}
+                            <div class="toggle_info col-4 d-flex flex-column justify-content-center align-items-center">
+                                <div>
+                                    <span>
+                                        <i class="fi-rs-label mr-10"></i>
+                                    </span>
+                                    <span class="fw-bold" style="color: #088178;">
+                                        {{item.coupen_code}}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="text-muted text-center">
+                                        {{item.discription}}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                    <div class="panel-collapse coupon_form" id="">
-                        {% if messages %}
-                        {% for message in messages %}
-                        <p class="fw-bold text-{{message.extra_tags}} mt-4">{{message}}</p>
-                        {% endfor %}
-                        {% endif %}
-                        <div class="panel-body">
-                            <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
-                            <form method="post">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <input type="text" placeholder="Enter Coupon Code..." name="coupen_code">
-                                </div>
-                                <div class="form-group d-flex justify-content-between">
-                                    <button type="submit" class="btn btn-md">Apply Coupon</button>
-                                    <a href="{% url 'checkout_app:remove_coupon' %}"
-                                        class="btn btn-sm btn-primary">Remove</a>
-                                </div>
-                            </form>
+                    <div class="w-50 d-flex justify-content-center">
+                        <div class="panel-collapse coupon_form" style="width: 60%;" id="">
+                            {% if messages %}
+                            {% for message in messages %}
+                            <p class="fw-bold text-{{message.extra_tags}} mt-4">{{message}}</p>
+                            {% endfor %}
+                            {% endif %}
+                            <div class="panel-body">
+                                <p class="mb-30 font-sm">Apply your coupon below.</p>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input type="text" placeholder="Enter Coupon Code..." name="coupen_code">
+                                    </div>
+                                    <div class="form-group d-flex justify-content-between">
+                                        {% if coupon_applied %}
+                                        <a href="{% url 'checkout_app:remove_coupon' %}"
+                                            class="btn btn-sm btn-primary">Remove</a>
+                                        {% else %}
+                                        <button type="submit" class="btn btn-sm">Apply</button>
+                                        {% endif %}
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -140,12 +162,12 @@ Checkout
                                     </tr>
                                     <tr>
                                         <th>Shipping</th>
-                                        <td colspan="2"><em>Free Shipping</em></td>
+                                        <td colspan="2"><em>{% shipping_charge order_data %}</em></td>
                                     </tr>
                                     <tr>
                                         <th>Total</th>
                                         <td colspan="2" class="product-subtotal"><span
-                                                class="font-xl text-brand fw-900">{% sub_total order_data owner_obj %}</span></td>
+                                            class="font-xl text-brand fw-900">{% sub_total order_data owner_obj %}</span></td>
                                     </tr>
                                 </tbody>
                             </table>

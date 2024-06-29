@@ -104,7 +104,13 @@ Home
             <div class="col-xl-8 col-lg-12">
                 <div class="card mb-4">
                     <article class="card-body">
-                        <h5 class="card-title">Sale statistics</h5>
+                        <div>
+                            <button class="btn btn-sm text-primary" id="daily" onclick="loadData('daily')">Daily</button>
+                            <button class="btn btn-sm text-primary" id="weekly" onclick="loadData('weekly')">Weekly</button>
+                            <button class="btn btn-sm text-primary" id="monthly" onclick="loadData('monthly')">Monthly</button>
+                            <button class="btn btn-sm text-primary" id="yearly" onclick="loadData('yearly')">Yearly</button>
+                        </div>
+                        <!-- <h5 class="card-title">Sale statistics based on month</h5> -->
                         <canvas id="myChart" height="120px"></canvas>
                     </article>
                 </div>
@@ -114,43 +120,21 @@ Home
                             <article class="card-body">
                                 <h5 class="card-title">New Members</h5>
                                 <div class="new-member-list">
+                                    {% for item in latest_users %}
                                     <div class="d-flex align-items-center justify-content-between mb-4">
                                         <div class="d-flex align-items-center">
-                                            <img src="{% static 'assets2/imgs/people/avatar4.jpg' %}" alt=""
+                                            <img src="{{ item.profile.url }}" alt=""
                                                 class="avatar">
                                             <div>
-                                                <h6>Patric Adams</h6>
+                                                <h6>{{ item.username }}</h6>
                                                 <p class="text-muted font-xs">
-                                                    Sanfrancisco
+                                                    {{item.email}}
                                                 </p>
                                             </div>
                                         </div>
-                                        <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
                                     </div>
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <div class="d-flex align-items-center">
-                                            <img src="assets/imgs/people/avatar2.jpg" alt="" class="avatar">
-                                            <div>
-                                                <h6>Dilan Specter</h6>
-                                                <p class="text-muted font-xs">
-                                                    Sanfrancisco
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <div class="d-flex align-items-center">
-                                            <img src="assets/imgs/people/avatar3.jpg" alt="" class="avatar">
-                                            <div>
-                                                <h6>Tomas Baker</h6>
-                                                <p class="text-muted font-xs">
-                                                    Sanfrancisco
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                    </div>
+                                    {% endfor %}
+                                   
                                 </div>
                             </article>
                         </div>
@@ -158,104 +142,45 @@ Home
                     <div class="col-lg-7">
                         <div class="card mb-4">
                             <article class="card-body">
-                                <h5 class="card-title">Recent activities</h5>
+                                <h5 class="card-title">Recently added products</h5>
                                 <ul class="verti-timeline list-unstyled font-sm">
+                                    {% for item in latest_product %}
                                     <li class="event-list">
                                         <div class="event-timeline-dot">
                                             <i class="material-icons md-play_circle_outline font-xxl"></i>
                                         </div>
                                         <div class="media">
                                             <div class="me-3">
-                                                <h6><span>Today</span> <i
+                                                <h6><span>{{ item.created_at|date:"Y-m-d" }}</span> <i
                                                         class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
                                                 </h6>
                                             </div>
                                             <div class="media-body">
-                                                <div>
-                                                    Lorem ipsum dolor sit amet consectetur
+                                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <img style="width: 30px;" src="{{ item.thumbnail.url }}" alt=""
+                                                            class="avatar">
+                                                        <div>
+                                                            <h6>{{ item.product_name }}</h6>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
-                                    <li class="event-list active">
-                                        <div class="event-timeline-dot">
-                                            <i
-                                                class="material-icons md-play_circle_outline font-xxl animation-fade-right"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>17 May</span> <i
-                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                </h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>
-                                                    Debitis nesciunt voluptatum dicta reprehenderit
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="event-list">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>13 May</span> <i
-                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                </h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>
-                                                    Accusamus voluptatibus voluptas.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="event-list">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>05 April</span> <i
-                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                </h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>
-                                                    At vero eos et accusamus et iusto odio dignissi
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="event-list">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>26 Mar</span> <i
-                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                </h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>
-                                                    Responded to need “Volunteer Activities
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
+                                    {% endfor %}
                                 </ul>
                             </article>
                         </div>
                     </div>
+
+
                 </div>
             </div>
             <div class="col-xl-4 col-lg-12">
                 <div class="card mb-4">
                     <article class="card-body">
-                        <h5 class="card-title">Revenue Base on Area</h5>
+                        <h5 class="card-title">Sale statistics base on year</h5>
                         <canvas id="myChart2" height="217"></canvas>
                     </article>
                 </div>
@@ -537,72 +462,95 @@ Home
 <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 <Script>
 
-    document.addEventListener('DOMContentLoaded', function () {
-        fetch('http://127.0.0.1:8000/admin/get_chart_data/')
-            .then(response => response.json())
-            .then(data => {
-                const labels = [];
-                const counts = [];
-                const productCounts = []
-                const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                const monthlySalesData = data.monthly_sales_data
-                const productMonthlySales = data.product_monthly_sales
-                const yearLabel = data.yearly_sales_data.map(item => item.year)
-                const yearCount = data.yearly_sales_data.map(item => item.total_sales)
+    var reportChart = null
+    const periodButton = document.querySelectorAll('.btn')
+    const dailyBtn = document.getElementById('daily')
+    const weeklyBTn = document.getElementById('weekly')
+    const monthlyBtn = document.getElementById('monthly')
+    const yearlyBtn = document.getElementById('yearly')
 
-                allMonths.forEach(month => {
-                    const monthData = monthlySalesData.find(item => item.month === month)
-                    const productMonthData = productMonthlySales.find(item => item.month === month)
-                    if (monthData) {
-                        labels.push(month)
-                        counts.push(monthData.total_sales)
-                    } else {
-                        labels.push(month)
-                        counts.push(0)
-                    }
+    async function loadData(period){
+        const response = await fetch(`http://127.0.0.1:8000/admin/get_chart_data/?period=${period}`)
+        const salesData = await response.json()
 
-                    if (productMonthData){
-                        productCounts.push(productMonthData.total_sales)
-                    }else{
-                        productCounts.push(0)
-                    }
-                })
+        let labels = []
+        let data = []
+        let profit = []
 
-                var ctx = document.getElementById('myChart').getContext('2d');
-                var chart = new Chart(ctx, {
+        if(period === 'daily'){
+            periodButton.forEach(function(element) {
+                element.classList.remove('text-success');
+                element.classList.add('text-primary') 
+            });
+            dailyBtn.classList.remove('text-primary');
+            dailyBtn.classList.add('text-success')
+        }else if(period === 'weekly'){
+            periodButton.forEach(function(element) {
+                element.classList.remove('text-success');
+                element.classList.add('text-primary') 
+            });
+            weeklyBTn.classList.remove('text-primary');
+            weeklyBTn.classList.add('text-success')
+        }else if(period === 'monthly'){
+            periodButton.forEach(function(element) {
+                element.classList.remove('text-success');
+                element.classList.add('text-primary') 
+            });
+            monthlyBtn.classList.remove('text-primary');
+            monthlyBtn.classList.add('text-success')
+        }else if(period === 'yearly'){
+            periodButton.forEach(function(element) {
+                element.classList.remove('text-success');
+                element.classList.add('text-primary')   
+            });
+            yearlyBtn.classList.remove('text-primary');
+            yearlyBtn.classList.add('text-success')
+        }
 
+        salesData.sales_data.forEach(item => {
+            labels.push(item.label)
+            data.push(item.data.sales_count)
+            profit.push(item.data.total_profit)
+        })
+
+        loadChart(labels, data, profit, period)
+    }
+
+
+    function loadChart(labels, data, profit, period){
+        var ctx = document.getElementById('myChart').getContext('2d');
+                if(reportChart !== null){
+                    reportChart.destroy()
+                }
+                reportChart = new Chart(ctx, {
                     type: 'line',
-
                     data: {
                         labels: labels,
-                        datasets: [{
+                        datasets: [
+                        {
                             label: 'Sales',
                             tension: 0.3,
                             fill: true,
-                            backgroundColor: 'rgba(44, 120, 220, 0.2)',
+                            // backgroundColor: 'rgba(44, 120, 220, 0.2)',
                             borderColor: 'rgba(44, 120, 220)',
-                            data: counts
+                            data: data
                         },
-                            // {
-                            //     label: 'Visitors',
-                            //     tension: 0.3,
-                            //     fill: true,
-                            //     backgroundColor: 'rgba(4, 209, 130, 0.2)',
-                            //     borderColor: 'rgb(4, 209, 130)',
-                            //     data: [40, 20, 17, 9, 23, 35, 39, 30, 34, 25, 27, 17]
-                            // },
-                            {
-                                label: 'Products',
-                                tension: 0.3,
-                                fill: true,
-                                backgroundColor: 'rgba(380, 200, 230, 0.2)',
-                                borderColor: 'rgb(380, 200, 230)',
-                                data: productCounts
-                            }
-
-                        ]
+                        {
+                            label: 'Profit',
+                            tension: 0.3,
+                            fill: true,
+                            // backgroundColor: 'rgba(0, 255, 0, 1)',
+                            borderColor: 'rgba(229, 156, 59, 0.8)',
+                            data: profit
+                        }
+                    ]
                     },
                     options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
                         plugins: {
                             legend: {
                                 labels: {
@@ -613,62 +561,7 @@ Home
                     }
                 });
 
-
-                var ctx = document.getElementById("myChart2");
-                var myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: yearLabel,
-                        datasets: [
-                            {
-                                label: "Year",
-                                backgroundColor: "#5897fb",
-                                barThickness: 10,
-                                data: yearCount
-                            },
-                                // {
-                                //     label: "Europe",
-                                //     backgroundColor: "#7bcf86",
-                                //     barThickness: 10,
-                                //     data: [408, 547, 675, 734]
-                                // },
-                                // {
-                                //     label: "Asian",
-                                //     backgroundColor: "#ff9076",
-                                //     barThickness: 10,
-                                //     data: [208, 447, 575, 634]
-                                // },
-                                // {
-                                //     label: "Africa",
-                                //     backgroundColor: "#d595e5",
-                                //     barThickness: 10,
-                                //     data: [123, 345, 122, 302]
-                                // },
-                        ]
-                    },
-                    options: {
-                        plugins: {
-                            legend: {
-                                labels: {
-                                    usePointStyle: true,
-                                },
-                            }
-                        },
-                    }
-                });
-            })
-    })
-
-
-
-
-
-
-
-
-
-
-
-
+        }
+        loadData('daily')
 </Script>
 {% endblock content %}

@@ -36,4 +36,15 @@ def category_count():
 def product_count():
     all_products = products.objects.all()
     return all_products.count()
-    
+
+@register.simple_tag(name='grand_total')
+def grand_total(sales_data):
+    total = 0
+    for item in sales_data:
+        total += item.total_price
+    return total
+
+
+@register.simple_tag(name='product_price')
+def product_price(item):
+    return item.price + item.discount_price

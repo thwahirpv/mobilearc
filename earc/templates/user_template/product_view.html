@@ -837,13 +837,16 @@ Home
         })
         .then(response => response.json())
         .then(data => {
-            if(data.status){
+            console.log(data.status, data)
+            if(data.status == true){
                 messageIconContainer.innerHTML = ''
                 const tickTag = document.createElement('i')
                 tickTag.classList.add('fa-regular', 'fa-circle-check')
                 messageIconContainer.appendChild(tickTag)
                 messageDiv.style.top = '15%'
                 moniterTopStyle()
+            }else if (data.status == 'login'){
+                window.location.href = 'http://127.0.0.1:8000/login/'
             }else{
                 messageIconContainer.innerHTML = ''
                 const crossTag = document.createElement('i')

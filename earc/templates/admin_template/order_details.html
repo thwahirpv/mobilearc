@@ -176,7 +176,6 @@ Details
                                     <p class="mb-1">
                                         {{order_obj.order_customer.customer.username}} <br> {{order_obj.order_customer.customer.email}} <br> {{order_obj.order_customer.customer.phone_number}}
                                     </p>
-                                    <a href="#">View profile</a>
                                 </div>
                             </article>
                         </div> <!-- col// -->
@@ -190,7 +189,6 @@ Details
                                     <p class="mb-1">
                                         Shipping: Fargo express <br> Pay method: {{order_obj.order_payment.payment_mode}} <br> Status: {{order_obj.get_status_display}}
                                     </p>
-                                    <a href="#">Download info</a>
                                 </div>
                             </article>
                         </div> <!-- col// -->
@@ -204,7 +202,6 @@ Details
                                     <p class="mb-1">
                                         {{order_obj.order_address.state}}/{{order_obj.order_address.city}} <br>{{order_obj.order_address.building_name}}<br> {{order_obj.order_address.address_type}}
                                     </p>
-                                    <a href="#">View profile</a>
                                 </div>
                             </article>
                         </div> <!-- col// -->
@@ -229,12 +226,12 @@ Details
                                                     <div class="left">
                                                         <img src="{{order_obj.product.thumbnail.url}}" width="40" height="40" class="img-xs" alt="Item">
                                                     </div>
-                                                    <div class="info fw-bold"> {{order_obj.product.product_name}}, {{order_obj.color.color_name}} <br> {{order_obj.storage.rom}}/{{order_obj.storage.ram}} </div>
+                                                    <div class="info fw-bold"> {{order_obj.product.product_name}} <br> {{order_obj.color.color_name}} <br> {{order_obj.storage.rom}}/{{order_obj.storage.ram}} </div>
                                                 </a>
                                             </td>
-                                            <td class="fw-bold">{% unit_price order_obj %}</td>
+                                            <td class="fw-bold">{{ order_obj.product.price }}</td>
                                             <td class="fw-bold"> {{order_obj.quantity}} </td>
-                                            <td class="text-end fw-bold"><p>{% total_price order_obj %}</p></td>
+                                            <td class="text-end fw-bold"><p>{% product_price order_obj %}</p></td>
                                         </tr>
                                         
                                         <tr>
@@ -242,15 +239,27 @@ Details
                                                 <article class="float-end">
                                                     <dl class="dlist">
                                                         <dt>Subtotal:</dt>
-                                                        <dd>${% total_price order_obj %}</dd>
+                                                        <dd>${% product_price order_obj %} <span class="text-success    ">+</span></dd>
+                                                    </dl>
+                                                    <dl class="dlist">
+                                                        <dt>Storage:</dt>
+                                                        <dd>${% storage_price order_obj %} <span class="text-success">+</span></dd>
+                                                    </dl>
+                                                    <dl class="dlist">
+                                                        <dt>Discount:</dt>
+                                                        <dd>${% discount_price order_obj %} <span class="text-danger">-</span></dd>
+                                                    </dl>
+                                                    <dl class="dlist">
+                                                        <dt>Coupon:</dt>
+                                                        <dd>${{order_obj.coupon_amount}} <span class="text-danger">-</span></dd>
                                                     </dl>
                                                     <dl class="dlist">
                                                         <dt>Shipping cost:</dt>
-                                                        <dd>$0.00</dd>
+                                                        <dd>${% shipping_charge order_obj %} <span class="text-success">+</span></dd>
                                                     </dl>
                                                     <dl class="dlist">
                                                         <dt>Grand total:</dt>
-                                                        <dd> <b class="h5">${% total_price order_obj %}</b> </dd>
+                                                        <dd> <b class="h5">${% grand_total order_obj %}</b> </dd>
                                                     </dl>
                                                     <dl class="dlist">
                                                         <dt class="text-muted">Payment status:</dt>

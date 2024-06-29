@@ -16,7 +16,8 @@ from .templatetags.order_tags import sub_total
 from admin_app.models import Wallet, wallet_history
 import razorpay
 from earc.settings import RAZORPAY_KEY_ID, RAZORPAY_SECRET_KEY
-from admin_product_app.models import Sales
+from cart_app.models import Sales
+from .templatetags.order_tags import product_sub_total  
 
 
 
@@ -25,7 +26,9 @@ def checkout(request):
     if not request.user.is_authenticated or request.user.is_active is False:
         return redirect('user_app:user_login')
 
+    
     total = 0
+    coupon_applied = False
     user = request.user
     address_data = Address.objects.filter(user=user)
     owner_obj, created = Owner.objects.get_or_create(
@@ -35,6 +38,11 @@ def checkout(request):
         order_customer=owner_obj,
         status=0
     )
+
+    try:
+        coupons_data = Coupen.objects.exclude(used_users=user)
+    except:
+        coupen_data = Coupen.objects.none()
 
     for item in order_data:
         price = item.product.price - item.product.discount_price
@@ -58,7 +66,7 @@ def checkout(request):
                 messages.warning(request, 'Coupon expired',
                                  extra_tags='warning')
             elif coupen_obj.expiration_date < datetime.utcnow().replace(tzinfo=pytz.utc):
-                messages.warning(request, 'Time end', extra_tags='warning')
+                messages.warning(request, 'Coupon expired', extra_tags='warning')
             elif coupen_obj.used_users.filter(user_id=request.user.user_id).exists():
                 messages.warning(request, 'Already used', extra_tags='warning')
             elif coupen_obj.coupen_stock < 1:
@@ -66,7 +74,7 @@ def checkout(request):
             elif total <= coupen_obj.max_amount:
                 messages.warning(
                     request, f'Purchase above ${coupen_obj.max_amount}')
-            elif total > coupen_obj.max_amount:
+            else:
                 coupen_obj.used_users.add(request.user)
                 coupen_obj.coupen_stock = coupen_obj.coupen_stock - 1
                 coupen_obj.save()
@@ -78,13 +86,24 @@ def checkout(request):
 
         else:
             messages.warning(request, 'coupen not exists')
+    
+    if owner_obj:
+        if owner_obj.coupon_code:
+            coupon_applied = True
+        else:
+            coupon_applied = False
+    else:
+        False
+
 
     context = {
         'user': user,
         'address_data': address_data,
         'order_data': order_data,
         'owner_obj': owner_obj,
-        'total': total
+        'total': total,
+        'coupons_data':coupons_data,
+        'coupon_applied': coupon_applied
     }
     return render(request, 'user_template/shop-checkout.html', context)
 
@@ -228,16 +247,18 @@ def place_order(request):
                     item.order_address = address_obj
                     item.order_payment = payment_obj
                     item.coupon_amount = (owner_obj.coupon_percentage/100 * total / order_obj.count()) if owner_obj.coupon_percentage else 0
-                    item.save()
+                    item.total_price = product_sub_total(item) - (owner_obj.coupon_percentage/100 * total / order_obj.count()) if owner_obj.coupon_percentage else product_sub_total(item)
+                    item.delivery_charge = 20 
+                    item.save() 
                     item.product.sold_out += item.quantity
                     item.product.save()
                     item.product.pro_brand.sold_out += item.quantity
                     item.product.pro_brand.save()
+                    item.product.pro_category.sold_out += item.quantity
+                    item.product.pro_category.save()
                     item.storage.stock = item.storage.stock - item.quantity
                     item.storage.save()
-                    Sales.objects.create(
-                        saled_product=item.product
-                    )
+                
                     if payment_method == 'wallet':
                         wallet_history.objects.create(
                                 wallet_owner=wallet_obj,
@@ -255,8 +276,6 @@ def place_order(request):
                 }
                 return JsonResponse(context, safe=True)
             except Exception as e:
-                print('============This is Error============')
-                print(e)
                 context = {
                     'status': False,
                     'text':'Try after few minutes!'
@@ -366,6 +385,8 @@ def cancel_order(request, action, id):
             order_obj.product.save()
             order_obj.product.pro_brand.sold_out -= order_obj.quantity
             order_obj.product.pro_brand.save()
+            order_obj.product.pro_category.sold_out -= order_obj.quantity
+            order_obj.product.pro_category.save()
             order_obj.storage.stock = order_obj.storage.stock + order_obj.quantity
             order_obj.storage.save()
             sale_item = Sales.objects.filter(saled_product=order_obj.product)
@@ -422,6 +443,9 @@ def return_and_refund(request, id):
         order_obj.product.save()
         order_obj.product.pro_brand.sold_out -= order_obj.quantity
         order_obj.product.pro_brand.save()
+        order_obj.product.pro_category.sold_out -= order_obj.quantity
+        order_obj.product.pro_category.save()
+        
         wallet_Obj.balance += order_obj.total_price
         wallet_Obj.save()
         context = {
@@ -484,9 +508,6 @@ def rate_review(request):
 def order_placed(request):
     if not request.user.is_authenticated or request.user.is_active is False:
         return redirect('user_app:user_login')
-    
-    if not request.user.is_authenticated or request.user.is_active is False:
-        return redirect('user_app:user_login')
 
     context = {
         'username': request.user.username
@@ -495,7 +516,6 @@ def order_placed(request):
 
 
 def remove_coupon(request):
-    
     try:
         owner_obj = Owner.objects.get(customer=request.user)
     except:

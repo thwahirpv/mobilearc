@@ -8,6 +8,7 @@ from admin_app.models import UserDetails
 class Coupen(models.Model):
     coupen_id = models.BigAutoField(primary_key=True, unique=True)
     coupen_name = models.CharField(max_length=300, null=True, blank=True)
+    discription = models.CharField(max_length=500, null=True, blank=False, unique=False)
     coupen_code = models.CharField(null=False, blank=False, unique=True)
     coupen_percentage = models.IntegerField(null=False, blank=False)
     max_amount = models.IntegerField(null=False, blank=False)
