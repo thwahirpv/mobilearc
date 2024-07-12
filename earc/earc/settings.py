@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'cart_app',
     'admin_coupen_app',
     'razorpay',
-    'offer_app'
+    'offer_app',
 ]
 
 MIDDLEWARE = [

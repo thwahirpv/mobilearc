@@ -26,8 +26,6 @@ Add coupen
                     Add Category offers
                 {% elif request.path ==  '/admin/offers/brand/add/' %}
                     Add Brand offers
-                {% elif request.path == '/admin/offers/product/add/' %}
-                    Add Product offer
                 {% endif %}
             </h5>
             <div class="card w-50 row justify-content-center align-items-center" style="height: 50%;">
@@ -70,22 +68,32 @@ Add coupen
                     <div class="row col-6 mt-3">
                         <div class="custom_select">
                             {% if request.path == '/admin/offers/category/add/' %}
-                            <select name="offer_category" class="form-select select-nice">
-                                {% if offer_item %}
-                                    <option value="{{offer_item.offer_category.category_id}}" selected>{{offer_item.offer_category.category_name}}</option>
-                                {% else %}
-                                    <option value="" selected>Categories</option>
-                                {% endif %}
-                                {% for item in items %}
-                                    <option value="{{item.category_id}}">{{ item.category_name }}</option>
-                                {% endfor %}
-                            </select>
+                                <select name="offer_category" class="form-select select-nice">
+                                    {% if offer_item %}
+                                        <option value="{{offer_item.offer_category.category_id}}" selected>{{offer_item.offer_category.category_name}}</option>
+                                    {% else %}
+                                        <option value="" selected>Categories</option>
+                                    {% endif %}
+                                    {% for item in items %}
+                                        <option value="{{item.category_id}}">{{ item.category_name }}</option>
+                                    {% endfor %}
+                                </select>
                             {% elif request.path ==  '/admin/offers/brand/add/' %}
-                                
-                            {% elif request.path == '/admin/offers/product/add/' %}
-                                Add Product offer
+                                <select name="brand" class="form-select select-nice">
+                                    {% if offer_item %}
+                                        <option value="{{offer_item.brand.brand_id}}" selected>
+                                            {{offer_item.brand.brand_name}}
+                                        </option>
+                                    {% else %}
+                                        <option value="" selected>
+                                            Brands
+                                        </option>
+                                    {% endif %}
+                                    {% for item in items %}
+                                        <option value="{{item.brand_id}}">{{item.brand_name}}</option>
+                                    {% endfor %}
+                                </select>
                             {% endif %}
-                            
                         </div>
                     </div>  
 

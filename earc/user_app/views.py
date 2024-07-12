@@ -315,12 +315,12 @@ def forget_password(request):
 def change_password(request):
     if request.method == 'POST':
         email = request.session.get('email')
-        del request.session['email']
         user = get_object_or_404(UserDetails, email=email)
         password = request.POST.get('password')
         conform_password = request.POST.get('conform_password')
+        print('=================')
+        print(email)
       
-
         try:
             validate_password(password)
         except:
@@ -329,20 +329,32 @@ def change_password(request):
         
         if not password == conform_password:
             messages.error(request, 'Password is not match!', extra_tags='text-danger')
-            print('its not match')
             return redirect('user_app:change_password')
-        if user.is_authenticated:
-            print('he is authenticated')
-            user.set_password(password)
-            user.save()
-            user = authenticate(request, email=email, password=password)
-            login(request, user)
-            messages.success(request, 'Password Successfully changed', extra_tags='text-success')
-            return redirect('user_app:account_view')
-        else:
-            user.set_password(password)
-            user.save()
-            messages.success(request, 'Password Successfully changed', extra_tags='text-success')
+        
+        try:
+            if user.is_authenticated:
+                user.set_password(password)
+                user.save()
+                user = authenticate(request, email=email, password=password)
+                logout(request)
+                print('=====================')
+                print('Hello its hit here 1')
+                if 'email' in request.session:
+                    del request.session['email']
+                messages.success(request, 'Password Successfully changed', extra_tags='text-success')
+                return redirect('user_app:account_view')
+            else:
+                user.set_password(password)
+                user.save()
+                print('=====================')
+                print('Hello its hit here 2')
+                if 'email' in request.session:
+                    del request.session['email']
+                messages.success(request, 'Password Successfully changed', extra_tags='text-success')
+                return redirect('user_app:user_login')
+        except Exception :
+            messages.warning(request, 'Try one more!', extra_tags='text-danger')
+            return redirect('user_app:change_password')
     return render(request, 'user_template/change_password.html')
 
 
@@ -417,9 +429,9 @@ def add_address(request):
             pincode = request.POST.get('pincode')
             address = request.POST.get('address')
 
-            next_url = request.GET.get('next')
+            if request.GET.get('next'):
+                request.session['next_url'] = request.GET.get('next')
 
-         
             if name == '' or name.isdigit():
                 messages.error(request, 'Enter valid name!')
                 return redirect('user_app:add_address')
@@ -463,6 +475,10 @@ def add_address(request):
                 address=address,
                 user = user
             )
+
+            next_url = request.session.get('next_url')
+            if 'next_url' in request.session:
+                del request.session['next_url']
             return redirect(next_url)
     except Exception as e:
         return redirect('user_app:add_address')
@@ -493,7 +509,9 @@ def update_address(request, id):
             pincode = request.POST.get('pincode', address_obj.pincode)
             address = request.POST.get('address', address_obj.address)
 
-            print(name, address_type, building_name, country_code, phone, state,city, pincode, address)
+            next_url = request.GET.get('next')
+            print(next_url)
+            
 
             if name == '' or name.isdigit():
                 messages.error(request, 'Enter valid name!')
@@ -537,9 +555,12 @@ def update_address(request, id):
             address_obj.pincode = pincode
             address_obj.address = address
             address_obj.save()
-            
+
+           
             return redirect('user_app:account_view')
     except Exception as e:
+        print(e)
+        messages.error(request, 'try one more!')
         return redirect('user_app:add_address')
     
     COUNTRY_CHOICES = [(country.alpha_2, country.name) for country in pycountry.countries]
@@ -571,6 +592,8 @@ def delete_address(request, id):
             }
             return JsonResponse(context, safe=True)
     except Exception as e:
+        print('===================')
+        print(e)
         context = {
             'status':False, 
             'text':'Address not found!'

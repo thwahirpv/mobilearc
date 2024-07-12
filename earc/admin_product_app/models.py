@@ -41,8 +41,8 @@ class products(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
-    def get_discount_percentage(self, size_Price):
-        selling_price = self.discount_price / (self.price +  int(size_Price)) * 100
+    def get_discount_percentage(self, product_price, size_Price, discount_price):
+        selling_price = discount_price / (product_price + size_Price)  * 100
         return round(selling_price, 0)
         
 

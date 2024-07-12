@@ -21,7 +21,7 @@ Add address
                         {% endfor %}
                         {% endif %}
                     <!-- ========== End user or phone number messages ========== -->
-                    <form method="post" {% if address_obj %} action="{% url 'user_app:update_address' id=address_obj.address_id %}" {% endif %} enctype="multipart/form-data">
+                    <form method="post" {% if address_obj %} action="{% url 'user_app:update_address' id=address_obj.address_id %}?next={{request.path}}" {% endif %} enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="row">
                             <!-- name -->

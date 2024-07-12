@@ -15,6 +15,26 @@ def order_list(request):
     
     order_data = Order.objects.all().exclude(status=0).order_by('-cart_id')
     page = request.GET.get('page', 1)
+    sort_by = None
+
+    if request.GET:
+        if request.GET.get('sort_by'):
+            sort_by = int(request.GET.get('sort_by', None))
+            if sort_by is not None:
+                if sort_by == 1:
+                    order_data = order_data.filter(status=sort_by)
+                elif sort_by == 2:
+                    order_data = order_data.filter(status=sort_by)
+                elif sort_by == 3:
+                    order_data = order_data.filter(status=sort_by)
+                elif sort_by == 4:
+                    order_data = order_data.filter(status=sort_by)
+                elif sort_by == 5:
+                    order_data = order_data.filter(status=sort_by)
+                elif sort_by == 6:
+                    order_data = order_data.filter(status=sort_by)
+                elif sort_by == 7:
+                    order_data = order_data.filter(status=sort_by)
 
     
     paginator_obj = Paginator(order_data, 10)
@@ -27,7 +47,8 @@ def order_list(request):
 
     context = {
         'order_data':order_data,
-        'status':Order.ORDER_STATUS
+        'status':Order.ORDER_STATUS,
+        'sort_by':sort_by
     }
     return render(request, 'admin_template/order_list.html', context)
 

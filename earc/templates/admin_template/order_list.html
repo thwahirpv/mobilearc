@@ -25,23 +25,29 @@ Oders
             <div class="card mb-4">
                 <header class="card-header">
                     <div class="row gx-3">
-                        <div class="col-lg-4 col-md-6 me-auto">
+                        <!-- <div class="col-lg-4 col-md-6 me-auto">
                             <input type="text" placeholder="Search..." class="form-control">
-                        </div>
+                        </div> -->
                         <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
+                        <form action="" method="get">
+                            <select class="form-select" name="sort_by" id="sort_by" onchange="this.form.submit()">
                                 <option>Status</option>
-                                <option>Active</option>
-                                <option>Disabled</option>
-                                <option>Show all</option>
+                                <option value="1" {% if sort_by == 1 %} selected {% endif %}>Processing</option>
+                                <option value="2" {% if sort_by == 2 %} selected {% endif %}>Shipped</option>
+                                <option value="3" {% if sort_by == 3 %} selected {% endif %}>Out of delivery</option>
+                                <option value="4" {% if sort_by == 4 %} selected {% endif %}>Delivered</option>
+                                <option value="5" {% if sort_by == 5 %} selected {% endif %}>cancel</option>
+                                <option value="6" {% if sort_by == 6 %} selected {% endif %}>Replace</option>
+                                <option value="7" {% if sort_by == 7 %} selected {% endif %}>Return & Refund</option>
                             </select>
+                        </form>
                         </div>
-                        <div class="col-lg-2 col-6 col-md-3">
+                        <!-- <div class="col-lg-2 col-6 col-md-3">
                             <select class="form-select">
                                 <option>Show 20</option>
                                 <option>Show 30</option>
                                 <option>Show 40</option>
-                            </select>
+                            </select> -->
                         </div>
                     </div>
                 </header> <!-- card-header end// -->

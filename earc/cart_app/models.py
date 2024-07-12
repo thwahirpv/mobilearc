@@ -3,6 +3,8 @@ from admin_app.models import UserDetails, Address
 from admin_product_app.models import products, Colors, Storage
 from admin_coupen_app.models import Coupen
 from django.apps import apps
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 # # Create your models here.
 
@@ -51,6 +53,9 @@ class Order(models.Model):
     total_price = models.IntegerField(null=True, default=0)
     delivery_charge = models.IntegerField(null=True, default=20)
     coupon_amount = models.IntegerField(null=True, blank=True, default=0)
+    content_type = models.ForeignKey(ContentType, on_delete=models.DO_NOTHING, null=True, default=None)
+    object_id = models.PositiveIntegerField(null=True, default=None)
+    offer_object = GenericForeignKey('content_type', 'object_id',)
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 

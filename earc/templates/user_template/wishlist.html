@@ -1,5 +1,6 @@
 ﻿{% extends "user_base.html" %}
 {% load static %}
+{% load product_tags %}
 {% block title %}
 Wishlist
 {% endblock %}
@@ -42,14 +43,18 @@ Wishlist
                                     {% if request.user.is_authenticated %}
                                     {% for item in wishlist_item %}
                                     <tr>
-                                        <td class="image product-thumbnail"><img src="{{ item.product.thumbnail.url }}" alt="#"></td>
+                                        <td class="image product-thumbnail"><img src="{{ item.color.images.first.product_image.url }}" alt="#"></td>
                                         <td class="product-des product-name">
-                                            <h5 class="product-name"><a href="shop-product-right.html">{{ item.product.product_name }}</a></h5>
+                                            <h5 class="product-name">
+                                                <a href="shop-product-right.html">{{ item.product.product_name }}</a>
+                                                <br>
+                                                <span class="text-muted" style="font-size: 12px;">{{item.color.color_name}}</span>
+                                            </h5>
                                             <p class="font-xs">
                                                 {{item.product.pro_category.category_name}}/{{item.product.pro_brand.brand_name}}
                                             </p>
                                         </td>
-                                        <td class="price" data-title="Price"><span>{{item.product.price}}</span></td>
+                                        <td class="price" data-title="Price"><span>{% product_price item.product item.storage.price_of_size %}</span></td>
                                         <td class="text-right" data-title="Cart">
                                             <form onsubmit="wishlistToCart(event)" class="d-flex" id="cart_form" method="post" enctype="multipart/form-data">
                                                 {% csrf_token %}
@@ -57,7 +62,7 @@ Wishlist
                                                 <button type="submit" class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
                                             </form>
                                         </td>
-                                        <td class="action" onclick="remove_wishlist_item('{{ item.wishlist_id }}')"><a><i class="fi-rs-trash"></i></a></td>
+                                        <td class="action" onclick="remove_wishlist_item('{{ item.wishlist_id }}', 0, 0)"><a><i class="fi-rs-trash"></i></a></td>
                                     </tr>
                                     {% endfor %}
                                     {% else %}
@@ -65,7 +70,13 @@ Wishlist
                                     <tr>
                                         <td class="image product-thumbnail"><img src="{{ value.image }}" alt="#"></td>
                                         <td class="product-des product-name">
-                                            <h5 class="product-name"><a href="shop-product-right.html">{{ value.name }}</a></h5>
+                                            <h5 class="product-name">
+                                                <a href="shop-product-right.html">{{ value.name }}</a>
+                                                <br>
+                                                <span class="text-muted" style="font-size: 10px;">{{ value.color_name }}</span>
+                                                <br>
+                                                <span class="text-muted" style="font-size: 9px;">{{ value.storage }}</span>
+                                            </h5>
                                             <p class="font-xs">
                                                 {{value.categroy}}/{{value.brand}}
                                             </p>
@@ -73,10 +84,10 @@ Wishlist
                                         <td class="price" data-title="Price"><span>{{ value.price }}</span></td>
                                     
                                         <td class="text-right" data-title="Cart">
-                                            <a href="{% url 'cart_app:add_item_to_cart' %}" class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</a>
+                                            <a href="{% url 'user_product_app:move_to_cart' %}" class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</a>
                                         </td>
                                         <td class="action" data-title="Remove">
-                                            <a onclick="remove_wishlist_item('{{value.id}}')">
+                                            <a onclick="remove_wishlist_item('{{value.product_id}}', '{{value.color_id}}', '{{value.storage_id}}')">
                                                 <i class="fi-rs-trash"></i>
                                             </a>
                                         </td>
@@ -230,8 +241,8 @@ Wishlist
         const messageIconContainer = document.getElementById('message_icon_container')
         const messageDiv = document.getElementById('message_div')
 
-        const remove_wishlist_item = (id) =>{
-            const url = `http://127.0.0.1:8000/products/remove_wishlist_item/${id}/`
+        const remove_wishlist_item = (p_id, c_id, s_id) =>{
+            const url = `http://127.0.0.1:8000/products/remove_wishlist_item/${p_id}/${c_id}/${s_id}`
             fetch(url)
             .then(response => response.json())
             .then(data => {

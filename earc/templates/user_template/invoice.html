@@ -69,21 +69,15 @@ Invoice
                     <tbody>
                       <tr>
                         <td class="fw-bold">Price</td>
-                        <td>{{order_obj.product.price}}</td>
+                        <td>{% product_with_storage_price order_obj %}</td>
                         <td>{{order_obj.quantity}}</td>
                         <td>{% product_price order_obj %} <span class="text-success fw-bold">+</span></td>
-                      </tr>
-                      <tr>
-                        <td class="fw-bold">Storage</td>
-                        <td>{{order_obj.storage.price_of_size}}</td>
-                        <td>{{order_obj.quantity}}</td>
-                        <td>{% storage_price order_obj %} <span class="text-success fw-bold">+</span></td>
-                      </tr>
+                      </tr> 
                       <tr>
                         <td class="fw-bold">Discount</td>
-                        <td>{{order_obj.product.discount_price}}</td>
+                        <td>{% discount_price order_obj %}</td>
                         <td>{{ order_obj.quantity }}</td>
-                        <td>{% discount_price order_obj %} <span class="text-danger fw-bold">-</span></td>
+                        <td>{% total_discount_price order_obj %}<span class="text-danger fw-bold">-</span></td>
                       </tr>
                       <tr>
                         <td class="fw-bold">Coupon</td>

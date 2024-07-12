@@ -289,7 +289,7 @@ Home
         <div class="row" style="padding: 15px; border-bottom: solid 1px gray;">
             <div class="col-6" style="padding-bottom: 40px;">
                 <div style="display: flex; justify-content: center; align-items: center;">
-                    <img style="width: 300px;" class="img-fluid" src="{{ order_obj.product.thumbnail.url }}">
+                    <img style="width: 300px;" class="img-fluid" src="{{ order_obj.color.images.first.product_image.url }}">
                 </div>
             </div>
             <div class="col-6" style="margin-top: 30px; padding-bottom: 40px;">
@@ -327,21 +327,15 @@ Home
                     <tbody>
                       <tr>
                         <td class="fw-bold">Price</td>
-                        <td>{{order_obj.product.price}}</td>
+                        <td>{% product_with_storage_price order_obj %}</td>
                         <td>{{order_obj.quantity}}</td>
                         <td>{% product_price order_obj %} <span class="text-success fw-bold">+</span></td>
                       </tr>
                       <tr>
-                        <td class="fw-bold">Storage</td>
-                        <td>{{order_obj.storage.price_of_size}}</td>
-                        <td>{{order_obj.quantity}}</td>
-                        <td>{% storage_price order_obj %} <span class="text-success fw-bold">+</span></td>
-                      </tr>
-                      <tr>
                         <td class="fw-bold">Discount</td>
-                        <td>{{order_obj.product.discount_price}}</td>
+                        <td>{% discount_price order_obj %}</td>
                         <td>{{ order_obj.quantity }}</td>
-                        <td>{% discount_price order_obj %} <span class="text-danger fw-bold">-</span></td>
+                        <td>{% total_discount_price order_obj %}<span class="text-danger fw-bold">-</span></td>
                       </tr>
                       <tr>
                         <td class="fw-bold">Coupon</td>

@@ -9,6 +9,7 @@ from django.db.models import Q
 from .models import *
 import json
 from .templatetags.cart_tags import sub_total
+from offer_app.models import category_offer, brand_offer
 
 
 class cart_management:
@@ -45,7 +46,8 @@ class cart_management:
             color_id = request.POST.get('color_id')
             storage_id = request.POST.get('storage_id')
             quantity = int(request.POST.get('quantity'))
-            print(color_id, storage_id, quantity)
+            offer_id = request.POST.get('offer_id')
+            offer_type = request.POST.get('offer_type')
             
             color_obj = Colors.objects.get(color_id=color_id)
             product_obj = color_obj.product
@@ -63,6 +65,18 @@ class cart_management:
                     storage = storage_obj,
                     status = 0
                 )
+                if offer_type == 'category':
+                    offer_obj = category_offer.objects.get(offer_id=offer_id)
+                    cart_obj.content_type = ContentType.objects.get_for_model(category_offer)
+                    cart_obj.object_id = offer_obj.offer_id
+                    cart_obj.save()
+                elif offer_type == 'brand':
+                    offer_obj = brand_offer.objects.get(offer_id=offer_id)
+                    cart_obj.content_type = ContentType.objects.get_for_model(brand_offer)
+                    cart_obj.object_id = offer_obj.offer_id
+                    cart_obj.save()
+                else:
+                    offer_obj = None
 
                 if cart_created:
                     if cart_obj.storage.stock < quantity:
@@ -71,20 +85,20 @@ class cart_management:
                     else:
                         cart_obj.quantity = quantity
                         cart_obj.save()
+
                 else:
                     if cart_obj.storage.stock < (cart_obj.quantity + quantity):
                         cart_obj.quantity = cart_obj.storage.stock
                         cart_obj.save()
                     else:
                         cart_obj.quantity = cart_obj.quantity + quantity
+                        cart_obj.save()
 
                 context = {
                     'status':True,
                 }
                 return JsonResponse(context, safe=True)
             except Exception as e:
-                print('=============')
-                print(e)
                 context = {
                     'status':False
                 }
@@ -129,6 +143,7 @@ class cart_management:
             data = json.loads(request.body)
             qty = data.get('qty')
             id = data.get('cart_id')
+            total = 0
             try:
                 cart_obj = get_object_or_404(Order, cart_id=id)
                 if cart_obj:
@@ -142,16 +157,22 @@ class cart_management:
                     else:
                         cart_obj.quantity = qty
                         cart_obj.save()
-                        product_price = cart_obj.product.price - cart_obj.product.discount_price
-                        product_price = product_price + int(cart_obj.storage.price_of_size)
-                        total = product_price * cart_obj.quantity
-                        cart_obj.total_price = total
-                        cart_obj.save()
+                        if cart_obj.offer_object is not None:
+                            discount_price = (cart_obj.product.price + int(cart_obj.storage.price_of_size)) * cart_obj.offer_object.discount_percentage / 100
+                            product_price = (cart_obj.product.price + int(cart_obj.storage.price_of_size)) - discount_price
+                            total = product_price * cart_obj.quantity
+                            cart_obj.total_price = total
+                            cart_obj.save()
+                        else:
+                            product_price = (cart_obj.product.price + int(cart_obj.storage.price_of_size)) - cart_obj.product.discount_price
+                            total = product_price * cart_obj.quantity
+                            cart_obj.total_price = total
+                            cart_obj.save()
                         
                         context = {
                             'status':True,
                             'stock': cart_obj.storage.stock,
-                            'total': total
+                            'total': round(total)
                         }
                         return JsonResponse(context, safe=True)
                 else:
@@ -201,14 +222,20 @@ class cart_management:
                 owner_obj = Owner.objects.get(customer=request.user)
                 cart_obj = Order.objects.filter(order_customer=owner_obj, status=0)
                 for item in cart_obj:
-                    product_total = item.product.price - item.product.discount_price
-                    product_total = product_total + int(item.storage.price_of_size)
-                    total += product_total * item.quantity
-                    item.total_price = total
-                    item.save()
+                    if item.offer_object is not None:
+                        discount_price = (item.product.price + int(item.storage.price_of_size)) * item.offer_object.discount_percentage / 100
+                        product_price = (item.product.price + int(item.storage.price_of_size)) - discount_price
+                        total += product_price * item.quantity
+                        item.total_price = product_price * item.quantity
+                        item.save()
+                    else:
+                        product_price = (item.product.price + int(item.storage.price_of_size)) - item.product.discount_price
+                        total += product_price * item.quantity
+                        item.total_price = product_price * item.quantity
+                
                 context = {
                     'status': True,
-                    'total': total
+                    'total': round(total)
                 }
                 return JsonResponse(context, safe=True)
             except Exception as e:

@@ -19,6 +19,14 @@ Cart
             </div>
         </div>
     </div>
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+            <p class="fw-bold text-danger mt-4">{{message}}</p>
+        {% endfor %}
+        {% endif %}
+    </div>
+    
     {% if cart_items %}
     <section class="mt-50 mb-50">
         <div class="container">
@@ -359,7 +367,6 @@ Cart
     }
 
     function update_sub_total(){
-        console.log('hai iam here')
         fetch('http://127.0.0.1:8000/cart/update_subtotal/')
         .then(response => response.json())
         .then(data => {

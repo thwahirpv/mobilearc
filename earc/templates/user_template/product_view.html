@@ -106,7 +106,7 @@ Home
                                                 <ins><span id="sellingPrice" class="text-brand">{{ product_obj.price|sub:product_obj.discount_price }}</span></ins>
 
                                                 <!-- Orginal price -->
-                                                <ins><span class="old-price font-md ml-15">{{ product_obj.price }}</span></ins>
+                                                <ins><span id="orginal_price" class="old-price font-md ml-15">{{ product_obj.price }}</span></ins>
 
                                                 <!-- discount percentage -->
                                                 <span id="percentage" class="save-price  font-md color3 ml-15"></span>
@@ -130,7 +130,7 @@ Home
                                                 <li id="color_{{forloop.counter}}" class="">
                                                     <a href="#" data-color="Red">
                                                         <span class="">
-                                                            <img onclick="collectDetails(colorId={{color.color_id}}, {{forloop.counter}})" src="{{ color.images.first.product_image.url }}" alt="">
+                                                            <img onclick="collectDetails(colorId='{{color.color_id}}', '{{forloop.counter}}')" src="{{ color.images.first.product_image.url }}" alt="">
                                                         </span>
                                                     </a>
                                                 </li>
@@ -151,6 +151,8 @@ Home
                                                 {% csrf_token %}
                                                 <input type="hidden" name="color_id" value="" id="colorId_input">
                                                 <input type="hidden" name="storage_id" value="" id="storageId_input">
+                                                <input type="hidden" name="offer_id" id="offer_id">
+                                                <input type="hidden" name="offer_type" id="offer_type">
                                                 <div class="d-flex">
                                                     <input style="width: 70px;" class="" type="number" id="quantity" name="quantity" value="1">
                                                      <div style="display: flex; flex-direction: column;">
@@ -665,11 +667,13 @@ Home
         const productIdInput = document.getElementById('productId_input')
         const colorIdInpupt = document.getElementById('colorId_input')
         const storageIdInput = document.getElementById('storageId_input')
+        
 
         function collectDetails(colorId, count){
             const thumbnileContainer = document.getElementById('thumbnileContainer')
             const storageContainer = document.getElementById('storage_container')
             const mainImg = document.getElementById('mainImg')
+
 
             const url = 'get_details/' + colorId + '/'
             
@@ -699,14 +703,20 @@ Home
                         const sellingPrice = document.getElementById('sellingPrice')
                         const discountPercentage = document.getElementById('percentage')
                         const stockCount = document.getElementById('stock_count')
+                        const orginalPrice = document.getElementById('orginal_price')
+                        const offerId = document.getElementById('offer_id')
+                        const offerType = document.getElementById('offer_type')
                         if(item.stock >= 1){
                             document.getElementById('cartDiv').style.display = 'flex'
                             document.getElementById('outOfStockDiv').style.display = 'none'
-                            sellingPrice.innerHTML = item.price
+                            orginalPrice.innerHTML = item.orginal_price
+                            sellingPrice.innerHTML = '₹' + item.price
                             stockCount.innerHTML = item.stock
                             discountPercentage.innerHTML = item.percentage+'%'
                             storageIdInput.value = item.id
                             document.getElementById('quantity').value = 1
+                            offerId.value = item.offer_id
+                            offerType.value = item.offer_type
                         }else{
                             stockCount.innerHTML = item.stock
                             document.getElementById('cartDiv').style.display = 'none'
@@ -715,7 +725,7 @@ Home
                     }
                     const liTag = document.createElement('li')
                     const aTag = document.createElement('a')
-                    aTag.innerHTML = item.ram + '+' + item.rom
+                    aTag.innerHTML = item.ram + 'GB' + '/' + item.rom + 'GB'
                     aTag.id = `storage_${index}`
                     liTag.appendChild(aTag)
                     aTag.classList.add('remove')
@@ -737,7 +747,10 @@ Home
             const stockCount = document.getElementById('stock_count')
             const storage = document.getElementById(`storage_${index}`)
             const remove = document.querySelectorAll('.remove')
+            const orginalPrice = document.getElementById('orginal_price')
             const discountPercentage = document.getElementById('percentage')
+            const offerId = document.getElementById('offer_id')
+            const offerType = document.getElementById('offer_type')
             if(item.stock >= 1){
                 document.getElementById('cartDiv').style.display = 'flex'
                 document.getElementById('outOfStockDiv').style.display = 'none'
@@ -746,11 +759,14 @@ Home
                     element.style.background = 'white'
                     element.style.color = 'black'
                 })
-                sellingPrice.innerHTML = item.price
+                sellingPrice.innerHTML = '₹' + item.price
+                orginalPrice.innerHTML = item.orginal_price
                 storage.style.background = '#088178'
                 stockCount.innerHTML = item.stock
                 discountPercentage.innerHTML = item.percentage+'%'
                 storageIdInput.value = item.id
+                offerId.value = item.offer_id
+                offerType.value = item.offer_type
             }else{
                 stockCount.innerHTML = item.stock
                 storage.style.background = 'gray'
@@ -804,8 +820,14 @@ Home
     }
    
     const add_wishlist_item = (id) => {
+        event.preventDefault();
+        form = document.getElementById('cart_form')
+        const formData = new FormData(form)
         const url = `http://127.0.0.1:8000/products/add_wishlist/${id}/`
-        fetch(url)
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        })
         .then(response => response.json())
         .then(data => {
             if (data.status){

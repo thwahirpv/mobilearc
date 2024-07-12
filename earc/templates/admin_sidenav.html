@@ -23,7 +23,7 @@
                         <span class="text">Category</span>
                     </a>
                 </li>
-                <li class="menu-item has-submenu {% if 'brand' in request.path %} active {% endif %}">
+                <li class="menu-item has-submenu {% if 'products/brands' in request.path %} active {% endif %}">
                     <a class="menu-link" > <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Brand</span>
                     </a>
@@ -66,7 +66,8 @@
                     </a>
                     <div class="submenu">
                         <a href="{% url 'admin_coupen_app:list_coupens' %}" class="{% if request.path == '/admin/coupen/' %} active fw-bold {% endif %}">Coupens Offers</a>
-                        <a href="{% url 'admin_offer_app:list_category' %}" class="{% if request.path == '/admin/offers/category/' or '/admin/offers/category/add/' %} active fw-bold {% endif %}">Category offers</a>
+                        <a href="{% url 'admin_offer_app:list_category' %}" class="{% if request.path == '/admin/offers/category/' or request.path == '/admin/offers/category/add/' %} active fw-bold {% endif %}">Category offers</a>
+                        <a href="{% url 'admin_offer_app:list_brand' %}" class="{% if request.path == '/admin/offers/brand/' or request.path == '/admin/offers/brand/add/' %} active fw-bold {% endif %}">Brand offers</a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu {% if 'top_sellings' in request.path %} active {% endif %}">

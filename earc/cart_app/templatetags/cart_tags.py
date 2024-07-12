@@ -5,19 +5,36 @@ register = template.Library()
 
 @register.simple_tag(name='selling_price')
 def selling_price(item):
-    price = item.product.price - item.product.discount_price
-    total_price = price + int(item.storage.price_of_size)
-    return total_price
+    if item.offer_object is not None:
+        discount_price = ((item.product.price + int(item.storage.price_of_size)) * item.offer_object.discount_percentage) / 100
+        product_price = (item.product.price + int(item.storage.price_of_size)) - discount_price
+        item.total_price = product_price
+        item.save()
+        return round(product_price)
+    else:
+        product_price = (item.product.price + int(item.storage.price_of_size)) - item.product.discount_price
+        item.total_price = product_price
+        item.save()
+        return round(product_price)
 
 
 @register.simple_tag(name='product_sub_total')
 def product_sub_total(item):
-    price = item.product.price - item.product.discount_price
-    total_price = price + int(item.storage.price_of_size)
-    sub_tatal = total_price * item.quantity
-    item.total_price = sub_tatal
-    item.save()
-    return sub_tatal
+    if item.offer_object is not None:
+        discount_price = ((item.product.price + int(item.storage.price_of_size)) * item.offer_object.discount_percentage) / 100
+        product_price = (item.product.price + int(item.storage.price_of_size)) - discount_price
+        total_price = product_price * item.quantity
+        item.total_price = total_price
+        item.save()
+        return round(total_price)
+    else:
+        product_price = (item.product.price + int(item.storage.price_of_size)) - item.product.discount_price
+        total_price = product_price * item.quantity
+        item.total_price = total_price
+        item.save()
+        return round(total_price)
+
+    
 
 @register.simple_tag(name='cart_image')
 def cart_image(item):
@@ -28,10 +45,16 @@ def cart_image(item):
 def sub_total(cart_items):
     total = 0
     for item in cart_items:
-        price = item.product.price - item.product.discount_price
-        total_price = price + int(item.storage.price_of_size)
-        total +=  item.quantity * total_price
-    return total
+        if item.offer_object is not None: 
+            discount_price = ((item.product.price + int(item.storage.price_of_size)) * item.offer_object.discount_percentage) / 100
+            product_price = (item.product.price + int(item.storage.price_of_size)) - discount_price
+            total_price = product_price * item.quantity
+            total += total_price
+        else:
+            product_price = (item.product.price + int(item.storage.price_of_size)) - item.product.discount_price
+            total_price = product_price * item.quantity
+            total += total_price
+    return round(total)
 
 
 @register.simple_tag(name='count_of_cart_items')

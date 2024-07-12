@@ -12,7 +12,7 @@ from django.contrib import messages
 from datetime import datetime
 import pytz
 from admin_coupen_app.models import User_coupon
-from .templatetags.order_tags import sub_total
+from .templatetags.order_tags import final_total_price
 from admin_app.models import Wallet, wallet_history
 import razorpay
 from earc.settings import RAZORPAY_KEY_ID, RAZORPAY_SECRET_KEY
@@ -39,15 +39,35 @@ def checkout(request):
         status=0
     )
 
+    for item in order_data:
+        if item.storage.stock == 0:
+            item.quantity = item.storage.stock
+            item.save()
+            messages.warning(request, f'{item.product.product_name} stock is not available try after stock came!')
+            return redirect('cart_app:view_cart')
+        elif item.storage.stock < item.quantity:
+            item.quantity = item.storage.stock
+            item.save()
+            if item.storage.stock == 0:
+                item.quantity = item.storage.stock
+                item.save()
+                messages.warning(request, f'{item.product.product_name} stock is not available try after stock came!')
+                return redirect('cart_app:view_cart')
+            messages.warning(request, f'{item.product.product_name} only {item.storage.stock} stock!')
+            return redirect('cart_app:view_cart')
     try:
         coupons_data = Coupen.objects.exclude(used_users=user)
     except:
         coupen_data = Coupen.objects.none()
 
     for item in order_data:
-        price = item.product.price - item.product.discount_price
-        total_price = price + int(item.storage.price_of_size)
-        total += total_price * item.quantity
+        if item.offer_object is not None:
+            discount_price = (item.product.price + int(item.storage.price_of_size)) * item.offer_object.discount_percentage / 100
+            product_price = (item.product.price + int(item.storage.price_of_size)) - discount_price
+            total += product_price * item.quantity
+        else:
+            product_price = (item.product.price + int(item.storage.price_of_size)) - item.product.discount_price
+            total += product_price * item.quantity
 
     if request.method == 'POST':
         coupen_code = request.POST.get('coupen_code')
@@ -111,9 +131,7 @@ def checkout(request):
 def razorpay_order(request):
     if not request.user.is_authenticated or request.user.is_active is False:
         return redirect('user_app:user_login')
-
-    client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET_KEY))
-
+    
     try:
         owner_obj = Owner.objects.get(
             customer=request.user,
@@ -121,7 +139,7 @@ def razorpay_order(request):
     except Exception as e:
         context = {
             'status': False,
-            'text':'Try again after some time!'
+            'text':e
         }
         return JsonResponse(context, safe=True)
     
@@ -130,16 +148,52 @@ def razorpay_order(request):
             order_customer=owner_obj,
             status=0
         )
-        total = sub_total(order_obj, owner_obj=None)
-    except:
+        total = final_total_price(order_obj, owner_obj=None)
+    except Exception as e:
         context = {
             'status': False,
-            'text':'Try again after some time!'
+            'text':e
         }
         return JsonResponse(context, safe=True)
-
+    
+    for item in order_obj:
+        if item.storage.stock == 0:
+            item.quantity = item.storage.stock
+            item.save()
+            context = {
+                'status':False,
+                'text':f'{item.product.product_name} currently no stock!'
+            }
+            return JsonResponse(context, safe=True)
+        elif item.storage.stock < item.quantity:
+            item.quantity = item.storage.stock
+            item.save()
+            if item.storage.stock == 0:
+                item.quantity = item.storage.stock
+                item.save()
+                context = {
+                    'status':False,
+                    'text':f'{item.product.product_name} currently no stock!'
+                }
+                return JsonResponse(context, safe=True)
+            context = {
+                'status':False,
+                'text':f'{item.product.product_name} only {item.storage.stock} stock!. You can order {item.storage.stock}'
+            }
+            return JsonResponse(context, safe=True)
+    
+    
     try:
-        data = { "amount": total, "currency": "INR", "payment_capture":1 }
+        client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET_KEY))
+    except Exception as e:
+        context = {
+            'status': False,
+            'text':'Connection problem. Ensure your connection!'
+        }
+        return JsonResponse(context, safe=True)
+    
+    try:
+        data = { "amount": int(total), "currency": "INR", "payment_capture":1 }
         payment = client.order.create(data=data)
         order_id = payment['id']
         context = {
@@ -150,18 +204,14 @@ def razorpay_order(request):
             'currency':data['currency']
         }
         return JsonResponse(context, safe=True)
-    except:
+    except Exception as e:
         context = {
             'status': False,
-            'text':'Try again after some time!'
+            'text':'connection problem. Ensure your connection!'
         }
         return JsonResponse(context, safe=True)
     
     
-
-
-
-
 def place_order(request):
     if not request.user.is_authenticated or request.user.is_active is False:
         return redirect('user_app:user_login')
@@ -180,10 +230,37 @@ def place_order(request):
         except Exception as e:
             context = {
                 'status': False,
-                'text':'Try again after some time!'
+                'text':e
             }
             return JsonResponse(context, safe=True)
-
+        
+        try:
+            order_obj = Order.objects.filter(
+                    order_customer=owner_obj,
+                    status=0
+                )
+        except Exception as e:
+            context = {
+                'status': False,
+                'text':e
+            }
+            return JsonResponse(context, safe=True)
+        
+        for item in order_obj:
+            if item.storage.stock == 0:
+                item.quantity = item.storage.stock
+                item.save()
+                messages.warning(request, f'{item.product.product_name} stock is not available try after stock came!')
+                return redirect('cart_app:view_cart')
+            elif item.storage.stock < item.quantity:
+                item.quantity = item.storage.stock
+                item.save()
+                if item.storage.stock == 0:
+                    item.quantity = item.storage.stock
+                    item.save()
+                    messages.warning(request, f'{item.product.product_name} stock is not available try after stock came!')
+                    return redirect('cart_app:view_cart')
+                messages.warning(f'{item.product.product_name} only {item.storage.stock} stock!')
         try:
             address_obj = Address.objects.get(
                 address_id=address_id
@@ -198,7 +275,7 @@ def place_order(request):
         if payment_method == 'wallet':
             try:
                 wallet_obj = Wallet.objects.get(user=request.user)
-            except:
+            except Exception as e:
                 context = {
                     'status': False,
                     'text':"Your wallet doesn't have enough money"
@@ -207,11 +284,7 @@ def place_order(request):
 
         if order_type == 'multiple':
             try:
-                order_obj = Order.objects.filter(
-                    order_customer=owner_obj,
-                    status=0
-                )
-                total = sub_total(order_obj, owner_obj=None)
+                total = final_total_price(order_obj, owner_obj=None)
                 if payment_method == 'wallet':
                     if wallet_obj:
                         if wallet_obj.balance >= total:
@@ -239,15 +312,16 @@ def place_order(request):
 
 
                 for item in order_obj:
-                    payment_obj = Payment.objects.create(payment_mode=payment_method,
-                                                         payment_id=payment_id,
-                                                         payment_status=True if payment_method == 'online_payment' or 'wallet' else False
-                                                         )
+                    payment_obj = Payment.objects.create(
+                        payment_mode=payment_method,
+                        payment_id=payment_id,
+                        payment_status=True if payment_method == 'online_payment' or 'wallet' else False
+                    )
                     item.status = 1
                     item.order_address = address_obj
                     item.order_payment = payment_obj
-                    item.coupon_amount = (owner_obj.coupon_percentage/100 * total / order_obj.count()) if owner_obj.coupon_percentage else 0
-                    item.total_price = product_sub_total(item) - (owner_obj.coupon_percentage/100 * total / order_obj.count()) if owner_obj.coupon_percentage else product_sub_total(item)
+                    item.coupon_amount = ((owner_obj.coupon_percentage/100 * total) / order_obj.count()) if owner_obj.coupon_percentage else 0
+                    item.total_price = product_sub_total(item) - ((owner_obj.coupon_percentage/100 * total) / order_obj.count()) if owner_obj.coupon_percentage else product_sub_total(item)
                     item.delivery_charge = 20 
                     item.save() 
                     item.product.sold_out += item.quantity
@@ -278,7 +352,7 @@ def place_order(request):
             except Exception as e:
                 context = {
                     'status': False,
-                    'text':'Try after few minutes!'
+                    'text':e
                 }
                 return JsonResponse(context, safe=True)
         else:

@@ -21,13 +21,15 @@ Oders
                             Category offers
                         {% elif request.path ==  '/admin/offers/brand/' %}
                             Brand offers
-                        {% elif request.path == 'admin/offers/product/' %}
-                            Product offer
                         {% endif %}
                     </h2>
                 </div>
                 <div>
-                    <a href="{% url 'admin_offer_app:add_category_offer' %}" class="btn btn-sm btn-primary fw-semibold">New Offer</a>
+                    {% if request.path == '/admin/offers/category/' %}
+                        <a href="{% url 'admin_offer_app:add_category_offer' %}" class="btn btn-sm btn-primary fw-semibold">New Offer</a>
+                    {% elif request.path ==  '/admin/offers/brand/' %}
+                        <a href="{% url 'admin_offer_app:add_brand_offer' %}" class="btn btn-sm btn-primary fw-semibold">New Offer</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="card mb-4">
@@ -67,50 +69,95 @@ Oders
                                 </tr>
                             </thead>
                             <tbody>
+                               <!-- Table for category offer -->
+                                {% if request.path == '/admin/offers/category/' %}
+                                    {% for item in offer_items %}
+                                        <tr>
+
+                                            <!-- name -->
+                                            <td>
+                                                <b class="fw-bold" style="font-size: 14px;">{{item.offer_category.category_name}}</b>
+                                            </td>
+
+                                            
+                                            <!-- price -->
+                                            <td>
+                                                <p class="fw-bold" style="font-size: 14px;">{{item.eligible_price}}</p>
+                                            </td>
+
+                                            <!-- condition -->
+                                            <td>
+                                                <p class="fw-bold" style="font-size: 14px;">{{item.discount_percentage}}%</p>
+                                            </td>
+
+                                            <!-- status -->
+                                            <td class="">
+                                                <a href="{% url 'admin_offer_app:block_unblock_category' id=item.offer_id %}" class="fw-bold badge rounded-pill {% if item.is_active %} alert-success {% else %} alert-danger {% endif %}">
+                                                    {% if item.is_active %}
+                                                    Active
+                                                    {% else %}
+                                                    Block
+                                                    {% endif %}
+                                                </a>
+                                            </td>
+
+                                            <!-- Expire status -->
+                                            <td class="">
+                                                <p class="fw-bold">{{item.expiration_date}}</p>
+                                            </td>
+
+                                            <!-- Details button -->
+                                            <td class="text-end">
+                                                <a href="{% url 'admin_offer_app:category_offer_details' id=item.offer_id %}" class="btn btn-md rounded font-sm me-2">Detail</a>
+                                                <a href="{% url 'admin_offer_app:update_category_offer' id=item.offer_id %}" class="btn btn-md rounded font-sm me-2">Update</a>
+                                                <a href="" class=""><i class="fa-solid fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}                                
+                                {% elif request.path ==  '/admin/offers/brand/' %}
+                                    {% for item in offer_items %}
+                                        <tr>
+                                            <!-- name -->
+                                            <td>
+                                                <b class="fw-bold" style="font-size: 14px;">{{item.brand.brand_name}}</b>
+                                            </td>
+
+                                            <!-- price -->
+                                            <td>
+                                                <p class="fw-bold" style="font-size: 14px;">{{item.eligible_price}}</p>
+                                            </td>
+
+                                            <!-- condition -->
+                                            <td>
+                                                <p class="fw-bold" style="font-size: 14px;">{{item.discount_percentage}}%</p>
+                                            </td>
+
+                                            <!-- status -->
+                                            <td class="">
+                                                <a href="{% url 'admin_offer_app:block_and_unblock_brand' id=item.offer_id %}" class="fw-bold badge rounded-pill {% if item.is_active %} alert-success {% else %} alert-danger {% endif %}">
+                                                    {% if item.is_active %}
+                                                    Active
+                                                    {% else %}
+                                                    Block
+                                                    {% endif %}
+                                                </a>
+                                            </td>
+
+                                            <!-- Expire status -->
+                                            <td class="">
+                                                <p class="fw-bold">{{item.expiration_date}}</p>
+                                            </td>
+
+                                            <!-- Details button -->
+                                            <td class="text-end">
+                                                <a href="{% url 'admin_offer_app:brand_details' id=item.offer_id %}" class="btn btn-md rounded font-sm me-2">Detail</a>
+                                                <a href="{% url 'admin_offer_app:update_brand_offer' id=item.offer_id %}" class="btn btn-md rounded font-sm me-2">Update</a>
+                                                <a href="" class=""><i class="fa-solid fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
                                
-                                {% for item in offer_items %}
-                                <tr>
-
-                                    <!-- name -->
-                                    <td>
-                                        <b class="fw-bold" style="font-size: 14px;">{{item.offer_category.category_name}}</b>
-                                    </td>
-
-                                    
-                                    <!-- price -->
-                                    <td>
-                                        <p class="fw-bold" style="font-size: 14px;">{{item.eligible_price}}</p>
-                                    </td>
-
-                                    <!-- condition -->
-                                    <td>
-                                        <p class="fw-bold" style="font-size: 14px;">{{item.discount_percentage}}%</p>
-                                    </td>
-
-                                    <!-- status -->
-                                    <td class="">
-                                        <a href="{% url 'admin_offer_app:block_unblock_category' id=item.offer_id %}" class="fw-bold badge rounded-pill {% if item.is_active %} alert-success {% else %} alert-danger {% endif %}">
-                                            {% if item.is_active %}
-                                            Active
-                                            {% else %}
-                                            Block
-                                            {% endif %}
-                                        </a>
-                                    </td>
-
-                                    <!-- Expire status -->
-                                    <td class="">
-                                        <p class="fw-bold">{{item.expiration_date}}</p>
-                                    </td>
-
-                                    <!-- Details button -->
-                                    <td class="text-end">
-                                        <a href="" class="btn btn-md rounded font-sm me-2">Detail</a>
-                                        <a href="{% url 'admin_offer_app:update_category_offer' id=item.offer_id %}" class="btn btn-md rounded font-sm me-2">Update</a>
-                                        <a href="" class=""><i class="fa-solid fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                              {% endfor %}
                             </tbody>
                         </table>
                     </div> <!-- table-responsive //end -->
@@ -159,52 +206,4 @@ Oders
             </div>
         </footer>
     </main>
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
-    <script>
-        const changeStatus = (selectedElement, id) => {
-            const csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-            fetch(`http://127.0.0.1:8000/admin/order/update_status/`,{
-                method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrf_token
-                },
-                body: JSON.stringify({
-                    id:id,
-                    value:selectedElement.value
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.status == true){
-                    console.log('its working', data.title)
-                    Swal.fire({
-                        toast: true,
-                        title: data.title,
-                        icon: "success",
-                        showCancelButton: false,
-                        showConfirmButton: false,
-                        allowOutsideClick: true, 
-                        timerProgressBar: true,
-                        position: 'top-end',
-                        timer: 10000,
-                        didOpen: (toast) => {
-                            toast.onmouseenter = Swal.stopTimer;
-                            toast.onmouseleave = Swal.resumeTimer;
-                        }
-                    })
-                }else{
-                    Swal.fire({
-                    title: data.title,
-                    icon: "warning",
-                    showCancelButton: false,
-                    position: 'top-end',
-                    timer: 2000 
-                })
-                }
-            })
-        }
-    </script>
   {% endblock %}

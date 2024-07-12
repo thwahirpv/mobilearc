@@ -133,7 +133,7 @@ Checkout
                                 <thead>
                                     <tr>
                                         <th colspan="2">Product</th>
-                                        <th>Total</th>
+                                        <th>Price</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -141,7 +141,7 @@ Checkout
                                     {% for item in order_data %}
                                     <tr>
                                         <td class="image product-thumbnail">
-                                            <img src="{{item.product.thumbnail.url}}" alt="#">
+                                            <img src="{{ item.color.images.first.product_image.url }}" alt="#">
                                         </td>
                                         <td>
                                             <h5>
@@ -167,7 +167,7 @@ Checkout
                                     <tr>
                                         <th>Total</th>
                                         <td colspan="2" class="product-subtotal"><span
-                                            class="font-xl text-brand fw-900">{% sub_total order_data owner_obj %}</span></td>
+                                            class="font-xl text-brand fw-900">{% final_total_price order_data owner_obj %}</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -470,9 +470,14 @@ Checkout
                             rzp1.on('payment.failed', function (response) {
                                 document.getElementById('error_msg').innerHTML = "Payment failed try again!"
                             });
-                            rzp1.open();
+                            try {
+                                rzp1.open();
+                            } catch (error) {
+                                document.getElementById('error_msg').innerHTML = 'Payment failed try again!'
+                            }
+                            
                         } else {
-                            document.getElementById('error_msg').innerHTML = data.text
+                            document.getElementById('error_msg').innerHTML = 'Payment cancelled!'
                         }
                     });
                 } else {
@@ -538,7 +543,7 @@ Checkout
                 if (data.status == true) {
                     window.location.href = 'http://127.0.0.1:8000/checkout/placed/'
                 } else {
-                    document.getElementById('error_msg').innerHTML = status.text
+                    document.getElementById('error_msg').innerHTML = data.text
                 }
             })
     }

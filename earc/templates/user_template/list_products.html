@@ -30,16 +30,23 @@ Products
                     <div class="col-lg-9">
                         <div class="shop-product-fillter">
                             <div class="totall-product">
-                                <p> We found <strong class="text-brand">688</strong> items for you!</p>
+                                <p> We found <strong class="text-brand">{{ products_data|length }}</strong> items for you!</p>
                             </div>
                             <div class="sort-by-product-area">
                                 <div class="sort-by-cover mr-10">
                                     <div class="sort-by-product-wrap">
                                         <div class="sort-by">
-                                            <span><i class="fi-rs-apps"></i>Show:</span>
-                                        </div>
-                                        <div class="sort-by-dropdown-wrap">
-                                            <span> 50 <i class="fi-rs-angle-small-down"></i></span>
+                                            <form class="d-flex" action="{% url 'user_product_app:list_products' %}" id="" method="get">
+                                                <span><i class="fi-rs-apps"></i>show:</span>
+                                                <input type="hidden" name="sort_with_search" id="sort_with_search" {% if sort_with_search %} value="{{sort_with_search}}" {% endif %} >
+                                                <select name="show_by" id="show_by" onchange="this.form.submit()" >
+                                                    <option value="all" {% if show_by == 'all' %} selected {% endif %}>All</option>
+                                                    <option value="one" {% if show_by == 'one' %} selected {% endif %}>1</option>
+                                                    <option value="two" {% if show_by == 'two' %} selected {% endif %}>2</option>
+                                                    <option value="three" {% if show_by == 'three' %} selected {% endif %}>3</option>
+                                                    <option value="four" {% if show_by == 'four' %} selected {% endif %}>4</option>
+                                                </select>
+                                            </form>
                                         </div>
                                     </div>
                                     <div class="sort-by-dropdown">
@@ -55,10 +62,16 @@ Products
                                 <div class="sort-by-cover">
                                     <div class="sort-by-product-wrap">
                                         <div class="sort-by">
-                                            <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
-                                        </div>
-                                        <div class="sort-by-dropdown-wrap">
-                                            <span> Featured <i class="fi-rs-angle-small-down"></i></span>
+                                            <form class="d-flex" action="{% url 'user_product_app:list_products' %}" id="" method="get">
+                                                <span><i class="fi-rs-apps"></i>Sort:</span>
+                                                <input type="hidden" name="sort_with_search" id="sort_with_search" {% if sort_with_search %} value="{{sort_with_search}}" {% endif %} >
+                                                <select name="sort_by" id="sort_by" onchange="this.form.submit()" >
+                                                    <option value="all" {% if sort_by == 'all' %} selected {% endif %}>All</option>
+                                                    <option value="low_to_high" {% if sort_by == 'low_to_high' %} selected {% endif %}>Low to High</option>
+                                                    <option value="high_to_low" {% if sort_by == 'high_to_low' %} selected {% endif %}>High to Low</option>
+                                                    <option value="new" {% if sort_by == 'new' %} selected {% endif %}>New</option>
+                                                </select>
+                                            </form>
                                         </div>
                                     </div>
                                     <div class="sort-by-dropdown">
@@ -203,9 +216,9 @@ Products
                                         <h5 class="section-title style-1 mb-30 wow fadeIn animated">Colors</h5>
                                         <div id="" class="custome-checkbox">
                                             <ul class="categories">
-                                                <li><a href="{% url 'user_product_app:list_products' %}?color=all">all</a></li>
+                                                <li><a href="{% url 'user_product_app:list_products' %}?color=all&sort_with_search={{sort_with_search}}">all</a></li>
                                                 {% for item in colors_data %}
-                                                <li><a href="{% url 'user_product_app:list_products' %}?color={{item.color_name}}">{{item.color_name}}</a></li>
+                                                <li><a href="{% url 'user_product_app:list_products' %}?color={{item.color_name}}&sort_with_search={{sort_with_search}}">{{item.color_name}}</a></li>
                                                 {% endfor %}
                                             </ul>
                                         </div>

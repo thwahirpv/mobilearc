@@ -81,7 +81,7 @@
                     <div class="search-style-2">
                         <form action="{% url 'user_product_app:list_products' %}" method="get">
                             {% csrf_token %}
-                            <input type="text" name="search_text" placeholder="Search for items...">
+                            <input type="text" name="search_text" placeholder="{% if search %} {{search}} {% elif sort_with_search %} {{sort_with_search}} {% else %} Search for items... {% endif %}">
                             <button type="submit" class="btn btn-sm btn-primary me-4 text-white" style="background: #088178;">search</button>
                         </form>
                     </div>

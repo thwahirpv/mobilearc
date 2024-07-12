@@ -13,7 +13,7 @@ urlpatterns = [
     path('view/<int:id>/get_details/<int:colorId>/', collect_image, name='collect_image'),
     path('wishlist/', wishlist_management.wishlist_view, name='wishlist_view'),
     path('add_wishlist/<int:id>/', wishlist_management.add_wishlist_item, name='add_wishlist_item'),
-    path('remove_wishlist_item/<int:id>/', wishlist_management.remove_from_wishlist, name='remove_from_wishlist'),
+    path('remove_wishlist_item/<int:p_id>/<int:c_id>/<int:s_id>/', wishlist_management.remove_from_wishlist, name='remove_from_wishlist'),
     path('quantity_check/', quantity_check, name='quantity_check'),
     path('movetocart/', wishlist_management.move_to_cart, name='move_to_cart')
 ]
