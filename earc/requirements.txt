@@ -20,7 +20,6 @@ cycler==0.12.1
 distlib==0.3.8
 distro==1.9.0
 Django==5.0
-django-bootstrap-v5==1.0.11
 django-crispy-forms==2.1
 django-mathfilters==1.0.0
 django-phonenumber-field==7.3.0
@@ -56,8 +55,6 @@ Pillow==10.0.1
 platformdirs==4.1.0
 psycopg==3.1.12
 psycopg2==2.9.9
-PyAudio==0.2.14
-PyAutoGUI==0.9.54
 pycountry==23.12.11
 pydantic==2.6.1
 pydantic_core==2.16.2
@@ -70,7 +67,6 @@ PyJWT==2.8.0
 PyMsgBox==1.0.9
 pyparsing==3.1.1
 pyperclip==1.8.2
-pypiwin32==223
 pyppeteer==2.0.0
 pyppeteer_stealth==2.7.4
 PyQt5==5.15.10
@@ -84,7 +80,6 @@ pyttsx3==2.90
 pytweening==1.0.7
 pytz==2023.3.post1
 pywhatkit==5.4
-pywin32==306
 pywin32-ctypes==0.2.2
 razorpay==1.4.2
 reportlab==4.2.0

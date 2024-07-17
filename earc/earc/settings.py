@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-ys*b=9ih4u6gox&hfwarcauk4w0d_2r@zpl+107w_)n5ju8_@4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['13.60.25.71', '0.0.0.0', 'localhost', 'mobilearc.store', 'www.mobilearc.store']
 
 
 # Application definition
@@ -84,6 +84,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'earc.wsgi.application'
 
 
@@ -97,8 +98,8 @@ DATABASES = {
         'NAME': 'mobilearc',
         'USER': 'thwahir',
         'PASSWORD': '989577',
-        'HOST' : 'localhost',
-        'PORT': ''
+        'HOST' : '13.60.25.71',
+        'PORT': '5432'
     }
 }
 
@@ -134,9 +135,6 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 
 USE_TZ = True
-
-
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Static files (CSS, JavaScript, Images)
