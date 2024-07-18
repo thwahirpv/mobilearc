@@ -806,13 +806,13 @@ class variant_management:
             if price_of_size == '' or price_of_size.isspace() or int(price_of_size) < 1:
                 messages.error(request, 'Invalid price!')
                 return redirect(url)
-            elif stock == '' or stock.isspace() or stock < 0:
+            elif stock == '' or stock or stock < 0:
                 messages.error(request, 'Enter valid stock!')  
                 return redirect(url)
-            elif rom is None or rom.isspace() or rom < 2:
+            elif rom is None or romcd or rom < 2:
                 messages.error(request, 'Select one of the Rom!')
                 return redirect(url)
-            elif ram is None or ram.isspace() or ram < 2:
+            elif ram is None or ram or ram < 2:
                 messages.error(request, 'Select one of the Ram!')
                 return redirect(url)
 
