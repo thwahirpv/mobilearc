@@ -809,7 +809,7 @@ class variant_management:
             elif stock == '' or stock or stock < 0:
                 messages.error(request, 'Enter valid stock!')  
                 return redirect(url)
-            elif rom is None or romcd or rom < 2:
+            elif rom is None or rom or rom < 2:
                 messages.error(request, 'Select one of the Rom!')
                 return redirect(url)
             elif ram is None or ram or ram < 2:
