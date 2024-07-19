@@ -208,8 +208,10 @@ def site_settings(request):
 def logo(request):
     if not request.user.is_authenticated or request.user.is_superuser is False:
         return redirect('admin_app:admin_login')
-
-    logo_image = web_logo.objects.latest('created_at')
+    try:
+        logo_image = web_logo.objects.latest('created_at')
+    except: 
+        logo_image = None
     if request.method == 'POST':
         image = request.FILES.get('image')
         if image:

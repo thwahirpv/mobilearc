@@ -30,8 +30,13 @@ Banners
                     ">
                     <p id="errorText" class="fw-bold text-danger"></p>
                         <div>
-                            <img id="mainImage" class="" src="{{ logo_image.logo.url }}"
-                            style="width: 150px; height: 150px;" alt="">
+                            {% if logo_img %}
+                                <img id="mainImage" class="" src="{{ logo_image.logo.url }}"
+                                style="width: 150px; height: 150px;" alt="">
+                            {% else %}
+                                <img id="mainImage" class="" src="{% static 'assets2/imgs/logo/empty_logo.jpg' %}"
+                                style="width: 150px; height: 150px;" alt="">
+                            {% endif %}
                         </div>
                     </div>
     
