@@ -21,7 +21,9 @@ def order_list(request):
         if request.GET.get('sort_by'):
             sort_by = int(request.GET.get('sort_by', None))
             if sort_by is not None:
-                if sort_by == 1:
+                if sort_by == 0:
+                    order_data = order_data.all()
+                elif sort_by == 1:
                     order_data = order_data.filter(status=sort_by)
                 elif sort_by == 2:
                     order_data = order_data.filter(status=sort_by)

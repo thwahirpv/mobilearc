@@ -31,7 +31,7 @@ Oders
                         <div class="col-lg-2 col-6 col-md-3">
                         <form action="" method="get">
                             <select class="form-select" name="sort_by" id="sort_by" onchange="this.form.submit()">
-                                <option>Status</option>
+                                <option value="0" {% if sort_by == 0 %} selected {% endif %}>All</option>
                                 <option value="1" {% if sort_by == 1 %} selected {% endif %}>Processing</option>
                                 <option value="2" {% if sort_by == 2 %} selected {% endif %}>Shipped</option>
                                 <option value="3" {% if sort_by == 3 %} selected {% endif %}>Out of delivery</option>
