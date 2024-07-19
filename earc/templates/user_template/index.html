@@ -989,46 +989,4 @@ Home
         </div>
     </div>
 </div>
-
-<script>
-    const messageDiv = document.getElementById('message_div')
-    const messageIconContainer = document.getElementById('message_icon_container')
-   
-    const add_wishlist_item = (id) => {
-        const url = `http://127.0.0.1:8000/products/add_wishlist/${id}/`
-        fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status){
-                messageIconContainer.innerHTML = ''
-                const tickTag = document.createElement('i')
-                tickTag.classList.add('fa-regular', 'fa-circle-check')
-                messageIconContainer.appendChild(tickTag)
-                messageDiv.style.top = '15%'
-                moniterTopStyle()
-            }else{
-                messageIconContainer.innerHTML = ''
-                const crossTag = document.createElement('i')
-                crossTag.classList.add('fa-regular', 'fa-circle-xmark')
-                messageIconContainer.appendChild(crossTag)
-                messageDiv.style.top = '15%'
-                moniterTopStyle()
-            }
-        })
-    }
-    const moniterTopStyle = () => {
-        const topValue = messageDiv.style.top
-        console.log(topValue);
-        if(topValue === '15%'){
-
-            setTimeout( () => {
-                console.log('its work')
-                messageDiv.style.top = '-15%'
-            },2000)
-        }
-    }
-</script>
-</script>
-
-
 {% endblock content %}

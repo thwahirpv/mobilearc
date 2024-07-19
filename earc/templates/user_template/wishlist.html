@@ -242,7 +242,7 @@ Wishlist
         const messageDiv = document.getElementById('message_div')
 
         const remove_wishlist_item = (p_id, c_id, s_id) =>{
-            const url = `http://127.0.0.1:8000/products/remove_wishlist_item/${p_id}/${c_id}/${s_id}`
+            const url = `https://www.mobilearc.store/products/remove_wishlist_item/${p_id}/${c_id}/${s_id}`
             fetch(url)
             .then(response => response.json())
             .then(data => {
@@ -283,7 +283,7 @@ Wishlist
         event.preventDefault();
         console.log('hello iaam here')
         const formData = new FormData(event.target)
-        fetch('http://127.0.0.1:8000/products/movetocart/', {
+        fetch('https://www.mobilearc.store/products/movetocart/', {
             method: 'POST',
             body: formData
         })

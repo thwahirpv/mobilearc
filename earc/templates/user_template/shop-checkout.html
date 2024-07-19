@@ -405,7 +405,7 @@ Checkout
     document.getElementById('rzp-button1').onclick = function (e) {
         const csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
-        fetch('http://127.0.0.1:8000/checkout/payment_authorization/')
+        fetch('https://www.mobilearc.store/checkout/payment_authorization/')
             .then(response => response.json())
             .then(data => {
                 if (data.status == true) {
@@ -437,7 +437,7 @@ Checkout
                                         "select_address": document.querySelector('input[name="select_address"]').value,
                                         "payment_id": response.razorpay_payment_id
                                     }
-                                    fetch('http://127.0.0.1:8000/checkout/place_order/', {
+                                    fetch('https://www.mobilearc.store/checkout/place_order/', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json',
@@ -448,7 +448,7 @@ Checkout
                                         .then(response => response.json())
                                         .then(data => {
                                             if (data.status == true) {
-                                                window.location.href = 'http://127.0.0.1:8000/checkout/placed/'
+                                                window.location.href = 'https://www.mobilearc.store/checkout/placed/'
                                             } else {
                                                 document.getElementById('error_msg').innerHTML = data.text
                                             }
@@ -499,7 +499,7 @@ Checkout
             "payment_id": payment_id
         }
 
-        fetch('http://127.0.0.1:8000/checkout/place_order/', {
+        fetch('https://www.mobilearc.store/checkout/place_order/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -510,7 +510,7 @@ Checkout
             .then(response => response.json())
             .then(data => {
                 if (data.status == true) {
-                    window.location.href = 'http://127.0.0.1:8000/checkout/placed/'
+                    window.location.href = 'https://www.mobilearc.store/checkout/placed/'
                 } else {
                     document.getElementById('error_msg').innerHTML = data.text
                 }
@@ -530,7 +530,7 @@ Checkout
             "payment_id": payment_id
         }
 
-        fetch('http://127.0.0.1:8000/checkout/place_order/', {
+        fetch('https://www.mobilearc.store/checkout/place_order/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -541,7 +541,7 @@ Checkout
             .then(response => response.json())
             .then(data => {
                 if (data.status == true) {
-                    window.location.href = 'http://127.0.0.1:8000/checkout/placed/'
+                    window.location.href = 'https://www.mobilearc.store/checkout/placed/'
                 } else {
                     document.getElementById('error_msg').innerHTML = data.text
                 }

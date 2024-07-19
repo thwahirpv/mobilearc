@@ -479,7 +479,7 @@ Home
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
 <script>
     const cancelOrder = (id) => {
-        fetch(`http://127.0.0.1:8000/checkout/cancel/get_order/${id}/`)
+        fetch(`https://www.mobilearc.store/checkout/cancel/get_order/${id}/`)
         .then(response => response.json())
         .then(data => {
             if(data.status == true){
@@ -495,7 +495,7 @@ Home
                     confirmButtonText: 'Order cancel'
                 }).then((result)=>{
                 if(result.isConfirmed){
-                    fetch(`http://127.0.0.1:8000/checkout/cancel/cancel_order/${id}/`)
+                    fetch(`https://www.mobilearc.store/checkout/cancel/cancel_order/${id}/`)
                     .then(response => response.json())
                     .then(data => {
                         if(data.status == true){
@@ -532,7 +532,7 @@ Home
             confirmButtonText: 'Order cancel'
         }).then((result)=>{
             if(result.isConfirmed){
-                fetch(`http://127.0.0.1:8000/checkout/return/${id}`)
+                fetch(`https://www.mobilearc.store/checkout/return/${id}`)
                 .then(response => response.json())
                 .then(data => {
                     if(data.status == true){
@@ -560,7 +560,7 @@ Home
 
         const formData = new FormData(this)
 
-        fetch('http://127.0.0.1:8000/checkout/rate/',{
+        fetch('https://www.mobilearc.store/checkout/rate/',{
             method: 'POST',
             body:formData
         })

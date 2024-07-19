@@ -269,7 +269,7 @@ Cart
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
 <script>
     const remove_cart = (id) => {
-        fetch(`http://127.0.0.1:8000/cart/remove/${id}`)
+        fetch(`https://www.mobilearc.store/cart/remove/${id}`)
             .then(response => response.json())
             .then(data => {
                 if (data.status) {
@@ -297,7 +297,7 @@ Cart
 
     const updateQty = (qty, cart_id) => {
         const csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-        return fetch('http://127.0.0.1:8000/cart/update_quantity/', {
+        return fetch('https://www.mobilearc.store/cart/update_quantity/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -367,7 +367,7 @@ Cart
     }
 
     function update_sub_total(){
-        fetch('http://127.0.0.1:8000/cart/update_subtotal/')
+        fetch('https://www.mobilearc.store/cart/update_subtotal/')
         .then(response => response.json())
         .then(data => {
             if(data.status == true){
@@ -377,7 +377,7 @@ Cart
     }
 
     document.getElementById('clear').addEventListener('click', function(){
-        fetch('http://127.0.0.1:8000/cart/clear/')
+        fetch('https://www.mobilearc.store/cart/clear/')
         .then(response => response.json())
         .then(data => {
             console.log('hey its working ')
