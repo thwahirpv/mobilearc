@@ -153,7 +153,7 @@
     const changeName = (id) => {
         const form = document.getElementById('color_name_form')
         const formData = new FormData(form)
-        const url = `http://127.0.0.1:8000/admin/products/getcolorname/${id}/`
+        const url = `https://www.mobilearc.store/admin/products/getcolorname/${id}/`
         fetch(url,{
             method: 'POST',
             body: formData
@@ -172,8 +172,8 @@
 
     // Function to handle delete storage
     function deleteStorage(id) {
-        const nameUrl = `http://127.0.0.1:8000/admin/products/storage/get_name/${id}/`
-        const deleteUrl = `http://127.0.0.1:8000/admin/products/storage/delete/${id}/`
+        const nameUrl = `https://www.mobilearc.store/admin/products/storage/get_name/${id}/`
+        const deleteUrl = `https://www.mobilearc.store/admin/products/storage/delete/${id}/`
         fetch(nameUrl)
         .then(response => response.json())
         .then(data => {
