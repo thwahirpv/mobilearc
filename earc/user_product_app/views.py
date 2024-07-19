@@ -330,14 +330,17 @@ class wishlist_management:
 
     def add_wishlist_item(request, id):
         if request.method == 'POST':
+            print('this is post')
             color_id = request.POST.get('color_id')
             storage_id = request.POST.get('storage_id')
             context = {}
             color_obj = Colors.objects.get(color_id=color_id)
             storage_obj = Storage.objects.get(size_id=storage_id)
             product_obj = color_obj.product
+            print('iam complete taking details')
 
             try:
+                print('starting authentication')
                 if request.user.is_authenticated:
                     wishlist_item, created = Wishlist.objects.get_or_create(
                         user=request.user,
@@ -345,10 +348,10 @@ class wishlist_management:
                         color=color_obj,
                         storage=storage_obj
                     )
-                    print(wishlist_item, created)
                     context = {
                         'status': True
                     }
+                    print('Iam finish the creatingq')
                 else:
                     session_id = request.COOKIES.get('wishlist_session_id')
                     if not session_id:
@@ -377,6 +380,7 @@ class wishlist_management:
                 context = {
                     'status': False
                 }
+            print('hello iam near the return                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ')
             return JsonResponse(context, safe=True)
 
     def remove_from_wishlist(request, p_id, c_id=None, s_id=None):

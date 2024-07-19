@@ -103,10 +103,6 @@ Products
                                             <a href="{% url 'user_product_app:product_view' id=product.product_id %}" aria-label="Quick view" class="action-btn hover-up">
                                                 <i class="fi-rs-search"></i>
                                             </a>
-                                            <a onclick="add_wishlist_item('{{product.product_id}}')" aria-label="Add To Wishlist" class="action-btn hover-up">
-                                                <i class="fi-rs-heart"></i>
-                                            </a>
-                                            <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                         </div>
                                         <!-- <div class="product-badges product-badges-position product-badges-mrg">
                                             <span class="hot">Hot</span>
@@ -423,42 +419,7 @@ Products
 
 
 <script>
-    const messageDiv = document.getElementById('message_div')
-    const messageIconContainer = document.getElementById('message_icon_container')
-   
-    const add_wishlist_item = (id) => {
-        const url = `add_wishlist/${id}/`
-        fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status){
-                messageIconContainer.innerHTML = ''
-                const tickTag = document.createElement('i')
-                tickTag.classList.add('fa-regular', 'fa-circle-check')
-                messageIconContainer.appendChild(tickTag)
-                messageDiv.style.top = '15%'
-                moniterTopStyle()
-            }else{
-                messageIconContainer.innerHTML = ''
-                const crossTag = document.createElement('i')
-                crossTag.classList.add('fa-regular', 'fa-circle-xmark')
-                messageIconContainer.appendChild(crossTag)
-                messageDiv.style.top = '15%'
-                moniterTopStyle()
-            }
-        })
-    }
-    const moniterTopStyle = () => {
-        const topValue = messageDiv.style.top
-        console.log(topValue);
-        if(topValue === '15%'){
-
-            setTimeout( () => {
-                console.log('its work')
-                messageDiv.style.top = '-15%'
-            },2000)
-        }
-    }
+    
 </script>
    
 {% endblock content %}
