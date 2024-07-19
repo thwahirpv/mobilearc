@@ -725,7 +725,7 @@ Home
                     }
                     const liTag = document.createElement('li')
                     const aTag = document.createElement('a')
-                    aTag.innerHTML = item.ram + 'GB' + '/' + item.rom + 'GB'
+                    aTag.innerHTML = item.rom == 1 ? item.rom + 'TB' + ' / ' + item.ram + 'GB' : item.rom + 'GB' + '/' + item.ram + 'GB' 
                     aTag.id = `storage_${index}`
                     liTag.appendChild(aTag)
                     aTag.classList.add('remove')

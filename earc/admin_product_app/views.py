@@ -14,6 +14,7 @@ from django.views.decorators.cache import cache_control
 from django.utils.decorators import method_decorator
 from django.db.models import F, Sum, Count, ExpressionWrapper, IntegerField
 from django.db.models import Max, Prefetch
+import re
 # ==================================================================================================================
 
 
@@ -799,20 +800,23 @@ class variant_management:
         if request.method == 'POST':
             price_of_size = request.POST.get('price_of_size')
             stock = int(request.POST.get('stock'))
-            rom = request.POST.get('rom')
-            ram = request.POST.get('ram')
-            
+            rom = request.POST.get('rom', None)
+            ram = request.POST.get('ram', None)
+            print(price_of_size, type(price_of_size), ': pice_of_size')
+            print(stock, type(stock),': stock')
+            print(rom, type(rom), ': Rom')
+            print(ram, type(ram), ': Ram')
 
             if price_of_size == '' or price_of_size.isspace() or int(price_of_size) < 1:
                 messages.error(request, 'Invalid price!')
                 return redirect(url)
-            elif stock == '' or stock is None or stock < 0:
+            elif stock == '' or str(stock).isspace() or stock < 0:
                 messages.error(request, 'Enter valid stock!')  
                 return redirect(url)
-            elif rom is None or rom == '' or rom < 2:
+            elif rom is None or rom == '':
                 messages.error(request, 'Select one of the Rom!')
                 return redirect(url)
-            elif ram is None or ram == '' or ram < 2:
+            elif ram is None or ram == '':
                 messages.error(request, 'Select one of the Ram!')
                 return redirect(url)
 
@@ -863,16 +867,18 @@ class variant_management:
             ram = request.POST.get('ram', storage_obj.ram)
             rom = request.POST.get('rom', storage_obj.rom)
             price = request.POST.get('price', storage_obj.price_of_size)
-            stock = request.POST.get('stock', storage_obj.stock)
+            stock = int(request.POST.get('stock', storage_obj.stock))
 
+            ram = re.sub('[^0-9]', '', ram)
+            rom = re.sub('[^0-9]', '', rom)
 
             if price == '' or price.isspace() or int(price) < 1:
                 messages.error(request, 'Invalid price!')
                 return redirect(reverse('admin_product_app:edit_storage', kwargs={'id':id}))
-            elif stock == '' or stock.isspace() or int(stock) < 0:
+            elif stock == '' or str(stock).isspace() or stock < 0:
                 messages.error(request, 'Enter valid stock!')  
                 return redirect(reverse('admin_product_app:edit_storage', kwargs={'id':id}))
-            elif rom is None or rom.isspace() or int(rom) < 2:
+            elif rom is None or rom.isspace() or int(rom) < 1:
                 messages.error(request, 'Select one of the Rom!')
                 return redirect(reverse('admin_product_app:edit_storage', kwargs={'id':id}))
             elif ram is None or ram.isspace() or int(ram) < 2:

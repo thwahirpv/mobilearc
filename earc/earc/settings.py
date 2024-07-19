@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-ys*b=9ih4u6gox&hfwarcauk4w0d_2r@zpl+107w_)n5ju8_@4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.60.25.71', '0.0.0.0', 'localhost', 'mobilearc.store', 'www.mobilearc.store']
+ALLOWED_HOSTS = ['13.60.25.71', '0.0.0.0', 'localhost', 'mobilearc.store', 'www.mobilearc.store', '127.0.0.1']
 
 
 # Application definition
@@ -98,10 +98,12 @@ DATABASES = {
         'NAME': 'mobilearc',
         'USER': 'thwahir',
         'PASSWORD': '989577',
-        'HOST' : '13.60.25.71',
+        'HOST' : '',
         'PORT': '5432'
     }
 }
+
+# 13.60.25.71
 
 
 
