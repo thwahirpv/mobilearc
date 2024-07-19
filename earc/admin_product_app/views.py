@@ -703,7 +703,10 @@ class variant_management:
                 priority = request.POST.get(f'order_{index}', index)
                 Images.objects.create(product_image=image, priority=priority, color= color_obj)
             return redirect('admin_product_app:list_products')
-        return render(request, 'admin_template/page-add-variant.html')
+        context = {
+            'product_obj':product_obj
+        }
+        return render(request, 'admin_template/page-add-variant.html', context)
     
     def variant_detailed_view(request, id=None):
         if not request.user.is_authenticated or request.user.is_superuser is False:

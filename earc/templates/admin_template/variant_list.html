@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Brands
+Variants
 {% endblock %}
 
 <style>
@@ -25,11 +25,11 @@ Brands
         <section class="content-main">
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Brand </h2>
-                    <p>Brand and vendor management</p>
+                    <h2 class="content-title card-title">Variants </h2>
+                    <p>Create {{product_obj.product_name}} variants here.</p>
                 </div>
                 <div>
-                    <a href="{% url 'admin_product_app:add_brand' %}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Add New Brand</a>
+                    <a href="{% url 'admin_product_app:add_variant' id=product_obj.product_id %}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Add New Variant</a>
                 </div>
             </div>
             <div class="card mb-4">
