@@ -98,7 +98,7 @@ DATABASES = {
         'NAME': 'mobilearc',
         'USER': 'thwahir',
         'PASSWORD': '989577',
-        'HOST' : '13.60.25.71',
+        'HOST' : '',
         'PORT': '5432'
     }
 }
