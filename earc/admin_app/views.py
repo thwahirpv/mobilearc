@@ -289,7 +289,6 @@ def sales_report(request):
         return render(request, 'admin_template/sales_report.html', context)
 
 
-
 def get_chart_data(request):
     period = request.GET.get('period', 'daily')
     today = now().date()

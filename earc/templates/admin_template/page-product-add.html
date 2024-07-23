@@ -46,8 +46,8 @@ Add Product
                                     </div>
                                     <div class="card-body">
                                         <div class="input-upload">
-                                            <img src="{% static 'assets2/imgs/theme/upload.svg' %}" alt="">
-                                            <input class="form-control" type="file" name="thumbnail">
+                                            <img id="imageSpace" src="{% static 'assets2/imgs/theme/upload.svg' %}" alt="">
+                                            <input id="uploadImage" class="form-control" type="file" name="thumbnail">
                                         </div>
                                     </div>
                                 </div>
@@ -104,6 +104,21 @@ Add Product
 
 
     <script>
+
+        const imageSpace = document.getElementById('imageSpace')
+        const uploadImage = document.getElementById('uploadImage')
+
+        uploadImage.addEventListener('change', function(){
+            if(uploadImage.files[0]){
+                const reader = new FileReader()
+                reader.onload = function(e){
+                    imageSpace.src = e.target.result
+                }
+                reader.readAsDataURL(uploadImage.files[0])
+            }
+        })
+
+
         function get_category(){
             const brand_name = document.getElementById('brand_name').value;
             const category_area = document.getElementById('category_area');
