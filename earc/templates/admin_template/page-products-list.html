@@ -125,7 +125,8 @@ Products
                 console.log(action, id)
                 const getNameURl = `/admin/products/item/get_name/${id}`
                 fetch(getNameURl)
-                .then(response => response.json())
+                .then
+                (response => response.json())
                 .then(data => {
                     Swal.fire({
                     title: `Are you sure to ${action}?`,
