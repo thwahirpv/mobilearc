@@ -64,7 +64,19 @@ Products
                                         <div class="sort-by">
                                             <form class="d-flex" action="{% url 'user_product_app:list_products' %}" id="" method="get">
                                                 <span><i class="fi-rs-apps"></i>Sort:</span>
-                                                <input type="hidden" name="sort_with_search" id="sort_with_search" {% if sort_with_search %} value="{{sort_with_search}}" {% endif %} >
+                                                {% if sort_with_search %}
+                                                    <input type="hidden" name="sort_with_search" id="sort_with_search" {% if sort_with_search %} value="{{sort_with_search}}" {% endif %} >
+                                                {% endif %}
+                                                {% if brand %}
+                                                    <input type="hidden" name="brand" id="brand" {% if brand %} value="{{brand}}" {% endif %} >
+                                                {% endif %}
+                                                {% if color %}
+                                                    <input type="hidden" name="color" id="color" {% if color %} value="{{color}}" {% endif %} >
+                                                {% endif %}
+                                                {% if cate %}
+                                                    <input type="hidden" name="cate" id="cate" {% if cate %} value="{{cate}}" {% endif %} >
+                                                {% endif %}
+                                                
                                                 <select name="sort_by" id="sort_by" onchange="this.form.submit()" >
                                                     <option value="all" {% if sort_by == 'all' %} selected {% endif %}>All</option>
                                                     <option value="low_to_high" {% if sort_by == 'low_to_high' %} selected {% endif %}>Low to High</option>
@@ -73,15 +85,6 @@ Products
                                                 </select>
                                             </form>
                                         </div>
-                                    </div>
-                                    <div class="sort-by-dropdown">
-                                        <ul>
-                                            <li><a class="active" href="#">Featured</a></li>
-                                            <li><a href="#">Price: Low to High</a></li>
-                                            <li><a href="#">Price: High to Low</a></li>
-                                            <li><a href="#">Release Date</a></li>
-                                            <li><a href="#">Avg. Rating</a></li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -212,9 +215,9 @@ Products
                                         <h5 class="section-title style-1 mb-30 wow fadeIn animated">Colors</h5>
                                         <div id="" class="custome-checkbox">
                                             <ul class="categories">
-                                                <li><a href="{% url 'user_product_app:list_products' %}?color=all&sort_with_search={{sort_with_search}}">all</a></li>
+                                                <li><a href="{% url 'user_product_app:list_products' %}?color=all&{% if sort_with_search is not None %}sort_with_search={{sort_with_search}}{% endif %}{% if brand is not None %}brand={{brand}}{% endif %}">all</a></li>
                                                 {% for item in colors_data %}
-                                                <li><a href="{% url 'user_product_app:list_products' %}?color={{item.color_name}}&sort_with_search={{sort_with_search}}">{{item.color_name}}</a></li>
+                                                <li><a href="{% url 'user_product_app:list_products' %}?color={{item.color_name}}&{% if sort_with_search is not None %}sort_with_search={{sort_with_search}}{% endif %}{% if brand is not None %}brand={{brand}}{% endif %}">{{item.color_name}}</a></li>
                                                 {% endfor %}
                                             </ul>
                                         </div>

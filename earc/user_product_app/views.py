@@ -33,6 +33,9 @@ def product_list(request):
     show_by = ''
     search = ''
     sort_with_search = ''
+    brand = None
+    cate = None
+    color = None
 
 
     # Filter data basaed on category
@@ -43,6 +46,9 @@ def product_list(request):
         sort_by = request.GET.get('sort_by', None)
         show_by = request.GET.get('show_by', None)
 
+        products_data = products.objects.filter(
+        Q(colors__isnull=False) and Q(product_active=True)).distinct()
+
         # getting price from req
         try:
             price = int(request.GET.get('price', 0))
@@ -52,8 +58,7 @@ def product_list(request):
         # getting search keyword from req
         search = request.GET.get('search_text', None)
         sort_with_search = request.GET.get('sort_with_search', None)
-        print(sort_with_search)
-
+        
         # filter based on category
         if cate is not None:
             if cate == 'all':
@@ -64,7 +69,7 @@ def product_list(request):
                     pro_category__category_name=cate)
                 
         #  filter based on brand
-        elif brand is not None:
+        if brand is not None:
             if brand == 'all':
                 products_data = products_data.filter(
                     colors__isnull=False).distinct()
@@ -72,49 +77,50 @@ def product_list(request):
                 products_data = products_data.filter(
                     pro_brand__brand_name=brand)
                 
+                
         # filter based on color
-        elif color is not None:
+        if color is not None:
             if color == 'all':
                 products_data = products_data.filter(
                     Q(colors__isnull=False)).distinct()
-                if sort_with_search is not None:
+                if sort_with_search:
                     products_data = products_data.filter(product_name__icontains=sort_with_search)
             else:
                 products_data = products_data.filter(colors__color_name=color)
-                if sort_with_search is not None:
+                if sort_with_search:
                     products_data = products_data.filter(product_name__icontains=sort_with_search)
         
         # filter based on price
-        elif price is not 0:
+        if price is not 0:
             products_data = products_data.filter(price__lte=price)
 
         # filter based on search
-        elif search is not None:
+        if search is not None:
             products_data = products_data.filter(
                 product_name__icontains=search)
             sort_with_search = search
             
         # filter based on sorting data
-        elif sort_by is not None:
+        if sort_by is not None:
             if sort_by == 'all':
-                products_data = products.objects.filter(Q(colors__isnull=False) and Q(product_active=True)).all()
+                products_data = products_data.filter(Q(colors__isnull=False) and Q(product_active=True)).all()
                 if sort_with_search is not None:
                     products_data = products_data.filter(product_name__icontains=sort_with_search)
             elif sort_by == 'low_to_high':
-                products_data = products.objects.filter(Q(colors__isnull=False) and Q(product_active=True)).all().order_by('price')
+                products_data = products_data.filter(Q(colors__isnull=False) and Q(product_active=True)).all().order_by('price')
                 if sort_with_search is not None:
                     products_data = products_data.filter(product_name__icontains=sort_with_search)
             elif sort_by == 'high_to_low':
-                products_data = products.objects.filter(Q(colors__isnull=False) and Q(product_active=True)).all().order_by('-price')
+                products_data = products_data.filter(Q(colors__isnull=False) and Q(product_active=True)).all().order_by('-price')
                 if sort_with_search is not None:
                     products_data = products_data.filter(product_name__icontains=sort_with_search)
             elif sort_by == 'new':
-                products_data = products.objects.filter(Q(colors__isnull=False) and Q(product_active=True)).all().order_by('-created_at')
+                products_data = products_data.filter(Q(colors__isnull=False) and Q(product_active=True)).all().order_by('-created_at')
                 if sort_with_search is not None:
                     products_data = products_data.filter(product_name__icontains=sort_with_search)
         
         # filter based on number of data wnat to show
-        elif show_by is not None:
+        if show_by is not None:
             if show_by == 'all':
                 if sort_with_search is not None:
                     products_data = products.objects.filter(Q(colors__isnull=False) and Q(product_active=True) and Q(product_name__icontains=sort_with_search)).all()
@@ -140,7 +146,8 @@ def product_list(request):
                     products_data = products_data.filter(Q(colors__isnull=False) and Q(product_active=True) and Q(product_name__icontains=sort_with_search)).all()[:4]
                 else:
                     products_data = products.objects.filter(Q(colors__isnull=False) and Q(product_active=True)).all()[:4]
-                
+            
+        
 
 
     # Pagination section
@@ -160,8 +167,10 @@ def product_list(request):
         'sort_by':sort_by,
         'show_by':show_by,
         'search':search,
-        'sort_with_search':sort_with_search
-        
+        'sort_with_search':sort_with_search,
+        'brand':brand,
+        'cate':cate,
+        'color':color
     }
     return render(request, 'user_template/list_products.html', context)
 
