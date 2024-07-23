@@ -28,6 +28,7 @@ from django.db.models import Count
 from django.db.models.functions import TruncMonth, TruncYear
 from cart_app.models import Sales
 from admin_product_app.models import products, brands, category
+import datetime
 # from rest_framework.decorators import api_view
 
 
@@ -244,21 +245,49 @@ def sales_report(request):
     if request.method == 'POST':
         start = request.POST.get('start-date', None)
         end = request.POST.get('end-date', None)
+        print('Start:',start, 'End', end)
+        start_chk = None
+        end_chk = None
 
+        try:
+            # parse start and end string into datetime object
+            current_time = datetime.datetime.now()
+            if start:
+                start_chk = datetime.datetime.strptime(start, '%Y-%m-%d')
+            if end:
+                end_chk = datetime.datetime.strptime(end, '%Y-%m-%d')
+            
+            if start_chk and end_chk:
+                if start_chk > end_chk:
+                    messages.warning(request, f"Starting date must be on or before End date: {end_chk.strftime('%d-%m-%Y')}")
+                    return redirect('admin_app:admin_dashboard')
+        except Exception as e:
+            messages.warning(request, 'Check your connection and retry!')
+
+
+        if start_chk is not None:
+            if start_chk > current_time:
+                messages.warning(request, f"Starting date must be on or before {current_time.strftime('%d-%m-%Y')}")
+                return redirect('admin_app:admin_dashboard')
+        elif end_chk is not None:
+            if end_chk > current_time:
+                messages.warning(request, f"Ending date must be on or before {current_time.strftime('%d-%m-%Y')}")
+                return redirect('admin_app:admin_dashboard')
         if start and end:
-            sales_data = Order.objects.filter(
-                status=4, update_at__range=[start, end])
+            sales_data = Order.objects.filter(status=4).filter(Q(update_at__gte=start) & Q(update_at__lte=end))
         elif start:
-            sales_data = Order.objects.filter(status=4, update_at__date=start)
+            sales_data = Order.objects.filter(status=4).filter(Q(update_at__gte=start) & Q(update_at__lte=current_time))
         elif end:
-            sales_data = Order.objects.filter(status=4, update_at__date=end)
+            sales_data = Order.objects.filter(status=4).filter(update_at__lte=end)
         else:
-            sales_data = Order.objects.filter(status=4).all()
+            messages.warning(request, 'Please select a Date!')
+            return redirect('admin_app:admin_dashboard')
 
         context = {
             'sales_data': sales_data
         }
         return render(request, 'admin_template/sales_report.html', context)
+
 
 
 def get_chart_data(request):
