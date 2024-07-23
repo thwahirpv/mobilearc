@@ -28,6 +28,7 @@ def checkout(request):
 
     
     total = 0
+    coupon_discount = 0
     coupon_applied = False
     user = request.user
     address_data = Address.objects.filter(user=user)
@@ -80,11 +81,9 @@ def checkout(request):
 
         if coupen_obj:
             if coupen_obj.is_active is False:
-                messages.warning(request, 'Unvalid coupon',
-                                 extra_tags='warning')
+                messages.warning(request, 'Unvalid coupon', extra_tags='warning')
             elif coupen_obj.is_expire is True:
-                messages.warning(request, 'Coupon expired',
-                                 extra_tags='warning')
+                messages.warning(request, 'Coupon expired', extra_tags='warning')
             elif coupen_obj.expiration_date < datetime.utcnow().replace(tzinfo=pytz.utc):
                 messages.warning(request, 'Coupon expired', extra_tags='warning')
             elif coupen_obj.used_users.filter(user_id=request.user.user_id).exists():
@@ -115,6 +114,9 @@ def checkout(request):
     else:
         False
 
+    if coupon_applied:
+        coupon_discount = total * owner_obj.coupon_percentage / 100
+
 
     context = {
         'user': user,
@@ -123,7 +125,8 @@ def checkout(request):
         'owner_obj': owner_obj,
         'total': total,
         'coupons_data':coupons_data,
-        'coupon_applied': coupon_applied
+        'coupon_applied': coupon_applied,
+        'coupon_discount':coupon_discount
     }
     return render(request, 'user_template/shop-checkout.html', context)
 

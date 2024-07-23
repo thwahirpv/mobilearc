@@ -33,8 +33,8 @@ Checkout
                                     </span>
                                 </div>
                                 <div>
-                                    <span class="text-muted text-center">
-                                        {{item.discription}}
+                                    <span class="text-muted text-center" style="font-size: 12px; font-weight: 500;">
+                                        purchase upto {{item.max_amount}} get {{item.coupen_percentage}}% off
                                     </span>
                                 </div>
                             </div>
@@ -49,18 +49,21 @@ Checkout
                             {% endfor %}
                             {% endif %}
                             <div class="panel-body">
-                                <p class="mb-30 font-sm">Apply your coupon below.</p>
+                                
                                 <form method="post">
                                     {% csrf_token %}
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Enter Coupon Code..." name="coupen_code">
-                                    </div>
                                     <div class="form-group d-flex justify-content-between">
                                         {% if coupon_applied %}
                                         <a href="{% url 'checkout_app:remove_coupon' %}"
                                             class="btn btn-sm btn-primary">Remove</a>
                                         {% else %}
-                                        <button type="submit" class="btn btn-sm">Apply</button>
+                                        <div>
+                                            <p class="mb-30 font-sm">Apply your coupon below.</p>
+                                            <div class="form-group">
+                                                <input type="text" placeholder="Enter Coupon Code..." name="coupen_code" value="{% if owner_obj.coupon_code %} {{owner_obj.coupon_code }} {% endif %}">
+                                            </div>
+                                            <button type="submit" class="btn btn-sm">Apply</button>
+                                        </div>
                                         {% endif %}
                                     </div>
                                 </form>
@@ -158,12 +161,18 @@ Checkout
 
                                     <tr>
                                         <th>SubTotal</th>
-                                        <td class="product-subtotal" colspan="2">{% sub_total order_data %}</td>
+                                        <td class="product-subtotal" colspan="2"><span class="text-success">+</span> {% sub_total order_data %}</td>
                                     </tr>
                                     <tr>
                                         <th>Shipping</th>
-                                        <td colspan="2"><em>{% shipping_charge order_data %}</em></td>
+                                        <td colspan="2"><span class="text-success">+</span><em>{% shipping_charge order_data %}</em></td>
                                     </tr>
+                                    {% if coupon_discount %}
+                                    <tr>
+                                        <th>Coupen</th>
+                                        <td colspan="2"><span class="text-danger">-</span><em>{{coupon_discount}}</em></td>
+                                    </tr>
+                                    {% endif %}
                                     <tr>
                                         <th>Total</th>
                                         <td colspan="2" class="product-subtotal"><span
