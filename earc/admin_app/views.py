@@ -279,6 +279,8 @@ def sales_report(request):
             sales_data = Order.objects.filter(status=4).filter(Q(update_at__gte=start) & Q(update_at__lte=current_time))
         elif end:
             sales_data = Order.objects.filter(status=4).filter(update_at__lte=end)
+        elif start == end:
+            sales_data = Order.objects.filter(Q(status=4) & Q(update_at__exact=start))
         else:
             messages.warning(request, 'Please select a Date!')
             return redirect('admin_app:admin_dashboard')
