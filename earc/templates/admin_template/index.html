@@ -475,7 +475,7 @@ Home
     const yearlyBtn = document.getElementById('yearly')
 
     async function loadData(period){
-        const response = await fetch(`https://www.mobilearc.store/admin/get_chart_data/?period=${period}`)
+        const response = await fetch(`https://admin.mobilearc.store/admin/get_chart_data/?period=${period}`)
         const salesData = await response.json()
 
         let labels = []
