@@ -29,7 +29,6 @@
         border-radius: 10px;
         border: 1px solid #ced4da;
     }
-
     .header-middle .btn-primary {
         border-radius: 0;
     }
@@ -55,23 +54,27 @@
         margin: 0;
         font-size: 14px;
     }
+    @media (min-width: 992px) {
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+    }
 </style>
-
-
-
 
 <header class="header-area header-style-1 header-height-2">
     <div class="header-top py-1 d-block" style="background-color: #d8f4e2; border-bottom: 3px solid #39b4ac; padding: 10px 0;">
         <div class="container">
-            <div class="row align-items-center justify-content-between">
-                <div class="col-lg-3 d-none d-lg-block">
+            <div class="d-flex align-items-center justify-content-between py-2">
+                <div class="">
                     <div class="header-info">
                         <div class="logo">
-                            <a  href="{% url 'user_app:user_home' %}"><img style="width: 70px;" src="{% load user_logo_tag %}{% get_logo_url %}" alt="logo"></a>
+                            <a href="{% url 'user_app:user_home' %}"><img src="{% load user_logo_tag %}{% get_logo_url %}" alt="logo"></a>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-12">
+                <div class="">
                     <div class="header-info text-end">
                         <ul class="list-inline mb-0">
                             <li class="list-inline-item dropdown nav-item">
@@ -81,24 +84,15 @@
                                         <a href="{% url 'user_app:account_view' %}">
                                             <img class="img-xs rounded-circle" src="{{ user.profile.url }}" style="width: 43px; height: 43px;" alt="">
                                         </a>
-                                        {% else %}
-                                        <a href="{% url 'user_app:account_view' %}">
-                                            <img class="img-xs rounded-circle" src="{% static 'assets/imgs/page/empty_profile.jpg' %}" style="width: 43px; height: 43px;" alt="">
-                                        </a>
                                         {% endif %}
+                                    {% else %}
+                                        <li class="list-inline-item">
+                                            <i class="fi-rs-user"></i>
+                                            <a class="text-dark" href="{% url 'user_app:user_login' %}">Login</a>   
+                                        </li>
                                     {% endif %}
                                 </a>
                             </li>
-                            {% if user.is_authenticated %}
-                            <li class="list-inline-item">
-                                <a style="font-size: 10px;" href="{% url 'user_app:user_logout' %}" class="text-dark btn btn-sm"><i class="fi-rs-user"></i> Logout</a>
-                            </li>
-                            {% else %}
-                            <li class="list-inline-item">
-                                <i class="fi-rs-user"></i>
-                                <a class="text-dark" href="{% url 'user_app:user_login' %}">Login</a>   
-                            </li>
-                            {% endif %}
                         </ul>
                     </div>
                 </div>
@@ -107,66 +101,89 @@
     </div>
     <div class="header-middle py-3 d-block">
         <div class="container">
-            <div class="d-flex align-items-center">
-                <div style="width: 100%;" class="header-right d-flex justify-content-between align-items-center">
-                    <div class="search-box">
-                        <form action="{% url 'user_product_app:list_products' %}" method="get" class="d-flex">
-                            {% csrf_token %}
-                            <div style="display: flex;">
-                                <input type="search" name="search_text" class="" placeholder="{% if search %} {{search}} {% elif sort_with_search %} {{sort_with_search}} {% else %} Search  {% endif %}">
-                                <button type="submit" class="btn search-button btn-sm btn-primary ms-2 text-white" style="background: #088178;">search</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="header-action d-flex align-items-center ms-3">
-                        <div class="header-action-icon">
-                            <a href="{% url 'user_product_app:wishlist_view' %}">
-                                <img class="svgInject" style="width: 16px;" alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-heart.svg' %}">
-                            </a>
-                        </div>
-                        <div class="header-action-icon ms-3">
-                            <a class="mini-cart-icon" href="{% url 'cart_app:view_cart' %}">
-                                <img alt="Evara" style="width: 16px;" src="{% static 'assets/imgs/theme/icons/icon-cart.svg' %}">
-                            </a>
-                            {% if request.user.is_authenticated %}
-                            {% latest_two_items request.user as latest_items %}
-                            {% if latest_items %}
-                            <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                {% for item in latest_items %}
-                                <ul class="list-unstyled">
-                                    <li class="d-flex align-items-center py-2">
-                                        <div class="me-3">
-                                            <img style="width: 40px;" src="{{ item.product.thumbnail.url }}" alt="">
-                                        </div>
-                                        <div>
-                                            <p class="mb-0" style="font-size: 13px;">{{ item.product.product_name }}</p>
-                                            <p class="mb-0">x{{item.quantity}}</p>
-                                        </div>
-                                    </li>
-                                </ul>
-                                {% endfor %}
-                                <div class="shopping-cart-footer">
-                                    <div class="shopping-cart-total">
-                                        <h4>Total <span>${% sub_total latest_items %}</span></h4>
-                                    </div>
+            <div class="d-flex flex-column align-items-center">
+                <div class="d-flex align-items-center w-100" style="border-bottom: 2px solid whitesmoke;">
+                    <div style="width: 100%; padding-bottom: 10px;" class="header-right d-flex justify-content-between align-items-center">
+                        <div class="search-box">
+                            <form action="{% url 'user_product_app:list_products' %}" method="get" class="d-flex">
+                                {% csrf_token %}
+                                <div style="display: flex;">
+                                    <input type="search" name="search_text" class="" placeholder="{% if search %} {{search}} {% elif sort_with_search %} {{sort_with_search}} {% else %} Search  {% endif %}">
+                                    <button type="submit" class="btn search-button btn-sm btn-primary ms-2 text-white" style="background: #088178;">search</button>
                                 </div>
-                            </div>
-                            {% endif %}
-                            {% endif %}
+                            </form>
                         </div>
+                        <div class="header-action d-flex align-items-center ms-3">
+                            
+                                <div class="header-action-icon">
+                                    <a href="{% url 'user_product_app:wishlist_view' %}">
+                                        <img class="svgInject" style="width: 16px;" alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-heart.svg' %}">
+                                    </a>
+                                </div>
+    
+                                <div class="header-action-icon ms-3 d-flex">
+                                        <a class="mini-cart-icon" href="{% url 'cart_app:view_cart' %}">
+                                            <img alt="Evara" style="width: 16px;" src="{% static 'assets/imgs/theme/icons/icon-cart.svg' %}">
+                                        </a>
+                                    
+                                    {% if request.user.is_authenticated %}
+                                    {% latest_two_items request.user as latest_items %}
+                                    {% if latest_items %}
+                                    <div class="cart-dropdown-wrap cart-dropdown-hm2">
+                                        {% for item in latest_items %}
+                                        <ul class="list-unstyled">
+                                            <li class="d-flex align-items-center py-2">
+                                                <div class="me-3">
+                                                    <img style="width: 40px;" src="{{ item.product.thumbnail.url }}" alt="">
+                                                </div>
+                                                <div>
+                                                    <p class="mb-0" style="font-size: 13px;">{{ item.product.product_name }}</p>
+                                                    <p class="mb-0">x{{item.quantity}}</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        {% endfor %}
+                                        <div class="shopping-cart-footer">
+                                            <div class="shopping-cart-total">
+                                                <h4>Total <span>${% sub_total latest_items %}</span></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% endif %}
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-100 d-none d-lg-flex justify-content-lg-center align-items-lg-center">
+                    <div class="">
+                        <ul class="d-flex" style="padding: 10px 0;">
+                            <li class="nav-item">
+                                <a style="color: black; font-weight: 600;" class="nav-link active" href="{% url 'user_app:user_home' %}">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="color: black; font-weight: 600;" class="nav-link" href="{% url 'user_product_app:list_products' %}">Shop</a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="color: black; font-weight: 600;" class="nav-link" href="#">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="color: black; font-weight: 600;" class="nav-link" href="page-contact.html">Contact</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="header-bottom sticky-bar">
+    <div class="header-bottom sticky-bar d-lg-none d-block">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center w-100">
                     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"><i class="fa-solid fa-bars"></i></span>
                     </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="collapse navbar-collapse d-lg-flex justify-content-lg-center" id="navbarNav">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
                                 <a class="nav-link active" href="{% url 'user_app:user_home' %}">Home</a>
@@ -185,5 +202,28 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>    
 </header>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        function toggleNavbar() {
+            var width = window.innerWidth;
+            var navbarNav = document.getElementById('navbarNav');
+
+            if (width >= 992) {
+                // For screens larger than lg, ensure the menu is always shown
+                navbarNav.classList.add('show');
+            } else {
+                // For screens less than lg, collapse the menu
+                navbarNav.classList.remove('show');
+            }
+        }
+
+        // Initial call to set the correct state
+        toggleNavbar();
+
+        // Add event listener to handle window resizing
+        window.addEventListener('resize', toggleNavbar);
+    });
+</script>
