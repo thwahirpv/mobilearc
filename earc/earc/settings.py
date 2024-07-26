@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-ys*b=9ih4u6gox&hfwarcauk4w0d_2r@zpl+107w_)n5ju8_@4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.60.25.71', '0.0.0.0', 'localhost', 'mobilearc.store', 'www.mobilearc.store', '127.0.0.1']
+ALLOWED_HOSTS = ['13.60.25.71', '0.0.0.0', 'localhost', 'mobilearc.store', 'www.mobilearc.store', '127.0.0.1', 'admin.mobilearc.store']
 
 
 # Application definition
@@ -147,6 +147,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS =[
     os.path.join(BASE_DIR, 'static')
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 
