@@ -148,7 +148,7 @@ Oders
     <script>
         const changeStatus = (selectedElement, id) => {
             const csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-            fetch(`https://admin.mobilearc.store/admin/order/update_status/`,{
+            fetch(`/admin/order/update_status/`,{
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/json',
