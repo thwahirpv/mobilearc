@@ -239,56 +239,58 @@ def logo(request):
 
 
 def sales_report(request):
-    if not request.user.is_authenticated or request.user.is_superuser is False:
+    if not request.user.is_authenticated or not request.user.is_superuser:
         return redirect('admin_app:admin_login')
 
     if request.method == 'POST':
         start = request.POST.get('start-date', None)
         end = request.POST.get('end-date', None)
-        print('Start:',start, 'End', end)
-        start_chk = None
-        end_chk = None
-
+        print('Start:', start, 'End:', end)
+        
         try:
             # parse start and end string into datetime object
             current_time = datetime.datetime.now()
-            if start:
-                start_chk = datetime.datetime.strptime(start, '%Y-%m-%d')
-            if end:
-                end_chk = datetime.datetime.strptime(end, '%Y-%m-%d')
+            start_chk = datetime.datetime.strptime(start, '%Y-%m-%d') if start else None
+            end_chk = datetime.datetime.strptime(end, '%Y-%m-%d') if end else None
             
-            if start_chk and end_chk:
-                if start_chk > end_chk:
-                    messages.warning(request, f"Starting date must be on or before End date: {end_chk.strftime('%d-%m-%Y')}")
-                    return redirect('admin_app:admin_dashboard')
-        except Exception as e:
-            messages.warning(request, 'Check your connection and retry!')
-
-
-        if start_chk is not None:
-            if start_chk > current_time:
+            # Validate date ranges
+            if start_chk and end_chk and start_chk > end_chk:
+                messages.warning(request, f"Starting date must be on or before End date: {end_chk.strftime('%d-%m-%Y')}")
+                return redirect('admin_app:admin_dashboard')
+            
+            if start_chk and start_chk > current_time:
                 messages.warning(request, f"Starting date must be on or before {current_time.strftime('%d-%m-%Y')}")
                 return redirect('admin_app:admin_dashboard')
-        elif end_chk is not None:
-            if end_chk > current_time:
+                
+            if end_chk and end_chk > current_time:
                 messages.warning(request, f"Ending date must be on or before {current_time.strftime('%d-%m-%Y')}")
                 return redirect('admin_app:admin_dashboard')
-        if start and end:
-            sales_data = Order.objects.filter(status=4).filter(Q(update_at__gte=start) & Q(update_at__lte=end))
-        elif start:
-            sales_data = Order.objects.filter(status=4).filter(Q(update_at__gte=start) & Q(update_at__lte=current_time))
-        elif end:
-            sales_data = Order.objects.filter(status=4).filter(update_at__lte=end)
-        elif start == end:
-            sales_data = Order.objects.filter(Q(status=4) & Q(update_at__exact=start))
-        else:
-            messages.warning(request, 'Please select a Date!')
+
+            # Query based on the provided dates
+            if start_chk and end_chk:
+                if start_chk.date() == end_chk.date():
+                    sales_data = Order.objects.filter(status=4, update_at__date=start_chk.date())
+                else:
+                    sales_data = Order.objects.filter(status=4, update_at__range=[start_chk, end_chk])
+            elif start_chk:
+                sales_data = Order.objects.filter(status=4, update_at__range=[start_chk, current_time])
+            elif end_chk:
+                sales_data = Order.objects.filter(status=4, update_at__lte=end_chk)
+            else:
+                messages.warning(request, 'Please select a Date!')
+                return redirect('admin_app:admin_dashboard')
+            
+            context = {
+                'sales_data': sales_data
+            }
+            return render(request, 'admin_template/sales_report.html', context)
+        
+        except ValueError:
+            messages.warning(request, 'Invalid date format. Please use YYYY-MM-DD.')
             return redirect('admin_app:admin_dashboard')
 
-        context = {
-            'sales_data': sales_data
-        }
-        return render(request, 'admin_template/sales_report.html', context)
+    # Handle GET request or other method
+    return redirect('admin_app:admin_dashboard')
 
 
 def get_chart_data(request):
